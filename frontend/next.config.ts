@@ -1,8 +1,9 @@
 import path from "node:path";
 import type { NextConfig } from "next";
 
-// En desarrollo la UI llama a /api/v1 en su mismo origen y Next.js lo reenvía a FastAPI:
-// así no hace falta CORS. Por defecto, la API de Spring Boot en :8080; para otra, define BACKEND_URL.
+// La UI llama a /api/v1 en su mismo origen y Next.js lo reenvía a la API de Spring Boot: así no hace falta CORS.
+// Por defecto la API está en :8080; para otra, defina BACKEND_URL. Ojo: Next.js fija este valor al compilar
+// (next build), por eso la imagen Docker lo recibe como build-arg.
 const BACKEND_URL = process.env.BACKEND_URL ?? "http://localhost:8080";
 
 // Raíz fija del frontend: sin esto, si hay otro package-lock.json en una carpeta superior
@@ -10,6 +11,8 @@ const BACKEND_URL = process.env.BACKEND_URL ?? "http://localhost:8080";
 const RAIZ = path.resolve(__dirname);
 
 const nextConfig: NextConfig = {
+  // Genera .next/standalone: un servidor Node mínimo con solo las dependencias que usa (imagen Docker liviana)
+  output: "standalone",
   outputFileTracingRoot: RAIZ,
   turbopack: { root: RAIZ },
   // El botón flotante de herramientas de Next tapaba los campos de los formularios en celular

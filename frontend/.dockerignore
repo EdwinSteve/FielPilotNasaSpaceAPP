@@ -1,0 +1,7 @@
+# No enviar al contexto de Docker: dependencias, compilados ni secretos
+node_modules/
+.next/
+.env
+.env.*
+!.env.example
+*.tsbuildinfo

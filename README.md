@@ -259,7 +259,7 @@ La guía para proteger las rutas de un módulo nuevo con el JWT está en [backen
 
 ## 9. Cómo trabajamos
 
-- `main` siempre funciona. Cada tarea va en una rama (`feat/rotacion-mcda`, `feat/alertas-ideam`, `migra/diagnostico`) y entra por Pull Request.
+- `main` siempre funciona y está protegida: cada tarea va en una rama (`feat/rotacion-mcda`, `feat/alertas-ideam`, `fix/...`) y entra por Pull Request con **el CI en verde** (backend, frontend y scripts) y una aprobación. Cada merge a `main` publica las imágenes Docker. Detalle en [docs/ci-cd.md](docs/ci-cd.md).
 - Una funcionalidad nueva vive en **un** módulo. Si toca dos, se comunican por la API pública del módulo (su paquete raíz, como `co.surco.territorio.ConsultaTerritorio`), nunca por sus capas internas. `ArquitecturaTest` lo vigila.
 - Toda ruta nueva queda protegida con JWT sin hacer nada; para abrir una sin sesión hay que justificarlo en el PR.
 - Las decisiones importantes se registran en `docs/decisiones/NNNN-titulo.md` ([plantilla](docs/decisiones/0000-plantilla.md)); lo que se hizo en cada período, en `docs/bitacora/`.
