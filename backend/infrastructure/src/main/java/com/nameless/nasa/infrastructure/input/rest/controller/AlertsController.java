@@ -1,9 +1,12 @@
 package com.nameless.nasa.infrastructure.input.rest.controller;
 
+import com.nameless.nasa.domain.model.DroughtCalculator;
 import com.nameless.nasa.domain.model.enums.AlertMessages;
+import com.nameless.nasa.domain.model.enums.DroughtMessages;
 import com.nameless.nasa.infrastructure.input.rest.response.AlertResponse;
 import com.nameless.nasa.infrastructure.input.rest.response.AlertsResponse;
 import com.nameless.nasa.infrastructure.output.client.IdeamAlertsClient;
+import com.nameless.nasa.infrastructure.output.client.NasaPowerClient;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,12 +28,14 @@ public class AlertsController {
             org.slf4j.LoggerFactory.getLogger(AlertsController.class);
 
     private final IdeamAlertsClient ideam;
+    private final NasaPowerClient power;
 
-    AlertsController(IdeamAlertsClient ideam) {
+    AlertsController(IdeamAlertsClient ideam, NasaPowerClient power) {
         this.ideam = ideam;
+        this.power = power;
     }
 
-    @GetMapping
+    @GetMapping("/flood")
     public AlertsResponse vigentes(@RequestParam double lat, @RequestParam double lon) {
         if (lat < -4.5 || lat > 13.5 || lon < -82 || lon > -66) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
@@ -75,5 +80,29 @@ public class AlertsController {
         AlertResponse alerta = new AlertResponse(
                 "HIDROLOGICA", nivel.name(), subzona.nombre(), nivel.message(), "IDEAM");
         return new AlertsResponse(lat, lon, ahora, List.of(alerta));
+    }
+
+    /** Indicador de sequía calculado con lluvia de NASA POWER. No es una alerta oficial. */
+    @GetMapping("/drought")
+    public AlertsResponse sequia(@RequestParam double lat, @RequestParam double lon) {
+        if (lat < -4.5 || lat > 13.5 || lon < -82 || lon > -66) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "La ubicación está fuera de Colombia.");
+        }
+
+        DroughtCalculator.Resultado resultado;
+        try {
+            NasaPowerClient.Lluvia lluvia = power.lluviaEn(lat, lon);
+            resultado = DroughtCalculator.calcular(lluvia.diaria(), lluvia.normalPorMes());
+        } catch (RestClientException | IllegalStateException e) {
+            log.error("Fallo consultando a NASA POWER", e);
+            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE,
+                    "No pudimos consultar los datos de lluvia de la NASA. Intenta de nuevo en unos minutos.", e);
+        }
+
+        DroughtMessages nivel = DroughtMessages.desdePorcentaje(resultado.porcentaje());
+        AlertResponse alerta = new AlertResponse(
+                "SEQUIA", nivel.name(), "Tu ubicación", nivel.message(), "NASA POWER");
+        return new AlertsResponse(lat, lon, OffsetDateTime.now(COLOMBIA), List.of(alerta));
     }
 }
