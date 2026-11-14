@@ -10,7 +10,7 @@ export function claseEntrada(error: string | undefined, bloqueado = false): stri
     bloqueado ? "bg-arena-oscura cursor-not-allowed opacity-80" : "bg-white",
     error
       ? "border-error focus:ring-2 focus:ring-error/20"
-      : "border-borde focus:border-campo focus:ring-2 focus:ring-campo/20",
+      : "border-borde-campo focus:border-campo focus:ring-2 focus:ring-campo/20",
   ].join(" ");
 }
 
@@ -113,7 +113,7 @@ export function CampoCelular({ id, valor, alCambiar, error, ayuda, disabled, acc
     <div className="flex w-full flex-col text-left">
       <Etiqueta htmlFor={id} texto="Número de celular" obligatorio />
       <div className="relative flex items-center">
-        <span className="pointer-events-none absolute left-3 border-r-2 border-borde pr-3 text-base font-extrabold text-tinta sm:text-lg">
+        <span className="pointer-events-none absolute left-3 border-r-2 border-borde-campo pr-3 text-base font-extrabold text-tinta sm:text-lg">
           +57
         </span>
         <input

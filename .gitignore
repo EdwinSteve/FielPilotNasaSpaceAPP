@@ -18,6 +18,7 @@ venv/
 node_modules/
 .next/
 *.tsbuildinfo
+next-env.d.ts
 
 # Datos y modelos pesados
 data/raw/*

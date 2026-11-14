@@ -20,7 +20,7 @@ const ID = "consentimiento-datos";
 export function TarjetaConsentimiento({ aceptada, alCambiar, version, cargando, errorCarga, alReintentar, error, disabled }: Props) {
   if (cargando) {
     return (
-      <div className="flex items-center gap-3 rounded-xl border-2 border-borde bg-white/70 p-4 sm:p-5">
+      <div className="flex items-center gap-3 rounded-xl border-2 border-borde-campo bg-white/70 p-4 sm:p-5">
         <Spinner className="h-5 w-5 text-campo" />
         <span className="text-sm font-semibold text-tinta/80 sm:text-base">Cargando la política de datos...</span>
       </div>
@@ -43,7 +43,7 @@ export function TarjetaConsentimiento({ aceptada, alCambiar, version, cargando, 
   }
 
   return (
-    <div className={`rounded-xl border-2 p-4 transition-colors sm:p-5 ${error ? "border-error bg-error-fondo" : "border-borde bg-white"}`}>
+    <div className={`rounded-xl border-2 p-4 transition-colors sm:p-5 ${error ? "border-error bg-error-fondo" : "border-borde-campo bg-white"}`}>
       <div className="flex items-start gap-3.5">
         <input
           id={ID}
