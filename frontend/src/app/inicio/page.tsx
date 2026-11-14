@@ -1,6 +1,8 @@
-import { InicioProvisional } from "@/modulos/inicio";
+// Ruta /inicio: página delgada que compone componentes de src/modulos.
+// Exige sesión (InicioConSesion manda a /ingresar si no la hay).
+import { InicioConSesion, obtenerResumenInicio } from "@/modulos/inicio";
 
-// Ruta /inicio: por ahora confirma la sesión; luego mostrará el resumen del lote y las alertas.
-export default function Page() {
-  return <InicioProvisional />;
+export default async function Page() {
+  const resumen = await obtenerResumenInicio();
+  return <InicioConSesion resumen={resumen} />;
 }
