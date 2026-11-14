@@ -1,4 +1,5 @@
 // Pantalla de inicio del agricultor: clima del lote, métricas, pronóstico, alertas y recomendación.
+import type { ReactNode } from "react";
 import { NavegacionPrincipal } from "@/compartido/ui/NavegacionPrincipal";
 import type { ResumenInicio } from "../tipos";
 import { AlertasTempranas } from "./AlertasTempranas";
@@ -8,7 +9,13 @@ import { Pronostico } from "./Pronostico";
 import { RecomendacionLote } from "./RecomendacionLote";
 import { TarjetaMetrica } from "./TarjetaMetrica";
 
-export function PantallaInicio({ resumen }: { resumen: ResumenInicio }) {
+/** Acciones del usuario (cerrar sesión): en la barra lateral y en la barra superior del celular. */
+export interface AccionesUsuario {
+  lateral?: ReactNode;
+  movil?: ReactNode;
+}
+
+export function PantallaInicio({ resumen, acciones }: { resumen: ResumenInicio; acciones?: AccionesUsuario }) {
   const rutaRotacion = `/lotes/${resumen.lote.id}/rotacion`;
 
   return (
@@ -18,9 +25,10 @@ export function PantallaInicio({ resumen }: { resumen: ResumenInicio }) {
         usuario={resumen.usuario}
         loteId={resumen.lote.id}
         alertasPendientes={resumen.alertasPendientes}
+        accionUsuario={acciones?.lateral}
       />
       <main className="flex min-w-0 flex-1 flex-col gap-[14px] p-4 pb-[82px] md:gap-[18px] md:p-6 2xl:min-h-screen 2xl:gap-6 2xl:px-10 2xl:py-8">
-        <Encabezado resumen={resumen} />
+        <Encabezado resumen={resumen} accionMovil={acciones?.movil} />
         <BannerClima lote={resumen.lote} clima={resumen.clima} alerta={resumen.alertaDestacada} />
 
         <h2 className="text-[16px] font-semibold md:hidden">Métricas del terreno</h2>

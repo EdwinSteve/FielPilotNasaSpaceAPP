@@ -1,4 +1,6 @@
-// Bienvenida: qué es SURCO y entrada al registro.
-export default function Bienvenida() {
-  return <main>SURCO</main>;
+import { Bienvenida } from "@/modulos/identidad";
+
+// Ruta /: qué es SURCO y la entrada al registro o al ingreso.
+export default function Page() {
+  return <Bienvenida />;
 }

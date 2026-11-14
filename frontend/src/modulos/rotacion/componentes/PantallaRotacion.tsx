@@ -2,6 +2,7 @@
 // cultivos y las lluvias esperadas del lote. En escritorio, dos columnas (rotaciones y lluvias
 // a la izquierda, ranking a la derecha); en tablet y móvil, una sola.
 import Link from "next/link";
+import type { ReactNode } from "react";
 import { BarraSuperiorMovil } from "@/compartido/ui/BarraSuperiorMovil";
 import { Icono } from "@/compartido/ui/Icono";
 import { NavegacionPrincipal } from "@/compartido/ui/NavegacionPrincipal";
@@ -13,7 +14,13 @@ import { SelectorLote } from "./SelectorLote";
 
 const INTRO = "Analizamos 40 años de clima de su zona y el pronóstico de El Niño y La Niña.";
 
-export function PantallaRotacion({ plan }: { plan: PlanRotacion }) {
+/** Acciones del usuario (cerrar sesión): en la barra lateral y en la barra superior del celular. */
+export interface AccionesUsuario {
+  lateral?: ReactNode;
+  movil?: ReactNode;
+}
+
+export function PantallaRotacion({ plan, acciones }: { plan: PlanRotacion; acciones?: AccionesUsuario }) {
   return (
     <div className="min-h-screen md:flex">
       <NavegacionPrincipal
@@ -21,10 +28,11 @@ export function PantallaRotacion({ plan }: { plan: PlanRotacion }) {
         usuario={plan.usuario}
         loteId={plan.lote.id}
         alertasPendientes={plan.alertasPendientes}
+        accionUsuario={acciones?.lateral}
       />
       <main className="flex min-w-0 flex-1 flex-col gap-[14px] p-4 pb-[82px] md:gap-[18px] md:p-6 2xl:gap-6 2xl:px-10 2xl:py-8">
         <header className="flex flex-col gap-[14px] md:flex-row md:items-center md:justify-between">
-          <BarraSuperiorMovil iniciales={plan.usuario.iniciales} />
+          <BarraSuperiorMovil iniciales={plan.usuario.iniciales} accionUsuario={acciones?.movil} />
           <div className="flex flex-col gap-[3px] 2xl:gap-1">
             <h1 className="text-[22px] font-bold md:text-[24px] 2xl:text-[30px]">Plan de siembra</h1>
             <p className="text-[13px] leading-[18px] text-tinta-suave md:leading-normal 2xl:text-[15px]">

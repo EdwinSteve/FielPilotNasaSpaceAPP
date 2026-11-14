@@ -1,14 +1,15 @@
 import Link from "next/link";
+import type { ReactNode } from "react";
 import { BarraSuperiorMovil } from "@/compartido/ui/BarraSuperiorMovil";
 import { Icono } from "@/compartido/ui/Icono";
 import type { ResumenInicio } from "../tipos";
 
-export function Encabezado({ resumen }: { resumen: ResumenInicio }) {
+export function Encabezado({ resumen, accionMovil }: { resumen: ResumenInicio; accionMovil?: ReactNode }) {
   const { usuario, fecha, finca, lote } = resumen;
 
   return (
     <header className="flex flex-col gap-[14px] md:flex-row md:items-center md:justify-between">
-      <BarraSuperiorMovil iniciales={usuario.iniciales} />
+      <BarraSuperiorMovil iniciales={usuario.iniciales} accionUsuario={accionMovil} />
 
       <div className="flex flex-col gap-[3px] 2xl:gap-1">
         <h1 className="text-[22px] font-bold md:text-[24px] 2xl:text-[30px]">

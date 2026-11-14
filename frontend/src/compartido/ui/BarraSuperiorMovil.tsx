@@ -1,8 +1,9 @@
 // Barra superior de las pantallas en móvil, donde no hay barra lateral: marca, notificaciones y avatar.
 import Link from "next/link";
+import type { ReactNode } from "react";
 import { Icono } from "./Icono";
 
-export function BarraSuperiorMovil({ iniciales }: { iniciales: string }) {
+export function BarraSuperiorMovil({ iniciales, accionUsuario }: { iniciales: string; accionUsuario?: ReactNode }) {
   return (
     <div className="flex items-center justify-between md:hidden">
       <div className="flex items-center gap-2">
@@ -18,6 +19,7 @@ export function BarraSuperiorMovil({ iniciales }: { iniciales: string }) {
         <span className="flex size-9 items-center justify-center rounded-full bg-verde-500 text-[12px] font-bold text-white">
           {iniciales}
         </span>
+        {accionUsuario}
       </div>
     </div>
   );

@@ -1,0 +1,8 @@
+# No enviar al contexto de Docker: compilados, secretos ni archivos del IDE
+target/
+.env
+.env.*
+!.env.example
+.idea/
+.vscode/
+*.iml

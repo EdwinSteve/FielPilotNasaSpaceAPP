@@ -1,0 +1,21 @@
+# PostgreSQL 16 para desarrollo y pruebas:  docker compose up -d
+# Crea la base "surco" (la app) y "surco_test" (las pruebas *IT, que la vacían en cada prueba).
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: surco
+      POSTGRES_PASSWORD: surco
+      POSTGRES_DB: surco
+    ports:
+      - "5432:5432"
+    volumes:
+      - surco-pg:/var/lib/postgresql/data
+      - ./docker/crear-bd-pruebas.sql:/docker-entrypoint-initdb.d/crear-bd-pruebas.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U surco"]
+      interval: 5s
+      retries: 10
+
+volumes:
+  surco-pg:

@@ -1,7 +1,8 @@
 // Ruta /inicio: página delgada que compone componentes de src/modulos.
-import { obtenerResumenInicio, PantallaInicio } from "@/modulos/inicio";
+// Exige sesión (InicioConSesion manda a /ingresar si no la hay).
+import { InicioConSesion, obtenerResumenInicio } from "@/modulos/inicio";
 
 export default async function Page() {
   const resumen = await obtenerResumenInicio();
-  return <PantallaInicio resumen={resumen} />;
+  return <InicioConSesion resumen={resumen} />;
 }

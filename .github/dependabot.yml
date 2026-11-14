@@ -1,0 +1,31 @@
+# Dependabot abre PRs semanales con actualizaciones. Pasan por el mismo CI antes de entrar a main.
+version: 2
+updates:
+  - package-ecosystem: maven
+    directory: /backend
+    schedule:
+      interval: weekly
+    groups:
+      spring:
+        patterns: ["org.springframework*"]
+    open-pull-requests-limit: 5
+
+  - package-ecosystem: npm
+    directory: /frontend
+    schedule:
+      interval: weekly
+    groups:
+      next-react:
+        patterns: ["next", "react", "react-dom", "eslint-config-next", "@types/react*"]
+    open-pull-requests-limit: 5
+
+  # Actualiza los SHA de las acciones fijadas en .github/workflows
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+
+  - package-ecosystem: docker
+    directories: ["/backend", "/frontend"]
+    schedule:
+      interval: weekly

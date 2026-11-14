@@ -1,6 +1,7 @@
 // Navegación de la app: barra lateral (completa en escritorio, compacta en tablet)
 // y barra de pestañas inferior en móvil.
 import Link from "next/link";
+import type { ReactNode } from "react";
 import { Icono } from "./Icono";
 
 export type SeccionNav = "inicio" | "terreno" | "rotacion" | "alertas";
@@ -11,9 +12,11 @@ interface Props {
   /** Lote sobre el que abre "Cultivos y rotación". */
   loteId: string;
   alertasPendientes: number;
+  /** Acción del usuario bajo su avatar (por ejemplo, cerrar sesión). Compartido no depende de identidad. */
+  accionUsuario?: ReactNode;
 }
 
-export function NavegacionPrincipal({ activa, usuario, loteId, alertasPendientes }: Props) {
+export function NavegacionPrincipal({ activa, usuario, loteId, alertasPendientes, accionUsuario }: Props) {
   // `activo`/`tabActivo`: variante resaltada del icono; Terreno y Alertas aún no la tienen en el diseño.
   const secciones = [
     { id: "inicio", nombre: "Inicio", corto: "Inicio", href: "/inicio", icono: "home-nav", activo: "home-blanco", iconoTab: "home-tab-inactivo", tabActivo: "home-tab" },
@@ -63,6 +66,7 @@ export function NavegacionPrincipal({ activa, usuario, loteId, alertasPendientes
             })}
           </nav>
         </div>
+        <div className="flex flex-col items-center gap-2 2xl:items-stretch">
         <div className="flex items-center justify-center 2xl:justify-start 2xl:gap-3 2xl:rounded-xl 2xl:bg-white/8 2xl:p-3">
           <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-verde-500 text-[14px] font-bold text-white">
             {usuario.iniciales}
@@ -73,6 +77,8 @@ export function NavegacionPrincipal({ activa, usuario, loteId, alertasPendientes
               {usuario.rol} · {usuario.municipio}
             </span>
           </span>
+        </div>
+        {accionUsuario}
         </div>
       </aside>
 
