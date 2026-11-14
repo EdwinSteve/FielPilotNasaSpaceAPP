@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { BarraSuperiorMovil } from "@/compartido/ui/BarraSuperiorMovil";
 import { Icono } from "@/compartido/ui/Icono";
 import type { ResumenInicio } from "../tipos";
 
@@ -7,27 +8,7 @@ export function Encabezado({ resumen }: { resumen: ResumenInicio }) {
 
   return (
     <header className="flex flex-col gap-[14px] md:flex-row md:items-center md:justify-between">
-      {/* Barra superior: solo en móvil, donde no hay barra lateral */}
-      <div className="flex items-center justify-between md:hidden">
-        <div className="flex items-center gap-2">
-          <span className="rounded-lg bg-verde-500 p-[6px]">
-            <Icono nombre="sprout-blanco" className="size-4" />
-          </span>
-          <span className="text-[16px] font-bold">Field Shift</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <Link
-            href="/alertas"
-            aria-label="Notificaciones"
-            className="rounded-xl border border-borde bg-white p-2"
-          >
-            <Icono nombre="bell" className="size-[18px]" />
-          </Link>
-          <span className="flex size-9 items-center justify-center rounded-full bg-verde-500 text-[12px] font-bold text-white">
-            {usuario.iniciales}
-          </span>
-        </div>
-      </div>
+      <BarraSuperiorMovil iniciales={usuario.iniciales} />
 
       <div className="flex flex-col gap-[3px] 2xl:gap-1">
         <h1 className="text-[22px] font-bold md:text-[24px] 2xl:text-[30px]">
