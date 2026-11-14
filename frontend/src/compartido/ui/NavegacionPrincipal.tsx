@@ -14,12 +14,12 @@ interface Props {
 }
 
 export function NavegacionPrincipal({ activa, usuario, loteId, alertasPendientes }: Props) {
-  // El diseño solo trae el icono resaltado de Inicio; los demás usan su variante normal.
+  // `activo`/`tabActivo`: variante resaltada del icono; Terreno y Alertas aún no la tienen en el diseño.
   const secciones = [
-    { id: "inicio", nombre: "Inicio", corto: "Inicio", href: "/inicio", icono: "home-blanco", iconoTab: "home-tab" },
-    { id: "terreno", nombre: "Mi terreno", corto: "Terreno", href: "/lotes", icono: "pin-nav", iconoTab: "pin-tab" },
-    { id: "rotacion", nombre: "Cultivos y rotación", corto: "Cultivos", href: `/lotes/${loteId}/rotacion`, icono: "rotate-nav", iconoTab: "rotate-tab" },
-    { id: "alertas", nombre: "Alertas IDEAM", corto: "Alertas", href: "/alertas", icono: "alert-nav", iconoTab: "alert-tab" },
+    { id: "inicio", nombre: "Inicio", corto: "Inicio", href: "/inicio", icono: "home-nav", activo: "home-blanco", iconoTab: "home-tab-inactivo", tabActivo: "home-tab" },
+    { id: "terreno", nombre: "Mi terreno", corto: "Terreno", href: "/lotes", icono: "pin-nav", activo: "pin-nav", iconoTab: "pin-tab", tabActivo: "pin-tab" },
+    { id: "rotacion", nombre: "Cultivos y rotación", corto: "Cultivos", href: `/lotes/${loteId}/rotacion`, icono: "rotate-nav", activo: "rotate-blanco", iconoTab: "rotate-tab", tabActivo: "rotate-tab-activo" },
+    { id: "alertas", nombre: "Alertas IDEAM", corto: "Alertas", href: "/alertas", icono: "alert-nav", activo: "alert-nav", iconoTab: "alert-tab", tabActivo: "alert-tab" },
   ] as const;
 
   return (
@@ -45,7 +45,7 @@ export function NavegacionPrincipal({ activa, usuario, loteId, alertasPendientes
                     esActiva ? "bg-white/12" : "hover:bg-white/8"
                   }`}
                 >
-                  <Icono nombre={s.icono} />
+                  <Icono nombre={esActiva ? s.activo : s.icono} />
                   <span
                     className={`hidden text-[15px] 2xl:block ${
                       esActiva ? "font-semibold text-white" : "font-medium text-verde-niebla"
@@ -91,7 +91,7 @@ export function NavegacionPrincipal({ activa, usuario, loteId, alertasPendientes
                 esActiva ? "bg-verde-100 font-semibold text-verde-700" : "font-medium text-tinta-suave"
               }`}
             >
-              <Icono nombre={s.iconoTab} />
+              <Icono nombre={esActiva ? s.tabActivo : s.iconoTab} />
               {s.corto}
             </Link>
           );
