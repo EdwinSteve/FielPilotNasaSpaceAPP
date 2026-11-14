@@ -1,1 +1,31 @@
 @import "tailwindcss";
+
+/* Paleta y tipografía del diseño (Figma: Inicio agricultor). */
+@theme inline {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  --color-fondo: #f3f5ef;
+  --color-borde: #e3e8dd;
+  --color-tinta: #12241a;
+  --color-tinta-suave: #5b6b60;
+
+  --color-verde-900: #0f2a1d;
+  --color-verde-700: #1b5e3a;
+  --color-verde-500: #2e8b57;
+  --color-verde-300: #86efac;
+  --color-verde-100: #e4f3ea;
+  --color-verde-niebla: #a9c2b3;
+
+  --color-lluvia: #0369a1;
+  --color-naranja: #ea580c;
+  --color-naranja-texto: #c2410c;
+  --color-naranja-fondo: #ffedd5;
+  --color-amarilla-texto: #a16207;
+  --color-amarilla-fondo: #fef9c3;
+}
+
+body {
+  line-height: normal;
+  background: var(--color-fondo);
+  color: var(--color-tinta);
+}
