@@ -233,7 +233,17 @@ Un panel de métricas de impacto acumulado de la finca (agua ahorrada y nitróge
 
 ## 8. Cómo correrlo
 
-Requisitos: **Java 21**, **Node 20+** y **Docker** (para PostgreSQL). Maven no hace falta: el backend trae `./mvnw`.
+### Todo con un solo comando (solo necesita Docker)
+
+```bash
+docker compose up --build        # → http://localhost:3000
+```
+
+Levanta PostgreSQL, la API y el frontend. La primera vez genera un `JWT_SECRETO` aleatorio que nunca queda en el repositorio. `docker compose down` lo detiene; `docker compose down -v` borra también los datos. Detalle en [docs/docker.md](docs/docker.md).
+
+### Para programar (con recarga automática)
+
+Requisitos: **Java 21**, **Node 22** y **Docker** (para PostgreSQL). Maven no hace falta: el backend trae `./mvnw`.
 
 ```bash
 # Backend  →  http://localhost:8080

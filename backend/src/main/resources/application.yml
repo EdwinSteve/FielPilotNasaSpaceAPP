@@ -3,8 +3,12 @@ spring:
   application:
     name: surco-api
   config:
-    # En desarrollo lee backend/.env (formato CLAVE=valor). En producción, variables de entorno reales.
-    import: optional:file:.env[.properties]
+    import:
+      # En desarrollo lee backend/.env (formato CLAVE=valor).
+      - optional:file:.env[.properties]
+      # Con Docker Compose, secretos como archivos: cada archivo es una propiedad (JWT_SECRETO).
+      # Las variables de entorno reales tienen prioridad sobre ambos.
+      - optional:configtree:${SURCO_SECRETOS:/run/secrets/surco}/
   datasource:
     url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/surco}
     username: ${DATABASE_USER:surco}
