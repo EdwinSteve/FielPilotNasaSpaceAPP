@@ -1,4 +1,10 @@
-// Ruta /registro: página delgada que compone componentes de src/modulos.
+"use client";
+
+import { useRouter } from "next/navigation";
+import { FormularioRegistro } from "@/modulos/identidad";
+
+// Ruta /registro: creación de la cuenta del productor.
 export default function Page() {
-  return null;
+  const router = useRouter();
+  return <FormularioRegistro alRegistrarse={() => setTimeout(() => router.push("/inicio"), 1200)} />;
 }

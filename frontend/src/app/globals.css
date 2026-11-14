@@ -1,1 +1,27 @@
 @import "tailwindcss";
+
+/* Paleta SURCO: los componentes usan estos tokens (bg-campo, text-tinta, border-borde...). */
+@theme inline {
+  --font-sans: var(--font-nunito);
+  --font-titulo: var(--font-nunito-titulo), var(--font-nunito);
+
+  --color-campo: #1f4d2b;
+  --color-campo-oscuro: #16381f;
+  --color-hoja: #6dbe7a;
+  --color-sol: #e8833a;
+  --color-agua: #4a90c8;
+  --color-suelo: #8b5e34;
+  --color-crema: #f7f3ea;
+  --color-arena: #e8e1d3;
+  --color-arena-oscura: #ede7da;
+  --color-tinta: #14202b;
+  --color-borde: #d2c8b5;
+  --color-error: #d94f4f;
+  --color-error-oscuro: #b93838;
+  --color-error-fondo: #fff5f5;
+}
+
+body {
+  background: var(--color-crema);
+  color: var(--color-tinta);
+}

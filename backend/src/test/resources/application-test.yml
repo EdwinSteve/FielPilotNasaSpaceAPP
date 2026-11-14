@@ -1,0 +1,12 @@
+# Perfil de pruebas. Las pruebas *IT usan una base dedicada que termine en _test:
+# cada prueba borra los datos, así que NUNCA apunte a una base con datos reales.
+spring:
+  datasource:
+    url: ${TEST_DATABASE_URL:jdbc:postgresql://localhost:5432/surco_test}
+    username: ${DATABASE_USER:surco}
+    password: ${DATABASE_PASSWORD:surco}
+
+surco:
+  jwt:
+    # Solo para pruebas: nunca use este valor fuera de ellas
+    secreto: clave-de-pruebas-que-no-sirve-en-produccion-0123456789abcdefghijklmnopqrstuvwxyz

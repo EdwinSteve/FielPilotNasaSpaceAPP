@@ -14,9 +14,9 @@ NASA Space Apps Challenge 2026.
 | Información local del suelo | SoilGrids en `diagnostico` |
 | Características de los cultivos | módulo `catalogo` (`data/catalogo_cultivos/`) |
 | Explorar estrategias de rotación | módulo `rotacion` (planificador + simulador de escenarios) |
-| Adaptarse a condiciones cambiantes | `rotacion/domain/condiciones.py` (pronóstico IDEAM + predicción estacional) y módulo `alertas` |
+| Adaptarse a condiciones cambiantes | `co.surco.rotacion.dominio` (condiciones esperadas: pronóstico IDEAM + predicción estacional) y módulo `alertas` |
 | Prioridades del agricultor | El objetivo es fijo: el ciclo productivo con mejor resultado bajo el clima esperado. El agricultor aporta su lote, si tiene riego y desde cuándo puede sembrar (`fincas`) |
-| Fortalecer la salud del suelo | `rotacion/domain/suelo.py`: efecto de cada temporada sobre el suelo |
+| Fortalecer la salud del suelo | `co.surco.rotacion.dominio`: efecto de cada temporada sobre el suelo |
 
 ## Ejes que la solución aborda
 

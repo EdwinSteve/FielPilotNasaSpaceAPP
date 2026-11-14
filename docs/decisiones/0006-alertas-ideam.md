@@ -12,8 +12,8 @@ El IDEAM publica en varios formatos, y no todos se consultan por API:
 - **Boletines e informes en PDF**: predicción climática mensual y trimestral, y boletines de alertas hidrológicas.
 
 ## Decisión
-- Un módulo nuevo, `alertas`, con un puerto `FuentePronosticos` que oculta de dónde vienen los pronósticos. El adaptador `infrastructure/ideam.py` empieza por la fuente que se pueda consultar de forma estable y suma las demás después.
-- Una tarea periódica (`backend/scripts/revisar_alertas_ideam.py`, cada 6 h) trae los pronósticos, los cruza con el municipio o el polígono de cada lote y genera alertas de **lluvia excesiva** o **sequía** con nivel amarillo, naranja o rojo.
+- Un módulo nuevo, `alertas`, con un puerto `FuentePronosticos` que oculta de dónde vienen los pronósticos. El adaptador `co.surco.alertas.infraestructura.FuenteIdeam` empieza por la fuente que se pueda consultar de forma estable y suma las demás después.
+- Una tarea periódica (`@Scheduled` de Spring, cada 6 h) trae los pronósticos, los cruza con el municipio o el polígono de cada lote y genera alertas de **lluvia excesiva** o **sequía** con nivel amarillo, naranja o rojo.
 - Las notificaciones salen por un puerto `CanalNotificacion`. El primer canal es la app; SMS o WhatsApp se agregan como adaptadores nuevos.
 - Cada alerta guarda su fuente, su vigencia y el boletín de origen, y la misma alerta no se notifica dos veces al mismo productor.
 

@@ -1,4 +1,6 @@
-// Ruta /inicio: página delgada que compone componentes de src/modulos.
+import { InicioProvisional } from "@/modulos/inicio";
+
+// Ruta /inicio: por ahora confirma la sesión; luego mostrará el resumen del lote y las alertas.
 export default function Page() {
-  return null;
+  return <InicioProvisional />;
 }

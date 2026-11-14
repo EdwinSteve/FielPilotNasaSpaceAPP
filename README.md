@@ -21,7 +21,7 @@ Nuestra lectura: lo que el agricultor necesita es saber **qué ciclo productivo 
 
 ## 2. Para quién y qué problema resolvemos
 
-**Usuario:** el pequeño y mediano productor del **Huila, Colombia**, que hoy siembra café o arroz año tras año en el mismo lote. El valle del Magdalena es muy sensible a El Niño y La Niña y tiene estrés hídrico en aumento.
+**Usuario:** el pequeño y mediano productor de **cualquier departamento y municipio de Colombia** que hoy siembra el mismo cultivo año tras año en el mismo lote. Empezamos validando en el **Huila**, donde el monocultivo de café y arroz del valle del Magdalena es muy sensible a El Niño y La Niña y tiene estrés hídrico en aumento.
 
 **Problema:** decide qué sembrar sin saber qué clima viene ni cómo le va a ir a cada cultivo con ese clima. Los datos satelitales que podrían ayudarle exigen ser científico de datos, y los pronósticos oficiales del IDEAM rara vez llegan hasta su finca. Repetir el mismo cultivo agota el suelo, concentra plagas y lo deja expuesto a una sola mala temporada.
 
@@ -54,7 +54,7 @@ flowchart LR
 
 | # | Funcionalidad | Qué va a hacer | Requisito del reto |
 |---|---|---|---|
-| 1 | **Registro de la finca y el lote** | El agricultor crea su cuenta, ubica su finca (municipio y vereda del Huila), dibuja el lote en el mapa e indica si tiene riego y desde cuándo puede sembrar. El sistema calcula el área, el punto medio y la altitud. | Información local, lo que necesita el agricultor |
+| 1 | **Registro de la finca y el lote** | El agricultor crea su cuenta, ubica su finca (departamento, municipio y vereda, en cualquier parte de Colombia), dibuja el lote en el mapa e indica si tiene riego y desde cuándo puede sembrar. El sistema calcula el área, el punto medio y la altitud. | Información local, lo que necesita el agricultor |
 | 2 | **Condiciones meteorológicas esperadas** | Para el periodo de cada ciclo, estima cómo va a estar el clima del lote: pronóstico del IDEAM para los próximos días y meses, predicción estacional del modelo (clima reciente + El Niño/La Niña) y climatología histórica del lote. | Temperaturas y lluvias que cambian |
 | 3 | **Resumen climatológico del terreno** | Reúne la información disponible para el lote: lluvia y temperatura de los últimos 45 años y su tendencia (POWER, IMERG), humedad del suelo en la zona de raíces (SMAP), verdor (MODIS/HLS) y suelo (SoilGrids). Cada dato muestra su fuente y su fecha. | NASA Earth observations, suelo local |
 | 4 | **Ciclos productivos recomendados** | Un modelo predictivo (XGBoost) anticipa cómo le irá a cada uno de los 44 cultivos del catálogo con las condiciones esperadas, para cada fecha de siembra posible: idoneidad, probabilidad de éxito ("8 de cada 10 años"), riego necesario y días de estrés. Recomienda los ciclos (cultivo + fecha de siembra) con mejor resultado. | Crop characteristics |
@@ -112,8 +112,8 @@ Cada alerta guarda su fuente, su vigencia y el boletín de origen, y no se notif
 
 | Módulo | Método y ruta | Qué hace |
 |---|---|---|
-| `identidad` | `POST /auth/registro` · `/auth/login` · `/auth/refresh` · `/auth/logout` | Cuenta y sesión con JWT |
-| `territorio` | `GET /territorio/municipios` · `GET /territorio/elevacion?lat=&lon=` | Municipios del Huila y altitud SRTM |
+| `identidad` ✅ | `POST /auth/registro` · `/auth/login` · `/auth/refresh` · `/auth/logout` · `/auth/logout-todo` · `GET /usuarios/me` · `GET /politicas/vigente` | Cuenta y sesión con JWT (implementado, ver [backend/README.md](backend/README.md)) |
+| `territorio` ✅ | `GET /territorio/departamentos` · `GET /territorio/municipios?departamento=` · `GET /territorio/elevacion?lat=&lon=` (pendiente) | Los 33 departamentos y 1.122 municipios de Colombia (DIVIPOLA del DANE) y altitud SRTM |
 | `fincas` | `POST /fincas` · `POST /fincas/{id}/lotes` · `GET /lotes/{id}` | Finca y lote con su polígono |
 | `diagnostico` | `POST /lotes/{id}/diagnostico` · `GET /lotes/{id}/diagnostico/{tarea}` | Resumen climatológico del lote (en segundo plano) |
 | `catalogo` | `GET /cultivos` · `GET /cultivos/{id}` | Ficha agronómica de cada cultivo |
@@ -123,7 +123,7 @@ Cada alerta guarda su fuente, su vigencia y el boletín de origen, y no se notif
 | `alertas` | `GET /alertas` · `PATCH /alertas/{id}/leida` | Alertas vigentes del productor |
 | `alertas` | `GET /lotes/{id}/pronostico` | Pronóstico vigente del IDEAM para el lote |
 
-Los errores siempre llegan como `{ "code", "message", "details"? }`.
+Toda ruta exige `Authorization: Bearer <access_token>` salvo registro, login, política de datos y territorio. Los errores siempre llegan como `{ "code", "message", "details"? }`.
 
 ## 4. Fuentes de datos
 
@@ -149,7 +149,7 @@ flowchart LR
     U["Agricultor"] --> FE["Frontend<br/>Next.js + Leaflet + Recharts"]
     FE -->|"REST /api/v1"| BE
 
-    subgraph BE["Backend FastAPI (monolito modular)"]
+    subgraph BE["Backend Java · Spring Boot (monolito modular)"]
         ID[identidad] ~~~ TE[territorio]
         FI[fincas] --> DI[diagnostico]
         DI --> RE[recomendacion]
@@ -170,8 +170,8 @@ flowchart LR
 
 | Módulo | Responsabilidad |
 |---|---|
-| `identidad` | Registro, login y sesiones con JWT; consentimiento de la política de datos. |
-| `territorio` | Municipios y centros poblados (DIVIPOLA del DANE) y elevación SRTM. |
+| `identidad` ✅ | Registro, login y sesiones con JWT (access + refresh con rotación); consentimiento de la política de datos. |
+| `territorio` ✅ | Los 33 departamentos y 1.122 municipios de Colombia (DIVIPOLA del DANE); elevación SRTM pendiente. |
 | `fincas` | Fincas, lotes (polígono, área, centroide) y tipo de riego. |
 | `diagnostico` | Resumen de la información climatológica disponible para el lote, y su suelo. |
 | `catalogo` | Requerimientos de 44 cultivos por fase (temperatura, lluvia, Kc, raíz, familia botánica). Solo lectura. |
@@ -181,18 +181,19 @@ flowchart LR
 
 Reglas, anatomía de un módulo y cómo se comunican: [docs/arquitectura.md](docs/arquitectura.md).
 
-**Stack:** Next.js 15, React 19, TypeScript, Tailwind 4, Leaflet y Recharts en el frontend · Python 3.11+, FastAPI, SQLAlchemy async, Alembic y pytest en el backend · `earthengine-api`, `earthaccess`, XGBoost y SHAP para datos y modelo · PostgreSQL 16 (un esquema por módulo) y MongoDB (catálogo).
+**Stack:** Next.js 15, React 19, TypeScript, Tailwind 4, Leaflet y Recharts en el frontend · **Java 21 y Spring Boot 4** (Spring Security con JWT, Spring Data JPA, Flyway, JUnit 5 y ArchUnit) en el backend · Python con `earthengine-api`, `earthaccess`, XGBoost y SHAP para datos y modelo (`ml/`) · PostgreSQL 16 (un esquema por módulo) y MongoDB (catálogo).
 
 ## 6. Plan de desarrollo
 
 | Fase | Qué se entrega | Origen |
 |---|---|---|
-| **0. Base** | Estructura del monolito modular, reglas de arquitectura con prueba automática | ✅ Hecho |
-| **1. Migración** | `identidad`, `territorio`, `fincas`, `diagnostico` y `recomendacion`; `ml/datos_tierra`, `ml/surco_ml` y el catálogo de 44 cultivos | Ya desarrollado en Nasa_2026_Nameless: se mueve y se adapta |
+| **0. Base** | Monolito modular en Spring Boot, reglas de arquitectura con ArchUnit | ✅ Hecho |
+| **1a. Identidad y territorio** | Registro, login, JWT con refresh rotativo, perfil; departamentos y municipios de Colombia; pantallas de registro e ingreso | ✅ Hecho |
+| **1b. Migración** | `fincas`, `diagnostico` y `recomendacion` en Java; `ml/datos_tierra`, `ml/surco_ml` y el catálogo de 44 cultivos | Ya desarrollado en Nasa_2026_Nameless (Python): se porta o se consume desde Java |
 | **2. Resumen climatológico** | `diagnostico` reenfocado como resumen climatológico del terreno con tendencias | Ajuste de lo existente |
 | **3. Pronóstico y alertas IDEAM** | Fuente de pronósticos, cruce con lotes, tarea periódica, notificaciones y pronóstico del lote | Nuevo |
 | **4. Recomendación y rotación** | Condiciones esperadas, ciclos con mejor resultado, rotación de 2–3 temporadas, efecto en el suelo y simulador | Nuevo, sobre el modelo predictivo existente |
-| **5. Frontend** | Pantallas de la sección 3.5, con mocks para avanzar sin esperar al backend | Se reutilizan componentes del repo anterior |
+| **5. Frontend** | Pantallas de la sección 3.5 contra la API real | Se reutilizan componentes del repo anterior |
 | **6. Presentación** | Fincas demo pre-descargadas, video de 30 s, página del proyecto | Nuevo |
 
 El detalle por tarea vive en los issues del repositorio; cada tarea va en su rama y entra por Pull Request.
@@ -205,19 +206,18 @@ Un panel de métricas de impacto acumulado de la finca (agua ahorrada y nitróge
 
 ```
 .
-├── backend/                 API FastAPI (monolito modular)
-│   ├── app/
-│   │   ├── main.py          crea la app y monta los routers de los módulos
-│   │   ├── core/            config, base de datos, errores, seguridad (sin negocio)
-│   │   └── modules/
-│   │       └── <modulo>/
-│   │           ├── domain/          entidades, reglas y puertos (Python puro)
-│   │           ├── application/     casos de uso
-│   │           ├── infrastructure/  adaptadores: PostgreSQL, Mongo, NASA, IDEAM, modelo
-│   │           └── api/             router, schemas y dependencias HTTP
-│   ├── alembic/             migraciones (un esquema por módulo)
-│   ├── scripts/             tareas: revisar alertas del IDEAM, DIVIPOLA, semillas
-│   └── tests/               unit/ (sin BD) · api/ · integration/ (PostgreSQL)
+├── backend/                 API Java 21 · Spring Boot 4 (monolito modular)
+│   ├── src/main/java/co/surco/
+│   │   ├── compartido/      seguridad JWT, errores, salud (sin negocio)
+│   │   └── <modulo>/        identidad, territorio, fincas, diagnostico, catalogo, recomendacion, rotacion, alertas
+│   │       ├── (raíz)           API pública del módulo
+│   │       ├── dominio/         entidades, reglas y puertos (Java puro)
+│   │       ├── aplicacion/      casos de uso
+│   │       ├── infraestructura/ adaptadores: PostgreSQL, Mongo, NASA, IDEAM, modelo
+│   │       └── api/             controladores REST y DTOs
+│   ├── src/main/resources/  application.yml, migraciones Flyway, DIVIPOLA
+│   ├── src/test/            unitarias, JWT, ArchUnit (sin BD) · *IT contra PostgreSQL
+│   └── compose.yaml         PostgreSQL 16 para desarrollo y pruebas
 │
 ├── frontend/                Next.js
 │   └── src/
@@ -228,49 +228,40 @@ Un panel de métricas de impacto acumulado de la finca (agua ahorrada y nitróge
 ├── ml/                      servicio de datos (datos_tierra) y modelo predictivo (surco_ml)
 ├── data/                    catálogo de cultivos, fincas demo, datos procesados
 ├── docs/                    reto, arquitectura, decisiones (ADR), datos, bitácora
-└── scripts/                 verificación y descarga de fuentes NASA
+└── scripts/                 descarga de fuentes NASA y de la DIVIPOLA del DANE
 ```
 
 ## 8. Cómo correrlo
 
-Requisitos: Python 3.11+, Node 20+, Docker o Podman. Hoy el backend arranca con su `/api/v1/health`; los demás pasos aplican a medida que se migra cada módulo.
+Requisitos: **Java 21**, **Node 20+** y **Docker** (para PostgreSQL). Maven no hace falta: el backend trae `./mvnw`.
 
 ```bash
-# Bases de datos
-docker run -d --name surco-pg -e POSTGRES_USER=surco -e POSTGRES_PASSWORD=surco \
-  -e POSTGRES_DB=surco -p 5432:5432 postgres:16-alpine
-docker run -d --name surco-mongo -p 27017:27017 mongo:7
-
-# Backend  →  http://localhost:8000/docs
+# Backend  →  http://localhost:8080
 cd backend
-python3 -m venv .venv && source .venv/bin/activate
-pip install -e ".[dev]"
-pip install -e "../ml[gee,modelo]"
-cp .env.example .env          # JWT_SECRETO: python -c "import secrets; print(secrets.token_hex(48))"
-alembic upgrade head
-uvicorn app.main:app --reload --port 8000
+docker compose up -d          # PostgreSQL 16 (bases surco y surco_test)
+cp .env.example .env          # ponga JWT_SECRETO: openssl rand -base64 48
+./mvnw spring-boot:run
 
-# Alertas del IDEAM (cron cada 6 h en producción)
-python scripts/revisar_alertas_ideam.py
-
-# Frontend  →  http://localhost:3000
+# Frontend  →  http://localhost:3000 (reenvía /api/v1 al backend)
 cd ../frontend
 cp .env.example .env.local
 npm install
 npm run dev
 ```
 
-Earth Engine (humedad, verdor y suelo): `GEE_PROJECT=<id>` en `backend/.env` y `python -c "import ee; ee.Authenticate()"` una vez. datos.gov.co (IDEAM): un `DATOS_GOV_APP_TOKEN` evita los límites de consultas anónimas.
-
 ```bash
-cd backend && pytest           # incluye tests/test_arquitectura.py, que vigila las reglas de los módulos
+cd backend && ./mvnw test      # dominio, JWT y arquitectura (sin BD)
+cd backend && ./mvnw verify    # además la API completa contra PostgreSQL
 cd frontend && npm test
 ```
+
+La guía para proteger las rutas de un módulo nuevo con el JWT está en [backend/README.md](backend/README.md#cómo-proteger-las-rutas-de-un-módulo-nuevo).
 
 ## 9. Cómo trabajamos
 
 - `main` siempre funciona. Cada tarea va en una rama (`feat/rotacion-mcda`, `feat/alertas-ideam`, `migra/diagnostico`) y entra por Pull Request.
-- Una funcionalidad nueva vive en **un** módulo. Si toca dos, se comunican por la API pública del módulo (su `__init__.py`), nunca por sus capas internas.
+- Una funcionalidad nueva vive en **un** módulo. Si toca dos, se comunican por la API pública del módulo (su paquete raíz, como `co.surco.territorio.ConsultaTerritorio`), nunca por sus capas internas. `ArquitecturaTest` lo vigila.
+- Toda ruta nueva queda protegida con JWT sin hacer nada; para abrir una sin sesión hay que justificarlo en el PR.
 - Las decisiones importantes se registran en `docs/decisiones/NNNN-titulo.md` ([plantilla](docs/decisiones/0000-plantilla.md)); lo que se hizo en cada período, en `docs/bitacora/`.
 - Los textos para el agricultor van de **usted**, en palabras sencillas; los nombres técnicos (NASA SMAP, POWER, IDEAM) solo aparecen como fuente del dato.
 

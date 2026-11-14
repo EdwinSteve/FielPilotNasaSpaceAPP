@@ -1,0 +1,44 @@
+# Configuración de SURCO API. Los secretos llegan por variables de entorno (o backend/.env, ver .env.example).
+spring:
+  application:
+    name: surco-api
+  config:
+    # En desarrollo lee backend/.env (formato CLAVE=valor). En producción, variables de entorno reales.
+    import: optional:file:.env[.properties]
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/surco}
+    username: ${DATABASE_USER:surco}
+    password: ${DATABASE_PASSWORD:surco}
+  jpa:
+    open-in-view: false
+    hibernate:
+      # El esquema lo crean las migraciones de Flyway (src/main/resources/db/migration); JPA solo valida
+      ddl-auto: validate
+  jackson:
+    # JSON en snake_case: nombre_completo, access_token, expira_en...
+    property-naming-strategy: SNAKE_CASE
+
+server:
+  port: ${PORT:8080}
+  error:
+    include-message: never
+    include-stacktrace: never
+
+surco:
+  jwt:
+    secreto: ${JWT_SECRETO:}
+    emisor: surco-api
+    audiencia: surco-app
+    duracion-acceso: 15m
+    duracion-refresco: 30d
+  ingreso:
+    maximo-intentos: 5
+    duracion-bloqueo: 15m
+  cors:
+    origenes: ${CORS_ORIGENES:http://localhost:3000}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health

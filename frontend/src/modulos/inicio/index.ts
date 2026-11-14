@@ -1,2 +1,2 @@
 // API pública del módulo inicio: las páginas solo importan desde aquí.
-export {};
+export { InicioProvisional } from "./componentes/InicioProvisional";
