@@ -11,6 +11,8 @@ API REST de SURCO. Es un **monolito modular** con arquitectura hexagonal: cada p
 
 ## Cómo correrlo
 
+> Para levantar **toda la app** (base, API y frontend) con un solo comando, use `docker compose up --build` en la raíz del repositorio: ver [docs/docker.md](../docs/docker.md). Esta sección es para programar el backend con recarga.
+
 Requisitos: **Java 21** y **Docker** (para PostgreSQL). No hace falta instalar Maven: el proyecto trae `./mvnw`.
 
 ```bash
@@ -24,7 +26,7 @@ Flyway crea las tablas al arrancar. La API **no arranca** sin `JWT_SECRETO` o si
 
 | Variable | Por defecto | Qué es |
 |---|---|---|
-| `JWT_SECRETO` | — (obligatoria) | Clave HMAC para firmar los JWT. Una distinta por ambiente. Si cambia, todas las sesiones se cierran. |
+| `JWT_SECRETO` | — (obligatoria) | Clave HMAC para firmar los JWT. Una distinta por ambiente. Si cambia, todas las sesiones se cierran. También se puede entregar como archivo en `SURCO_SECRETOS` (así lo hace Docker Compose); la variable de entorno tiene prioridad. |
 | `DATABASE_URL` / `DATABASE_USER` / `DATABASE_PASSWORD` | `jdbc:postgresql://localhost:5432/surco` · `surco` · `surco` | Conexión a PostgreSQL |
 | `CORS_ORIGENES` | `http://localhost:3000` | Orígenes que pueden llamar a la API desde el navegador |
 | `PORT` | `8080` | Puerto HTTP |

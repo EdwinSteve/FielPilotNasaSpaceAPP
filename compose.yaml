@@ -1,0 +1,87 @@
+# SURCO completo con un solo comando:
+#
+#   docker compose up --build        → http://localhost:3000
+#
+# Levanta PostgreSQL, la API (Spring Boot) y el frontend (Next.js). La primera vez genera un
+# JWT_SECRETO aleatorio y lo guarda en el volumen "surco-secretos" (nunca en el repositorio);
+# los reinicios lo reutilizan, así las sesiones no se cierran.
+#
+#   docker compose down              → detiene todo (los datos y el secreto se conservan)
+#   docker compose down -v           → borra también la base de datos y el secreto
+#
+# Solo para desarrollo y demostración: en producción use un secreto propio (variable JWT_SECRETO,
+# que tiene prioridad) y una base administrada. Ver docs/docker.md.
+
+name: surco
+
+services:
+  # Genera el secreto del JWT una sola vez (64 bytes aleatorios en Base64, sin salto de línea).
+  secretos:
+    image: alpine:3.22
+    command:
+      - sh
+      - -c
+      - |
+        if [ -s /secretos/JWT_SECRETO ]; then
+          echo "JWT_SECRETO ya existe: se reutiliza"
+        else
+          head -c 64 /dev/urandom | base64 | tr -d '\n' > /secretos/JWT_SECRETO
+          echo "JWT_SECRETO generado"
+        fi
+        chown 10001 /secretos/JWT_SECRETO
+        chmod 400 /secretos/JWT_SECRETO
+    volumes:
+      - surco-secretos:/secretos
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: surco
+      POSTGRES_PASSWORD: surco
+      POSTGRES_DB: surco
+    volumes:
+      - surco-datos:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U surco -d surco"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  surco-api:
+    build: ./backend
+    environment:
+      DATABASE_URL: jdbc:postgresql://postgres:5432/surco
+      DATABASE_USER: surco
+      DATABASE_PASSWORD: surco
+      CORS_ORIGENES: http://localhost:3000
+      # Spring lee cada archivo de esta carpeta como una propiedad (configtree): JWT_SECRETO.
+      # No se define JWT_SECRETO aquí: una variable vacía tendría prioridad sobre el archivo
+      # y la API no arrancaría. Para usar un secreto propio, agréguelo en este bloque.
+      SURCO_SECRETOS: /run/secrets/surco
+    volumes:
+      - surco-secretos:/run/secrets/surco:ro
+    ports:
+      - "8080:8080"
+    depends_on:
+      secretos:
+        condition: service_completed_successfully
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+  surco-web:
+    build:
+      context: ./frontend
+      args:
+        # Next.js fija el destino del proxy /api/v1 al compilar: el nombre del servicio de la API
+        BACKEND_URL: http://surco-api:8080
+    ports:
+      - "3000:3000"
+    depends_on:
+      - surco-api
+    restart: unless-stopped
+
+volumes:
+  surco-datos:
+  surco-secretos:
