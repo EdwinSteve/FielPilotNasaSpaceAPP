@@ -1,26 +1,20 @@
 # Stage 1: BUILD
 FROM maven:3.9-eclipse-temurin-21 AS builder
 
+ARG APP_MODULE=infrastructure
+
 WORKDIR /build
+COPY . .
 
-COPY pom.xml .
-
-RUN mvn -B dependency:go-offline
-
-COPY src ./src
-
-RUN mvn -B clean package \
-    -DskipTests \
-    -Dcheckstyle.skip=true \
-    -Dspotbugs.skip=true
-
+RUN --mount=type=cache,target=/root/.m2 \
+    mvn -B -ntp -pl ${APP_MODULE} -am clean package -DskipTests
 
 RUN set -eux; \
-    JAR_FILE="$(find target -maxdepth 1 -type f -name '*.jar' \
-      ! -name '*-sources.jar' \
-      ! -name '*-javadoc.jar' | head -n 1)"; \
-    test -n "$JAR_FILE"; \
-    cp "$JAR_FILE" /app.jar
+    cp ${APP_MODULE}/target/backend-${APP_MODULE}-*.jar /tmp/application.jar; \
+    java -Djarmode=tools -jar /tmp/application.jar extract --layers --destination /tmp/extracted; \
+    for layer in dependencies spring-boot-loader snapshot-dependencies application; do \
+      mkdir -p "/tmp/extracted/$layer"; \
+    done
 
 # Stage 2: RUNTIME
 FROM eclipse-temurin:21-jre-jammy AS runtime
@@ -28,23 +22,24 @@ FROM eclipse-temurin:21-jre-jammy AS runtime
 LABEL org.opencontainers.image.title="Surco-backend"
 LABEL org.opencontainers.image.description="Spring Boot Hexagonal Modular Application"
 
-WORKDIR /app
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends curl \
+    && rm -rf /var/lib/apt/lists/* \
+    && groupadd --system --gid 10001 spring \
+    && useradd --system --uid 10001 --gid spring --no-create-home \
+       --shell /usr/sbin/nologin spring
 
-RUN groupadd --system spring \
-    && useradd --system \
-       --gid spring \
-       --home-dir /app \
-       --shell /usr/sbin/nologin \
-       spring
+WORKDIR /application
 
-COPY --from=builder --chown=spring:spring /app.jar ./app.jar
+COPY --from=builder /tmp/extracted/dependencies/ ./
+COPY --from=builder /tmp/extracted/spring-boot-loader/ ./
+COPY --from=builder /tmp/extracted/snapshot-dependencies/ ./
+COPY --from=builder /tmp/extracted/application/ ./
 
-ENV JAVA_OPTS="-XX:MaxRAMPercentage=75.0 \
-               -XX:+UseContainerSupport \
-               -Djava.security.egd=file:/dev/./urandom"
+ENV JAVA_TOOL_OPTIONS="-XX:MaxRAMPercentage=75.0 -XX:+ExitOnOutOfMemoryError"
 
 EXPOSE 8080
 
-USER spring:spring
+USER 10001:10001
 
-ENTRYPOINT ["sh", "-c", "exec java $JAVA_OPTS -jar app.jar"]
+ENTRYPOINT ["java", "-jar", "application.jar"]

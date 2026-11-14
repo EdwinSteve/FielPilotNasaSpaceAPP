@@ -1,11 +1,6 @@
-
 name: surco-app
 
 services:
-
-  # ==========================================================
-  # BACKEND - SPRING BOOT
-  # ==========================================================
   backend:
     build:
       context: .
@@ -34,13 +29,18 @@ services:
 
       SPRING_CONFIG_IMPORT: configtree:/run/secrets/
 
-      JAVA_TOOL_OPTIONS: >-
-        -XX:MaxRAMPercentage=75.0
-        -XX:+UseContainerSupport
-
     secrets:
       - source: db_password
         target: spring.datasource.password
+      - source: jwt_secret
+        target: app.security.jwt.secret
+
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8080/actuator/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
 
     security_opt:
       - no-new-privileges:true
@@ -55,7 +55,7 @@ services:
     tmpfs:
       - /tmp:rw,noexec,nosuid,size=64m,mode=1777
 
-    mem_limit: 512m
+    mem_limit: 768m
     cpus: 1.0
 
     logging:
@@ -70,10 +70,6 @@ services:
 
     stop_grace_period: 30s
 
-
-  # ==========================================================
-  # DATABASE - POSTGRESQL
-  # ==========================================================
   db:
     image: postgres:17-alpine
 
@@ -83,7 +79,6 @@ services:
       POSTGRES_DB: ${DB_NAME:-surco_db}
       POSTGRES_USER: ${DB_USER:-surco_user}
       POSTGRES_PASSWORD_FILE: /run/secrets/db_password
-
       PGDATA: /var/lib/postgresql/data/pgdata
 
     secrets:
@@ -104,6 +99,15 @@ services:
     security_opt:
       - no-new-privileges:true
 
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - DAC_OVERRIDE
+      - FOWNER
+      - SETGID
+      - SETUID
+
     pids_limit: 100
 
     mem_limit: 512m
@@ -121,32 +125,20 @@ services:
     stop_grace_period: 60s
 
 
-# ==========================================================
-# NETWORKS
-# ==========================================================
 networks:
-
-  # Backend: comunicación con el exterior y proxy inverso
   app_network:
     driver: bridge
 
-  # Comunicación privada entre backend y PostgreSQL
   data_network:
     driver: bridge
     internal: true
 
-
-# ==========================================================
-# VOLUMES
-# ==========================================================
 volumes:
   postgres_data:
     driver: local
 
-
-# ==========================================================
-# SECRETS
-# ==========================================================
 secrets:
   db_password:
     file: ./secrets/db_password.txt
+  jwt_secret:
+    file: ./secrets/jwt_secret.txt

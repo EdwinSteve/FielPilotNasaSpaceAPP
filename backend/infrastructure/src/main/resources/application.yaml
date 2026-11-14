@@ -1,3 +1,27 @@
 spring:
   application:
     name: backend
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+  mvc:
+    problemdetails:
+      enabled: true
+  lifecycle:
+    timeout-per-shutdown-phase: 25s
+
+app:
+  security:
+    jwt:
+      expiration: 2h
+      issuer: surco-backend
+
+server:
+  shutdown: graceful
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
