@@ -10,6 +10,7 @@ import java.time.Month;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -125,6 +126,47 @@ public class NasaPowerClient {
             }
         }
         return normal;
+    }
+
+    /** Un valor diario y el día al que corresponde. */
+    public record ValorDiario(LocalDate fecha, double valor) {}
+
+    /**
+     * Último valor diario disponible de cada parámetro pedido (por ejemplo radiación o humedad del suelo).
+     * Los días más recientes suelen llegar sin dato; un parámetro sin datos en 15 días no aparece.
+     */
+    public Map<String, ValorDiario> ultimosValores(double lat, double lon, String... parametros) {
+        LocalDate hoy = LocalDate.now(COLOMBIA);
+        Respuesta respuesta = http.get()
+                .uri(uri -> uri.path("/daily/point")
+                        .queryParam("parameters", String.join(",", parametros))
+                        .queryParam("community", "AG")
+                        .queryParam("latitude", String.format(Locale.ROOT, "%.4f", lat))
+                        .queryParam("longitude", String.format(Locale.ROOT, "%.4f", lon))
+                        .queryParam("start", hoy.minusDays(15).format(AAAAMMDD))
+                        .queryParam("end", hoy.format(AAAAMMDD))
+                        .queryParam("format", "JSON")
+                        .build())
+                .retrieve()
+                .body(Respuesta.class);
+
+        if (respuesta == null || respuesta.properties() == null
+                || respuesta.properties().parameter() == null) {
+            throw new IllegalStateException("NASA POWER respondió sin datos diarios");
+        }
+        Map<String, ValorDiario> ultimos = new HashMap<>();
+        respuesta.properties().parameter().forEach((parametro, serie) -> {
+            if (serie == null) {
+                return;
+            }
+            // Las fechas vienen como AAAAMMDD: el orden de texto es el orden cronológico.
+            serie.entrySet().stream()
+                    .filter(dia -> dia.getValue() != null && dia.getValue() > SIN_DATO)
+                    .max(Map.Entry.comparingByKey())
+                    .ifPresent(dia -> ultimos.put(parametro,
+                            new ValorDiario(LocalDate.parse(dia.getKey(), AAAAMMDD), dia.getValue())));
+        });
+        return ultimos;
     }
 
     private Map<String, Double> consultar(
