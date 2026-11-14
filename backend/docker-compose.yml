@@ -1,0 +1,152 @@
+
+name: surco-app
+
+services:
+
+  # ==========================================================
+  # BACKEND - SPRING BOOT
+  # ==========================================================
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP_MODULE: infrastructure
+
+    image: surco-backend:0.0.1
+
+    restart: unless-stopped
+    init: true
+
+    depends_on:
+      db:
+        condition: service_healthy
+
+    ports:
+      - "127.0.0.1:8080:8080"
+
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SERVER_PORT: 8080
+
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/${DB_NAME:-surco_db}
+      SPRING_DATASOURCE_USERNAME: ${DB_USER:-surco_user}
+
+      SPRING_CONFIG_IMPORT: configtree:/run/secrets/
+
+      JAVA_TOOL_OPTIONS: >-
+        -XX:MaxRAMPercentage=75.0
+        -XX:+UseContainerSupport
+
+    secrets:
+      - source: db_password
+        target: spring.datasource.password
+
+    security_opt:
+      - no-new-privileges:true
+
+    read_only: true
+
+    cap_drop:
+      - ALL
+
+    pids_limit: 100
+
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=64m,mode=1777
+
+    mem_limit: 512m
+    cpus: 1.0
+
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+    networks:
+      - app_network
+      - data_network
+
+    stop_grace_period: 30s
+
+
+  # ==========================================================
+  # DATABASE - POSTGRESQL
+  # ==========================================================
+  db:
+    image: postgres:17-alpine
+
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_DB: ${DB_NAME:-surco_db}
+      POSTGRES_USER: ${DB_USER:-surco_user}
+      POSTGRES_PASSWORD_FILE: /run/secrets/db_password
+
+      PGDATA: /var/lib/postgresql/data/pgdata
+
+    secrets:
+      - db_password
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - pg_isready -U "$$POSTGRES_USER" -d "$$POSTGRES_DB"
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+    security_opt:
+      - no-new-privileges:true
+
+    pids_limit: 100
+
+    mem_limit: 512m
+    cpus: 1.0
+
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+    networks:
+      - data_network
+
+    stop_grace_period: 60s
+
+
+# ==========================================================
+# NETWORKS
+# ==========================================================
+networks:
+
+  # Backend: comunicación con el exterior y proxy inverso
+  app_network:
+    driver: bridge
+
+  # Comunicación privada entre backend y PostgreSQL
+  data_network:
+    driver: bridge
+    internal: true
+
+
+# ==========================================================
+# VOLUMES
+# ==========================================================
+volumes:
+  postgres_data:
+    driver: local
+
+
+# ==========================================================
+# SECRETS
+# ==========================================================
+secrets:
+  db_password:
+    file: ./secrets/db_password.txt
