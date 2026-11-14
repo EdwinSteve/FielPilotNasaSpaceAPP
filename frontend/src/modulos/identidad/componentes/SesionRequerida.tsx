@@ -17,7 +17,7 @@ export function SesionRequerida({ children }: { children: (usuario: UsuarioSesio
         {error ? (
           <TarjetaError mensaje={error.mensaje} codigo={error.codigo} alReintentar={reintentar} />
         ) : (
-          <p role="status" className="text-center text-lg text-tinta-suave">
+          <p role="status" className="text-center text-[15px] text-tinta-suave">
             Cargando su cuenta…
           </p>
         )}

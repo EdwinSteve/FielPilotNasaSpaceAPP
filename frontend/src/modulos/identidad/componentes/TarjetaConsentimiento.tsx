@@ -1,6 +1,7 @@
 "use client";
 
 // Autorización del tratamiento de datos (Ley 1581 de 2012), con su estado de carga y de error.
+// Mismos estándares que los campos: borde de 1 px que se ve (borde-campo), radio de 10 px, rojo del diseño.
 import Link from "next/link";
 import { Spinner } from "@/compartido/ui";
 
@@ -20,21 +21,21 @@ const ID = "consentimiento-datos";
 export function TarjetaConsentimiento({ aceptada, alCambiar, version, cargando, errorCarga, alReintentar, error, disabled }: Props) {
   if (cargando) {
     return (
-      <div className="flex items-center gap-3 rounded-xl border-2 border-borde-campo bg-white/70 p-4 sm:p-5">
-        <Spinner className="h-5 w-5 text-campo" />
-        <span className="text-sm font-semibold text-tinta/80 sm:text-base">Cargando la política de datos...</span>
+      <div className="flex items-center gap-3 rounded-[10px] border border-borde-campo bg-white/70 p-4">
+        <Spinner className="h-5 w-5 text-verde-700" />
+        <span className="text-[14px] font-medium text-tinta-suave">Cargando la política de datos...</span>
       </div>
     );
   }
 
   if (errorCarga) {
     return (
-      <div role="alert" className="flex items-center justify-between gap-3 rounded-xl border-2 border-error bg-error-fondo p-4 sm:p-5">
-        <span className="text-sm font-semibold text-error">{errorCarga}</span>
+      <div role="alert" className="flex items-center justify-between gap-3 rounded-[10px] border border-roja-texto/25 bg-roja-fondo p-4">
+        <span className="text-[14px] font-medium text-roja-texto">{errorCarga}</span>
         <button
           type="button"
           onClick={alReintentar}
-          className="min-h-11 shrink-0 rounded-lg bg-error px-3 text-sm font-bold text-white hover:bg-error-oscuro"
+          className="min-h-11 shrink-0 rounded-[10px] bg-roja-texto px-3 text-[14px] font-semibold text-white hover:opacity-90"
         >
           Reintentar
         </button>
@@ -43,8 +44,10 @@ export function TarjetaConsentimiento({ aceptada, alCambiar, version, cargando, 
   }
 
   return (
-    <div className={`rounded-xl border-2 p-4 transition-colors sm:p-5 ${error ? "border-error bg-error-fondo" : "border-borde-campo bg-white"}`}>
-      <div className="flex items-start gap-3.5">
+    <div
+      className={`rounded-[10px] border p-4 transition-colors ${error ? "border-roja-texto bg-roja-fondo" : "border-borde-campo bg-white"}`}
+    >
+      <div className="flex items-start gap-3">
         <input
           id={ID}
           type="checkbox"
@@ -53,21 +56,21 @@ export function TarjetaConsentimiento({ aceptada, alCambiar, version, cargando, 
           onChange={(e) => alCambiar(e.target.checked)}
           aria-invalid={Boolean(error)}
           aria-describedby={error ? `${ID}-error` : undefined}
-          className="mt-1 h-7 w-7 min-w-7 shrink-0 cursor-pointer rounded-lg accent-campo"
+          className="mt-0.5 size-6 min-w-6 shrink-0 cursor-pointer accent-verde-700"
         />
-        <div className="text-left text-sm leading-relaxed text-tinta sm:text-base">
+        <div className="text-left text-[14px] leading-relaxed text-tinta">
           <label htmlFor={ID} className="cursor-pointer">
-            Autorizo el tratamiento de mis datos personales según la <strong className="text-campo">Ley 1581 de 2012</strong>{" "}
+            Autorizo el tratamiento de mis datos personales según la <strong className="font-semibold">Ley 1581 de 2012</strong>{" "}
             {version ? `(versión ${version}) ` : ""}
             solo para recibir recomendaciones agroclimáticas y alertas de mi finca.
           </label>{" "}
-          <Link href="/politica-de-datos" target="_blank" className="font-bold text-campo underline hover:text-campo-oscuro">
+          <Link href="/politica-de-datos" target="_blank" className="font-semibold text-verde-700 underline hover:text-verde-900">
             Ver política de datos
           </Link>
         </div>
       </div>
       {error && (
-        <span id={`${ID}-error`} aria-live="polite" className="mt-2.5 block text-left text-sm font-semibold text-error">
+        <span id={`${ID}-error`} aria-live="polite" className="mt-2.5 block text-left text-[13px] font-medium text-roja-texto">
           {error}
         </span>
       )}

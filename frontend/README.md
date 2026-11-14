@@ -14,6 +14,24 @@ src/
 - `tipos.ts` refleja los DTOs del backend (JSON en snake_case); si el backend cambia, se cambia ahí primero.
 - Textos al agricultor: de **usted**, sencillos; el nombre de la fuente NASA va en un chip aparte.
 
+## Sistema visual
+
+Toda la app usa un solo sistema, el del diseño de Figma. Los tokens están en [`src/app/globals.css`](src/app/globals.css), con los estándares en el comentario de arriba. **No agregue colores sueltos** (`#hex`, `text-green-700`): use los tokens.
+
+| Elemento | Clases |
+|---|---|
+| Fondo de página | `bg-fondo` |
+| Tarjeta | `rounded-2xl border border-borde bg-white` |
+| Botón principal / secundario | `CLASE_BOTON_PRINCIPAL` / `CLASE_BOTON_SECUNDARIO` de `@/compartido/ui` (también sirven en `<Link>`) |
+| Campos de formulario | `CampoTexto`, `CampoCelular`, `CampoContrasena`, `CampoSelector` de `@/compartido/ui` |
+| Título de pantalla | `text-[22px] font-bold md:text-[24px] 2xl:text-[30px]` |
+| Texto secundario | `text-tinta-suave` |
+| Resaltado o chip | `bg-verde-100 text-verde-700` |
+| Error | `text-roja-texto` sobre `bg-roja-fondo` |
+| Marca (logo + nombre) | `<Marca />`; el nombre vive en `NOMBRE_APP` (`compartido/ui/Marca.tsx`) |
+
+Los campos usan `border-borde-campo` y no `border-borde`: el borde decorativo de Figma tiene 1,25:1 de contraste y un campo necesita 3:1 (WCAG 1.4.11) para que se vea dónde escribir.
+
 ## Conexión con el backend
 
 No hay datos simulados: todo va contra la API de Spring Boot (`backend/`). En desarrollo, Next.js reenvía `/api/v1/*` a `BACKEND_URL` (por defecto `http://localhost:8080`, ver `next.config.ts`), así el navegador llama al mismo origen y no hace falta CORS.

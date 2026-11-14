@@ -1,16 +1,20 @@
 "use client";
 
-// Campos de formulario de SURCO: grandes (56 px), con etiqueta, ayuda y error accesibles.
+// Campos de formulario con los estándares del diseño de Figma: bordes de 1 px, esquinas de 10 px,
+// etiquetas en tinta seminegrita y foco verde. Dos decisiones de accesibilidad:
+// - 48 px de alto: blanco cómodo para el pulgar.
+// - Texto de 16 px: con menos, el iPhone hace zoom al tocar el campo.
 import { useState, type InputHTMLAttributes, type ReactNode } from "react";
 import { IconoAlerta, Spinner } from "./iconos";
 
 export function claseEntrada(error: string | undefined, bloqueado = false): string {
   return [
-    "w-full min-h-14 h-14 px-4 rounded-xl text-lg font-semibold text-tinta border-2 outline-none transition-all",
-    bloqueado ? "bg-arena-oscura cursor-not-allowed opacity-80" : "bg-white",
+    "h-12 w-full rounded-[10px] border px-[14px] text-[16px] font-medium text-tinta outline-none transition-colors",
+    "placeholder:font-normal placeholder:text-tinta-suave",
+    bloqueado ? "cursor-not-allowed bg-fondo text-tinta-suave" : "bg-white",
     error
-      ? "border-error focus:ring-2 focus:ring-error/20"
-      : "border-borde-campo focus:border-campo focus:ring-2 focus:ring-campo/20",
+      ? "border-roja-texto focus:ring-2 focus:ring-roja-texto/20"
+      : "border-borde-campo focus:border-verde-700 focus:ring-2 focus:ring-verde-500/25",
   ].join(" ");
 }
 
@@ -24,10 +28,10 @@ interface PropsEtiqueta {
 
 export function Etiqueta({ htmlFor, texto, obligatorio, opcional, extra }: PropsEtiqueta) {
   return (
-    <label htmlFor={htmlFor} className="mb-1.5 flex items-center justify-between text-base font-bold text-tinta sm:text-lg">
+    <label htmlFor={htmlFor} className="mb-1.5 flex items-center justify-between text-[14px] font-semibold text-tinta">
       <span>
-        {texto} {obligatorio && <span className="text-error">*</span>}
-        {opcional && <span className="text-sm font-semibold text-tinta/60">(opcional)</span>}
+        {texto} {obligatorio && <span className="text-roja-texto">*</span>}
+        {opcional && <span className="text-[13px] font-normal text-tinta-suave">(opcional)</span>}
       </span>
       {extra}
     </label>
@@ -45,8 +49,8 @@ interface PropsAyuda {
 export function AyudaCampo({ id, error, ayuda, accion }: PropsAyuda) {
   if (error) {
     return (
-      <div id={`${id}-error`} aria-live="polite" className="mt-1.5 flex items-start gap-1.5 text-sm font-semibold text-error">
-        <IconoAlerta className="mt-0.5 h-4 w-4" />
+      <div id={`${id}-error`} aria-live="polite" className="mt-1.5 flex items-start gap-1.5 text-[13px] font-medium text-roja-texto">
+        <IconoAlerta className="mt-px h-4 w-4" />
         <span>
           {error}
           {accion}
@@ -55,7 +59,7 @@ export function AyudaCampo({ id, error, ayuda, accion }: PropsAyuda) {
     );
   }
   return ayuda ? (
-    <span id={`${id}-ayuda`} className="mt-1.5 text-sm text-tinta/70">
+    <span id={`${id}-ayuda`} className="mt-1.5 text-[13px] text-tinta-suave">
       {ayuda}
     </span>
   ) : null;
@@ -113,7 +117,7 @@ export function CampoCelular({ id, valor, alCambiar, error, ayuda, disabled, acc
     <div className="flex w-full flex-col text-left">
       <Etiqueta htmlFor={id} texto="Número de celular" obligatorio />
       <div className="relative flex items-center">
-        <span className="pointer-events-none absolute left-3 border-r-2 border-borde-campo pr-3 text-base font-extrabold text-tinta sm:text-lg">
+        <span className="pointer-events-none absolute left-[14px] border-r border-borde-campo pr-3 text-[16px] font-semibold text-tinta">
           +57
         </span>
         <input
@@ -127,7 +131,7 @@ export function CampoCelular({ id, valor, alCambiar, error, ayuda, disabled, acc
           placeholder="314 000 0000"
           aria-invalid={Boolean(error)}
           aria-describedby={describidoPor(id, error, ayuda)}
-          className={`${claseEntrada(error, disabled)} pl-[72px]`}
+          className={`${claseEntrada(error, disabled)} pl-[68px]`}
         />
       </div>
       <AyudaCampo id={id} error={error} ayuda={ayuda} accion={accionError} />
@@ -162,14 +166,14 @@ export function CampoContrasena({ id, valor, alCambiar, error, ayuda, disabled, 
           placeholder={placeholder}
           aria-invalid={Boolean(error)}
           aria-describedby={describidoPor(id, error, ayuda)}
-          className={`${claseEntrada(error, disabled)} pr-[84px]`}
+          className={`${claseEntrada(error, disabled)} pr-[76px]`}
         />
         <button
           type="button"
           onClick={() => setVisible((v) => !v)}
           aria-pressed={visible}
           aria-label={visible ? "Ocultar contraseña" : "Mostrar contraseña"}
-          className="absolute top-1/2 right-2 min-h-11 -translate-y-1/2 px-3 font-bold text-campo underline"
+          className="absolute top-1/2 right-1 min-h-10 -translate-y-1/2 rounded-[8px] px-3 text-[14px] font-semibold text-verde-700 hover:bg-verde-100"
         >
           {visible ? "Ocultar" : "Ver"}
         </button>
@@ -222,7 +226,7 @@ export function CampoSelector({
         obligatorio={obligatorio}
         extra={
           cargando && (
-            <span className="flex items-center gap-1.5 text-xs font-semibold text-campo">
+            <span className="flex items-center gap-1.5 text-[12px] font-medium text-verde-700">
               <Spinner className="h-3.5 w-3.5" /> Cargando...
             </span>
           )
@@ -248,13 +252,13 @@ export function CampoSelector({
           ))}
         </select>
         <svg
-          className="pointer-events-none absolute top-1/2 right-4 h-5 w-5 -translate-y-1/2 text-tinta/60"
+          className="pointer-events-none absolute top-1/2 right-[14px] h-5 w-5 -translate-y-1/2 text-tinta-suave"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
           aria-hidden="true"
         >
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 9l-7 7-7-7" />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
         </svg>
       </div>
       <AyudaCampo
@@ -263,7 +267,7 @@ export function CampoSelector({
         ayuda={ayuda}
         accion={
           alReintentar && (
-            <button type="button" onClick={alReintentar} className="ml-1 font-black text-campo underline">
+            <button type="button" onClick={alReintentar} className="ml-1 font-semibold text-verde-700 underline">
               Reintentar
             </button>
           )

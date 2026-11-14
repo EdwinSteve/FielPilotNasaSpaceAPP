@@ -43,7 +43,7 @@ class AutenticacionIT {
 	static final String REGISTRO = """
 		{"nombre_completo": "Ana Perdomo", "celular": "300 123 4567", "correo": "ana@correo.co",
 		 "contrasena": "MiFinca2026", "municipio_residencia": "52356", "acepta_politica": true,
-		 "version_politica": "1.0"}""";
+		 "version_politica": "1.1"}""";
 
 	@Autowired
 	MockMvc http;
@@ -84,7 +84,8 @@ class AutenticacionIT {
 		void saludPoliticaYTerritorioNoPidenToken() throws Exception {
 			http.perform(get("/api/v1/health")).andExpect(status().isOk()).andExpect(jsonPath("$.status").value("ok"));
 			http.perform(get("/api/v1/politicas/vigente")).andExpect(status().isOk())
-				.andExpect(jsonPath("$.version").value("1.0"))
+				.andExpect(jsonPath("$.version").value("1.1"))
+				.andExpect(jsonPath("$.contenido").value(startsWith("Field Shift")))
 				.andExpect(jsonPath("$.url_texto").value("/politica-de-datos"));
 			http.perform(get("/api/v1/territorio/departamentos")).andExpect(status().isOk())
 				.andExpect(jsonPath("$", hasSize(33)));
@@ -169,7 +170,7 @@ class AutenticacionIT {
 			assertThat(bd.queryForObject("select count(*) from identidad.sesiones where hash_token = ?", Integer.class,
 				refreshRegistro)).isZero();
 			assertThat(bd.queryForObject("select version_politica from identidad.consentimientos", String.class))
-				.isEqualTo("1.0");
+				.isEqualTo("1.1");
 
 			// Login y perfil con el access token
 			String tokens = login("MiFinca2026");
@@ -249,7 +250,7 @@ class AutenticacionIT {
 			postJson("/api/v1/auth/registro", REGISTRO.replace("52356", "99999"))
 				.andExpect(status().isBadRequest())
 				.andExpect(jsonPath("$.details[0].field").value("municipio_residencia"));
-			postJson("/api/v1/auth/registro", REGISTRO.replace("\"version_politica\": \"1.0\"", "\"version_politica\": \"0.1\""))
+			postJson("/api/v1/auth/registro", REGISTRO.replace("\"version_politica\": \"1.1\"", "\"version_politica\": \"1.0\""))
 				.andExpect(status().isConflict()).andExpect(jsonPath("$.code").value("POLITICA_DESACTUALIZADA"));
 		}
 

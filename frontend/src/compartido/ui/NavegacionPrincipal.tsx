@@ -3,6 +3,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { Icono } from "./Icono";
+import { NOMBRE_APP } from "./Marca";
 
 export type SeccionNav = "inicio" | "terreno" | "rotacion" | "alertas";
 
@@ -33,7 +34,7 @@ export function NavegacionPrincipal({ activa, usuario, loteId, alertasPendientes
             <span className="rounded-[10px] bg-verde-500 p-[11px] 2xl:p-2">
               <Icono nombre="sprout-blanco" />
             </span>
-            <span className="hidden text-[20px] font-bold text-white 2xl:block">Field Shift</span>
+            <span className="hidden text-[20px] font-bold text-white 2xl:block">{NOMBRE_APP}</span>
           </div>
           <nav aria-label="Principal" className="flex flex-col gap-[6px] 2xl:gap-1">
             {secciones.map((s) => {

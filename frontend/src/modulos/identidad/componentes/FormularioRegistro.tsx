@@ -116,7 +116,7 @@ export function FormularioRegistro({ alRegistrarse }: Props) {
       pie={
         <>
           ¿Ya tiene cuenta?{" "}
-          <Link href="/ingresar" className="font-black text-campo underline">
+          <Link href="/ingresar" className="font-semibold text-verde-700 underline hover:text-verde-900">
             Ingresar
           </Link>
         </>
@@ -153,7 +153,7 @@ export function FormularioRegistro({ alRegistrarse }: Props) {
             disabled={enviando}
             accionError={
               celularDuplicado && (
-                <Link href="/ingresar" className="ml-1 font-black text-campo underline">
+                <Link href="/ingresar" className="ml-1 font-semibold text-verde-700 underline">
                   Ingresar aquí
                 </Link>
               )

@@ -4,7 +4,7 @@
 import Link from "next/link";
 import { useState, type FormEvent } from "react";
 import { aErrorApi, type ErrorApi } from "@/compartido/api/tipos";
-import { AvisoExito, BotonPrincipal, CampoCelular, CampoContrasena, TarjetaError } from "@/compartido/ui";
+import { AvisoExito, BotonPrincipal, CampoCelular, CampoContrasena, NOMBRE_APP, TarjetaError } from "@/compartido/ui";
 import { iniciarSesion } from "../api";
 import { CODIGOS, type DatosIngreso, type ErroresFormulario } from "../tipos";
 import { sinErrores, validarIngreso } from "../validaciones";
@@ -53,12 +53,12 @@ export function FormularioIngreso({ alIngresar }: Props) {
 
   return (
     <MarcoAutenticacion
-      titulo="Ingrese a SURCO"
+      titulo={`Ingrese a ${NOMBRE_APP}`}
       subtitulo="Use el celular y la contraseña con que creó su cuenta."
       pie={
         <>
           ¿Aún no tiene cuenta?{" "}
-          <Link href="/registro" className="font-black text-campo underline">
+          <Link href="/registro" className="font-semibold text-verde-700 underline hover:text-verde-900">
             Crear mi cuenta
           </Link>
         </>

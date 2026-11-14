@@ -1,19 +1,29 @@
 @import "tailwindcss";
 
 /*
- * Paleta y tipografía de SURCO.
- * Base: el diseño de Figma ("Inicio agricultor"): Inter, fondo, verdes y colores de alerta.
- * Más los tokens de las pantallas de registro e ingreso (campo, crema, arena, error...).
+ * Sistema visual único de Field Shift, tomado del diseño de Figma ("Inicio agricultor").
+ * Todas las pantallas usan solo estos tokens: no agregue colores sueltos en los componentes.
+ *
+ * Estándares:
+ *   Fondo de página   bg-fondo
+ *   Tarjeta           bg-white, rounded-2xl, border border-borde
+ *   Botón principal   bg-verde-700 (hover verde-900), rounded-[10px], font-semibold
+ *   Botón secundario  bg-white, border border-borde, rounded-[10px]
+ *   Campo de texto    border border-borde-campo, rounded-[10px], foco verde-700
+ *   Título            text-tinta font-bold (22 / 24 / 30 px según el tamaño de pantalla)
+ *   Texto secundario  text-tinta-suave
+ *   Resaltado / chip  bg-verde-100 con text-verde-700
+ *   Error             text-roja-texto sobre bg-roja-fondo
  */
 @theme inline {
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  /* Una sola tipografía en toda la app: los títulos usan Inter en negrita */
-  --font-titulo: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 
-  /* --- Diseño de Figma --- */
   --color-fondo: #f3f5ef;
   /* Borde decorativo de tarjetas */
   --color-borde: #e3e8dd;
+  /* Borde de los campos de formulario: 3,5:1 sobre blanco (WCAG 1.4.11 pide 3:1 en controles).
+     El --color-borde (1,25:1) es decorativo y no sirve para ver dónde se escribe. */
+  --color-borde-campo: #7c8c81;
   --color-tinta: #12241a;
   --color-tinta-suave: #5b6b60;
 
@@ -33,23 +43,6 @@
   --color-roja-texto: #b91c1c;
   --color-roja-fondo: #fee2e2;
   --color-apagado: #a9b3ab;
-
-  /* --- Registro e ingreso --- */
-  --color-campo: #1f4d2b;
-  --color-campo-oscuro: #16381f;
-  --color-hoja: #6dbe7a;
-  --color-sol: #e8833a;
-  --color-agua: #4a90c8;
-  --color-suelo: #8b5e34;
-  --color-crema: #f7f3ea;
-  --color-arena: #e8e1d3;
-  --color-arena-oscura: #ede7da;
-  /* Borde de los campos de formulario: 3,5:1 sobre blanco (WCAG 1.4.11 pide 3:1 en controles).
-     El --color-borde de Figma (1,25:1) es decorativo y no sirve para saber dónde escribir. */
-  --color-borde-campo: #7c8c81;
-  --color-error: #d94f4f;
-  --color-error-oscuro: #b93838;
-  --color-error-fondo: #fff5f5;
 }
 
 body {
