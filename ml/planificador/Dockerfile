@@ -1,6 +1,9 @@
 # Servidor del planificador estacional (modelo ONNX en CPU) para el backend.
+# Se construye desde la RAÍZ del repositorio, porque también necesita el catálogo de cultivos
+# (data/catalogo_cultivos/datos/cultivos.json). Qué entra a la imagen lo decide /.dockerignore.
+#   docker build -f ml/planificador/Dockerfile -t surco-planificador .
 #   docker compose up --build surco-planificador      (ver compose.yaml en la raíz)
-# El catálogo de cultivos llega por el contexto adicional "catalogo" (data/catalogo_cultivos/datos).
+# En Render lo construye el servicio field-shift-planificador de render.yaml.
 
 FROM python:3.12-slim
 # rasterio (SoilGrids) trae GDAL en su wheel, pero enlaza contra libexpat del sistema, que la imagen slim
@@ -12,19 +15,21 @@ ENV UV_COMPILE_BYTECODE=1 UV_LINK_MODE=copy UV_PYTHON_DOWNLOADS=never PYTHONUTF8
 WORKDIR /app/ml/planificador
 
 # Dependencias primero (capa en caché): núcleo + "datos" (rasterio para SoilGrids), sin torch ni dev
-COPY pyproject.toml uv.lock ./
+COPY ml/planificador/pyproject.toml ml/planificador/uv.lock ./
 RUN uv sync --locked --no-dev --extra datos --no-install-project
 
-COPY surco_planificador surco_planificador
-COPY configs configs
-COPY modelos modelos
-COPY --from=catalogo cultivos.json /app/data/catalogo_cultivos/datos/cultivos.json
+COPY ml/planificador/surco_planificador surco_planificador
+COPY ml/planificador/configs configs
+COPY ml/planificador/modelos modelos
+COPY data/catalogo_cultivos/datos/cultivos.json /app/data/catalogo_cultivos/datos/cultivos.json
 RUN uv sync --locked --no-dev --extra datos
 
-# Sin privilegios; la caché de POWER/SoilGrids va en el volumen /datos
+# Sin privilegios; la caché de POWER/SoilGrids va en /datos (volumen en Docker Compose)
 RUN useradd --uid 10002 --create-home planificador && mkdir -p /datos && chown planificador /datos
 USER 10002
+# Escucha en $PORT si la plataforma lo define (Render), si no en 8090
+ENV PORT=8090
 EXPOSE 8090
 HEALTHCHECK --interval=30s --timeout=5s --start-period=20s \
-  CMD ["/app/ml/planificador/.venv/bin/python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8090/salud')"]
-CMD ["/app/ml/planificador/.venv/bin/python", "-m", "surco_planificador.servidor", "--puerto", "8090"]
+  CMD ["/app/ml/planificador/.venv/bin/python", "-c", "import os, urllib.request; urllib.request.urlopen(f\"http://localhost:{os.environ.get('PORT', '8090')}/salud\")"]
+CMD ["sh", "-c", "exec /app/ml/planificador/.venv/bin/python -m surco_planificador.servidor --puerto \"$PORT\""]

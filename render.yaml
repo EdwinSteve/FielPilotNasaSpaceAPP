@@ -1,0 +1,93 @@
+# Despliegue en Render (Blueprint). Cómo usarlo: docs/despliegue-render.md
+#
+#   field-shift-db             PostgreSQL 16
+#   field-shift-planificador   modelo estacional (Python)       ml/planificador/Dockerfile, contexto: raíz
+#   field-shift-api            API Spring Boot                  backend/Dockerfile
+#   field-shift-web            frontend Next.js (lo que se abre) frontend/Dockerfile
+#
+# El navegador solo habla con field-shift-web; este reenvía /api/v1 a la API (BACKEND_URL) y la API
+# llama al planificador (PLANIFICADOR_URL).
+#
+# Plan gratuito: los servicios free no reciben tráfico por la red privada de Render, así que
+# BACKEND_URL y PLANIFICADOR_URL son las URL públicas https://<servicio>.onrender.com. Render las
+# pide al crear el Blueprint (sync: false), igual que JWT_SECRETO. Con planes de pago se pueden
+# cambiar por la red privada; ver docs/despliegue-render.md.
+
+databases:
+  - name: field-shift-db
+    plan: free # vence a los 30 días; para conservar los datos, pase a basic-256mb
+    region: virginia
+    postgresMajorVersion: "16"
+    databaseName: surco
+    user: surco
+
+services:
+  - type: web
+    name: field-shift-planificador
+    runtime: docker
+    plan: free
+    region: virginia
+    dockerfilePath: ./ml/planificador/Dockerfile
+    dockerContext: .
+    healthCheckPath: /salud
+    envVars:
+      # bf: oráculo sobre el pronóstico (la red no le gana, MODELO.md); red: la red ONNX
+      - key: SURCO_MOTOR
+        value: bf
+
+  - type: web
+    name: field-shift-api
+    runtime: docker
+    plan: free
+    region: virginia
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    healthCheckPath: /actuator/health
+    envVars:
+      # La base por partes: application.yml arma la URL JDBC (la de Render es postgres://, no sirve)
+      - key: DATABASE_HOST
+        fromDatabase:
+          name: field-shift-db
+          property: host
+      - key: DATABASE_PORT
+        fromDatabase:
+          name: field-shift-db
+          property: port
+      - key: DATABASE_NAME
+        fromDatabase:
+          name: field-shift-db
+          property: database
+      - key: DATABASE_USER
+        fromDatabase:
+          name: field-shift-db
+          property: user
+      - key: DATABASE_PASSWORD
+        fromDatabase:
+          name: field-shift-db
+          property: password
+      # 64+ caracteres (generateValue de Render da menos): openssl rand -base64 48
+      - key: JWT_SECRETO
+        sync: false
+      # URL pública del planificador, p. ej. https://field-shift-planificador.onrender.com
+      - key: PLANIFICADOR_URL
+        sync: false
+      # 512 MB en el plan gratuito: menos heap y un GC de un solo hilo
+      - key: JAVA_TOOL_OPTIONS
+        value: -XX:MaxRAMPercentage=60 -XX:+UseSerialGC -Xss512k
+      # El navegador no llama a la API directamente (pasa por field-shift-web), pero por si acaso
+      - key: CORS_ORIGENES
+        value: https://field-shift-web.onrender.com
+
+  - type: web
+    name: field-shift-web
+    runtime: docker
+    plan: free
+    region: virginia
+    dockerfilePath: ./frontend/Dockerfile
+    dockerContext: ./frontend
+    healthCheckPath: /
+    envVars:
+      # URL pública de la API, p. ej. https://field-shift-api.onrender.com. Se usa al COMPILAR
+      # (next build): si cambia, haga "Manual Deploy > Clear build cache & deploy" de este servicio.
+      - key: BACKEND_URL
+        sync: false

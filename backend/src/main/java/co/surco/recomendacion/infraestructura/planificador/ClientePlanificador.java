@@ -48,8 +48,17 @@ class ClientePlanificador implements MotorPlanificador {
 		fabrica.setConnectTimeout(Duration.ofSeconds(5));
 		// La primera consulta de una zona baja NASA POWER y SoilGrids: puede tardar 1-3 minutos
 		fabrica.setReadTimeout(tiempoMaximo);
-		this.http = builder.baseUrl(url).requestFactory(fabrica).build();
+		this.http = builder.baseUrl(urlBase(url)).requestFactory(fabrica).build();
 		this.json = json;
+	}
+
+	/**
+	 * Acepta "https://planificador.onrender.com" o "host:puerto" de una red privada (Render, Docker), que llega
+	 * sin esquema: entonces se asume http. Quita la barra final.
+	 */
+	static String urlBase(String url) {
+		String limpia = url.strip().replaceAll("/+$", "");
+		return limpia.matches("(?i)^https?://.*") ? limpia : "http://" + limpia;
 	}
 
 	@Override
