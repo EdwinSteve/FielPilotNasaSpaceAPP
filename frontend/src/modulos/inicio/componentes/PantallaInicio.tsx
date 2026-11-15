@@ -16,20 +16,25 @@ export interface AccionesUsuario {
 }
 
 export function PantallaInicio({ resumen, acciones }: { resumen: ResumenInicio; acciones?: AccionesUsuario }) {
-  const rutaRotacion = `/lotes/${resumen.lote.id}/rotacion`;
+  const rutaRotacion = `/lotes/${resumen.loteId}/rotacion`;
 
   return (
     <div className="min-h-screen md:flex">
       <NavegacionPrincipal
         activa="inicio"
         usuario={resumen.usuario}
-        loteId={resumen.lote.id}
+        loteId={resumen.loteId}
         alertasPendientes={resumen.alertasPendientes}
         accionUsuario={acciones?.lateral}
       />
       <main className="flex min-w-0 flex-1 flex-col gap-[14px] p-4 pb-[82px] md:gap-[18px] md:p-6 2xl:min-h-screen 2xl:gap-6 2xl:px-10 2xl:py-8">
         <Encabezado resumen={resumen} accionMovil={acciones?.movil} />
-        <BannerClima lote={resumen.lote} clima={resumen.clima} alerta={resumen.alertaDestacada} />
+        <BannerClima
+          ubicacion={resumen.ubicacion}
+          clima={resumen.clima}
+          alerta={resumen.alertaDestacada}
+          sinAlertas={resumen.sinAlertas}
+        />
 
         <h2 className="text-[16px] font-semibold md:hidden">Métricas del terreno</h2>
         <section

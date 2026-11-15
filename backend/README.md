@@ -7,6 +7,7 @@ API REST de SURCO. Es un **monolito modular** con arquitectura hexagonal: cada p
 | `compartido` | ✅ | Seguridad JWT, formato de errores, salud. No tiene negocio. |
 | `identidad` | ✅ | Registro, login, refresh, logout, perfil y política de datos |
 | `territorio` | ✅ | 33 departamentos y 1.122 municipios de Colombia (DIVIPOLA del DANE) |
+| `clima` | ✅ | Tiempo de hoy, pronóstico de 7 días y avisos de un punto (Open-Meteo, NASA POWER, IDEAM) para la pantalla de inicio |
 | `fincas`, `diagnostico`, `catalogo`, `recomendacion`, `rotacion`, `alertas` | ⏳ | Por construir; cada paquete tiene un `package-info.java` con su responsabilidad |
 
 ## Cómo correrlo
@@ -47,6 +48,7 @@ Las duraciones (`surco.jwt.duracion-acceso: 15m`, `duracion-refresco: 30d`) y el
 | POST | `/auth/logout` | pública (refresh token) | 204. Cierra esta sesión |
 | POST | `/auth/logout-todo` | **Bearer** | 204. Cierra todas las sesiones del usuario |
 | GET | `/usuarios/me` | **Bearer** | Perfil del usuario de la sesión |
+| GET | `/clima/resumen?municipio=41001` | **Bearer** | Tiempo actual, pronóstico de 7 días, datos de NASA POWER y avisos. Con `&lat=..&lon=..` usa el punto del terreno · 503 `CLIMA_NO_DISPONIBLE` |
 
 ```jsonc
 // POST /auth/registro
