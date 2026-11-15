@@ -229,7 +229,7 @@ class Motor:
         """Lo que la rotación necesita del catálogo: familia botánica y nitrógeno que deja."""
         f = self.fichas[cultivo]
         return {"familia": f.familia, "fija_nitrogeno": f.fija_nitrogeno,
-                "fijacion_n_kg_ha": self.fijacion.get(cultivo) if f.fija_nitrogeno else None}  # fmt: skip
+                "fijacion_nitrogeno_kg_ha": self.fijacion.get(cultivo) if f.fija_nitrogeno else None}  # fmt: skip
 
     def _panorama(self, diario: F32, inicio: date, desde: date, lote: Lote) -> list[dict[str, object]]:
         """Lluvia y temperatura esperadas por bloques de 30 días desde `desde`, frente a lo normal."""
