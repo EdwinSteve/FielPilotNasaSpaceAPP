@@ -3,7 +3,7 @@
 #   docker run -p 8080:8080 -e JWT_SECRETO=... -e DATABASE_URL=jdbc:postgresql://host:5432/surco surco-api
 
 # --- Compilación ---
-FROM eclipse-temurin:21-jdk AS compilacion
+FROM eclipse-temurin:24-jdk AS compilacion
 WORKDIR /app
 # Primero solo lo que define las dependencias: Docker reutiliza esta capa mientras pom.xml no cambie
 COPY .mvn .mvn
@@ -13,7 +13,7 @@ COPY src src
 RUN ./mvnw -B -ntp -DskipTests package && cp target/surco-api-*.jar app.jar
 
 # --- Ejecución: solo el JRE y el jar, con un usuario sin privilegios ---
-FROM eclipse-temurin:21-jre
+FROM eclipse-temurin:24-jre
 RUN useradd --system --uid 10001 --no-create-home surco
 WORKDIR /app
 COPY --from=compilacion /app/app.jar app.jar
