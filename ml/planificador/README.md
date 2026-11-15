@@ -114,6 +114,52 @@ ranking = plan.recomendar(lote, diario, inicio=date(2026, 11, 1), siembra=date(2
 Solo necesita `numpy`, `pyyaml` y `onnxruntime` (las dependencias base del paquete). Si
 `model_int8.onnx` pasó la prueba al exportar, se usa automáticamente.
 
+### 4.1 Microservicio HTTP (lo que usa el backend)
+
+`python -m surco_planificador.servidor --puerto 8090` (servicio `surco-planificador` de
+`compose.yaml`; solo lo llama la API, sin puerto publicado). Biblioteca estándar, sin FastAPI.
+
+| Ruta | Qué hace |
+|---|---|
+| `GET /salud` | `{"estado": "ok", "modelo": "planificador-2026-11-15", "motor": "bf"}`; lo usa el healthcheck |
+| `POST /planificar` | `{"lat", "lon", "riego", "siembra"?}` → panorama de lluvia, ranking por fecha de siembra, mejor ciclo, `historico` y `motor` |
+
+Errores `{"code", "message"}`: 400 solicitud inválida o fuera de Colombia; 422
+`PLANIFICADOR_TERRENO_SIN_SUELO` (SoilGrids sin perfil cerca) o `PLANIFICADOR_MES_NO_ENTRENADO`;
+502 `PLANIFICADOR_FUENTE_CAIDA` con `"fuente"` (NASA POWER, SoilGrids, Open-Meteo o NOAA).
+
+**Latencias.** La primera consulta de una zona descarga NASA POWER desde 1981, la elevación y
+SoilGrids: 1 a 3 minutos según la red (el backend espera hasta 180 s). Con esos datos en la caché de
+disco (`HttpCache`, volumen `/datos`), una consulta nueva tarda unos 3 s en CPU (medido en Neiva: 2,7 s,
+incluida la tabla `historico`). La misma consulta del mismo día sale de la caché de respuestas
+(memoria y disco, `crudo/servicio/planes`) en milisegundos, también después de un reinicio.
+
+**Motor: Bf, no la red.** `SURCO_MOTOR=bf` (por defecto) puntúa con el oráculo agronómico sobre cada
+miembro del pronóstico corregido (el baseline Bf de `evaluar.py`); `SURCO_MOTOR=red` usa la red ONNX.
+La red no pasó la regla de adopción (ganarle a B0 y a Bf en pinball **y** NDCG@3). En la prueba
+2020-2025 del bundle `planificador-2026-11-15`:
+
+| | red | Bf | mejor |
+|---|---|---|---|
+| pinball del rendimiento | 0,01293 | **0,01239** | Bf |
+| cobertura p10-p90 (ideal 0,80) | 0,751 | **0,840** | Bf: la red da intervalos muy estrechos |
+| ECE de P(éxito) | 0,0215 | **0,0137** | Bf: probabilidades mejor calibradas |
+| NDCG@3 | **0,9617** | 0,9597 | red, por 0,002 |
+| acierto del primer lugar | **82,4 %** | 80,8 % | red |
+
+La red ordena un poco mejor, pero sus probabilidades de éxito están peor calibradas y sus intervalos
+se quedan cortos. Lo que ve el agricultor ("8 de cada 10 años", el grado de una rotación) sale de
+P(éxito), así que la calibración pesa más que 0,002 de NDCG. Bf es además explicable (es el mismo
+oráculo de las etiquetas corrido sobre el pronóstico) y la red ya lo recibe como entrada. Se vuelve a
+evaluar con cada bundle nuevo: si uno pasa la regla, basta con `SURCO_MOTOR=red`.
+
+**Respuesta.** Cada cultivo trae, además del pronóstico, `apto`/`razon_no_apto` (filtros duros de la
+ficha: altitud y pH del suelo), `familia`, `fija_nitrogeno` y `fijacion_n_kg_ha` (punto medio del
+rango del catálogo), que usa la rotación. `historico` da, para siembras cada 15 días entre 30 y 540
+días desde hoy, la frecuencia de éxito de cada cultivo en los años pasados del propio terreno (el
+oráculo sobre el clima que ocurrió): es lo que se sabe de las temporadas 2 y 3 de una rotación, que
+caen fuera de los 175 días que cubre el pronóstico.
+
 ## 5. Pruebas
 
 ```bash

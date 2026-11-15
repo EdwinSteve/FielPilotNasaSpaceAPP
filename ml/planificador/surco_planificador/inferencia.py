@@ -26,6 +26,7 @@ from surco_planificador.caracteristicas import (
     ENTRADAS,
     PENTADA,
     PENTADAS_PRONOSTICO,
+    PRIOR_B0,
     Normalizacion,
     a_objetivos,
     a_pentadas,
@@ -34,6 +35,7 @@ from surco_planificador.caracteristicas import (
     vector_contexto,
 )
 from surco_planificador.catalogo import FichaCultivo, vector_ficha
+from surco_planificador.errores import MesNoEntrenado
 from surco_planificador.etiquetas import estadisticas_bf
 from surco_planificador.limpieza.climatologia import INDICE, indice_doy
 from surco_planificador.oraculo import CicloClima, Oraculo
@@ -69,6 +71,21 @@ class Recomendacion:
     rend_con_riego_p50: float
 
 
+MOTOR_RED = "red"
+MOTOR_BF = "bf"
+MOTORES = (MOTOR_BF, MOTOR_RED)
+_BF = len(PRIOR_B0)  # las columnas Bf empiezan después de las de B0 en caracteristicas.PRIOR
+
+
+def desde_bf(fichas: list[FichaCultivo], prior: F32) -> list[Recomendacion]:
+    """prior [C, len(PRIOR)] -> recomendaciones del baseline Bf, con el mismo mapeo que evaluar.de_bf:
+    rendimiento p10/media/p90 sobre los miembros, P(éxito), riego (mediana aproximada por expm1 de la
+    media de log1p) y rendimiento con riego."""
+    b = prior[:, _BF:]
+    return [Recomendacion(f.id, float(b[c, 1]), float(b[c, 0]), float(b[c, 2]), float(b[c, 3]),
+                          float(np.expm1(b[c, 4])), float(b[c, 7])) for c, f in enumerate(fichas)]  # fmt: skip
+
+
 class Planificador:
     def __init__(self, carpeta: Path, fichas: list[FichaCultivo]) -> None:
         int8 = carpeta / "model_int8.onnx"
@@ -93,14 +110,18 @@ class Planificador:
         p = int(np.argmin(d))
         cor = Correccion(self._cor["normal"][p], self._cor["cuantiles"][p], bloque)
         if not np.any(cor.normal[inicio.month - 1]):  # meses_inicio de pipeline.yaml no lo incluyó
-            raise ValueError(f"el modelo no se entrenó con pronósticos iniciados en el mes {inicio.month}")
+            raise MesNoEntrenado(f"el modelo no se entrenó con pronósticos iniciados en el mes {inicio.month}")
         diario = aplicar_correccion(crudo[None].astype(np.float32), np.array([inicio.month]), cor)
         ajuste = gradiente * (lote.elevacion_m - float(self._cor["elevacion"][p])) / 1000
         diario[..., 0:2] += ajuste  # tmax, tmin al piso térmico del lote
         return derivar_diario(diario, lote.lat, lote.elevacion_m, [inicio])[0]
 
     def recomendar(self, lote: Lote, diario: F32, inicio: date, siembra: date,
-                   oni: float, oni_tendencia: float) -> list[Recomendacion]:
+                   oni: float, oni_tendencia: float, motor: str = MOTOR_RED) -> list[Recomendacion]:
+        """Ranking de cultivos. `motor`: "red" (la red ONNX) o "bf" (el oráculo sobre cada miembro del
+        pronóstico corregido, el baseline Bf de evaluar.py; la red lo recibe como entrada)."""
+        if motor not in MOTORES:
+            raise ValueError(f"motor desconocido: {motor} (use {' o '.join(MOTORES)})")
         o = (siembra - inicio).days
         if o < 0 or o + PENTADAS_PRONOSTICO * PENTADA > diario.shape[1]:
             raise ValueError("el pronóstico no cubre 175 días desde la siembra: use uno más reciente")
@@ -117,10 +138,13 @@ class Planificador:
         estatico = self.norm.estatico.aplicar(np.concatenate([
             lote.sitio, np.array(vector_contexto(oni, oni_tendencia, siembra, o), np.float32)]))[None]  # fmt: skip
         prior = self._priors(lote, diario, o, clim_ciclo)[None]
-        feed = dict(zip(ENTRADAS, [hist, pron, clim, estatico, self.cultivos, prior], strict=True))
-        y = self.sesion.run(None, {k: v.astype(np.float32) for k, v in feed.items()})[0][0]  # [C, 12]
-        recs = [Recomendacion(f.id, *map(float, y[c, 0:3]), float(y[c, 3]), float(np.expm1(max(y[c, 5], 0))),
-                              float(y[c, 10])) for c, f in enumerate(self.fichas)]  # fmt: skip
+        if motor == MOTOR_BF:
+            recs = desde_bf(self.fichas, prior[0])
+        else:
+            feed = dict(zip(ENTRADAS, [hist, pron, clim, estatico, self.cultivos, prior], strict=True))
+            y = self.sesion.run(None, {k: v.astype(np.float32) for k, v in feed.items()})[0][0]  # [C, 12]
+            recs = [Recomendacion(f.id, *map(float, y[c, 0:3]), float(y[c, 3]), float(np.expm1(max(y[c, 5], 0))),
+                                  float(y[c, 10])) for c, f in enumerate(self.fichas)]  # fmt: skip
         clave = (lambda r: r.rend_con_riego_p50) if lote.riego else (lambda r: r.rend_p50)
         return sorted(recs, key=clave, reverse=True)
 
