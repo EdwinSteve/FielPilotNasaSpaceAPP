@@ -98,6 +98,7 @@ public class ManejadorErrores {
 			case CONFLICTO -> HttpStatus.CONFLICT;
 			case BLOQUEADO -> HttpStatus.LOCKED;
 			case NO_DISPONIBLE -> HttpStatus.SERVICE_UNAVAILABLE;
+			case FUENTE_INVALIDA -> HttpStatus.BAD_GATEWAY;
 		};
 	}
 }

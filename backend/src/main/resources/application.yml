@@ -44,6 +44,9 @@ surco:
   planificador:
     url: ${PLANIFICADOR_URL:http://localhost:8090}
     tiempo-maximo: 180s
+  # Condiciones actuales (módulo clima). Sin clave, sus tarjetas de Google salen sin dato.
+  google-weather:
+    api-key: ${GOOGLE_WEATHER_API_KEY:}
 
 management:
   endpoints:

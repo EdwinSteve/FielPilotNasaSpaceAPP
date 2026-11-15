@@ -18,5 +18,7 @@ public enum TipoError {
 	/** Cuenta bloqueada temporalmente: 423. */
 	BLOQUEADO,
 	/** Un servicio del que dependemos (el modelo de recomendación) no responde: 503. */
-	NO_DISPONIBLE
+	NO_DISPONIBLE,
+	/** Un servicio del que dependemos respondió algo que no entendemos (un nivel de alerta nuevo del IDEAM): 502. */
+	FUENTE_INVALIDA
 }
