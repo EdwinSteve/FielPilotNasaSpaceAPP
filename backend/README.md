@@ -8,7 +8,10 @@ API REST de SURCO. Es un **monolito modular** con arquitectura hexagonal: cada p
 | `identidad` | ✅ | Registro, login, refresh, logout, perfil y política de datos |
 | `territorio` | ✅ | 33 departamentos y 1.122 municipios de Colombia (DIVIPOLA del DANE) |
 | `clima` | ✅ | Tiempo de hoy, pronóstico de 7 días y avisos de un punto (Open-Meteo, NASA POWER, IDEAM) para la pantalla de inicio |
-| `fincas`, `diagnostico`, `catalogo`, `recomendacion`, `rotacion`, `alertas` | ⏳ | Por construir; cada paquete tiene un `package-info.java` con su responsabilidad |
+| `fincas` | ✅ | Terrenos del productor dibujados en el mapa (polígono, área, centroide, riego) |
+| `recomendacion` | ✅ | Cultivos del planificador estacional por lote, guardados (esquema `recomendacion`, V5); ver su `package-info.java` |
+| `rotacion` | ✅ | Las 3 mejores rotaciones y el ciclo elegido (esquema `rotacion`, V6); algoritmo en la ADR 0008 |
+| `diagnostico`, `catalogo`, `alertas` | ⏳ | Por construir; cada paquete tiene un `package-info.java` con su responsabilidad |
 
 ## Cómo correrlo
 
