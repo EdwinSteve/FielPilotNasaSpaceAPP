@@ -103,8 +103,20 @@ class RecomendacionesLoteTest {
 			assertThat(lluvias.meses()).isNotEmpty();
 			assertThat(lluvias.fuente()).startsWith("NASA POWER · años parecidos según El Niño (ONI ");
 			LluviaMensual primero = lluvias.meses().getFirst();
-			assertThat(primero.mes()).isEqualTo("Diciembre"); // la mitad del bloque 16 nov - 15 dic
+			assertThat(primero.mes()).isEqualTo("Noviembre"); // el bloque empieza el 16 de noviembre
+			assertThat(lluvias.meses()).extracting(LluviaMensual::mes).doesNotHaveDuplicates();
 			assertThat(primero.nivel()).isEqualTo("normal"); // -9 % frente a lo normal
+		}
+
+		@Test
+		void dosBloquesQueEmpiezanEnElMismoMesNoRepitenNombre() {
+			var enero1 = new PlanCiclo.Bloque(LocalDate.of(2027, 1, 1), LocalDate.of(2027, 1, 30), 50, 100, 150, 100, 0,
+				30, 20, 30);
+			var enero31 = new PlanCiclo.Bloque(LocalDate.of(2027, 1, 31), LocalDate.of(2027, 3, 1), 50, 100, 150, 100, 0,
+				30, 20, 30);
+			var plan = new PlanCiclo(null, null, new PlanCiclo.Pronostico("analogos", 0, 0, "neutral",
+				List.of(enero1, enero31)), null, List.of(), null, "m", null);
+			assertThat(Lluvias.de(plan).meses()).extracting(LluviaMensual::mes).containsExactly("Enero", "Febrero");
 		}
 
 		@Test

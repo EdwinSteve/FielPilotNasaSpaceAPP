@@ -3,7 +3,6 @@ package co.surco.recomendacion.dominio;
 import co.surco.recomendacion.ConsultaRecomendaciones.HistoricoCultivos;
 import co.surco.recomendacion.ConsultaRecomendaciones.LluviaMensual;
 import co.surco.recomendacion.ConsultaRecomendaciones.LluviasEsperadas;
-import java.time.LocalDate;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,21 +26,31 @@ public final class Lluvias {
 	}
 
 	/**
-	 * Un mes por cada bloque de 30 días del panorama, con el nombre del mes en que cae la mitad del bloque.
-	 * La lluvia es la del escenario típico (p50 de los miembros del pronóstico).
+	 * Un "mes" por cada bloque de 30 días del panorama (el primero empieza en la primera fecha de siembra),
+	 * con el nombre del mes en que empieza. Como los bloques no van alineados con el calendario, dos pueden
+	 * empezar en el mismo mes (1 y 31 de enero): entonces el segundo toma el mes siguiente, para que los
+	 * nombres no se repitan. La lluvia es la del escenario típico (p50 de los miembros del pronóstico).
 	 */
 	public static LluviasEsperadas de(PlanCiclo plan) {
 		PlanCiclo.Pronostico p = plan.pronostico();
 		if (p == null || p.panorama() == null) {
 			return new LluviasEsperadas(fuente(p), List.of());
 		}
-		List<LluviaMensual> meses = p.panorama().stream().map(Lluvias::mes).toList();
+		List<LluviaMensual> meses = new ArrayList<>();
+		Month anterior = null;
+		for (PlanCiclo.Bloque b : p.panorama()) {
+			Month m = b.desde().getMonth();
+			if (m == anterior) {
+				m = m.plus(1);
+			}
+			meses.add(mes(b, m));
+			anterior = m;
+		}
 		return new LluviasEsperadas(fuente(p), meses);
 	}
 
-	static LluviaMensual mes(PlanCiclo.Bloque b) {
-		LocalDate mitad = b.desde().plusDays(15);
-		String mes = nombreMes(mitad.getMonth());
+	static LluviaMensual mes(PlanCiclo.Bloque b, Month nombre) {
+		String mes = nombreMes(nombre);
 		int pct = b.anomaliaLluviaPct();
 		if (pct <= -UMBRAL_PCT) {
 			return new LluviaMensual(mes, b.lluviaMmP50(), "seco", "Se espera menos lluvia de lo normal ("
