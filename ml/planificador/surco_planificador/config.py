@@ -38,10 +38,12 @@ class ConfigPronostico:
     dia_disponible: int
     descargas_paralelas: int
     bloque_lead_dias: int
+    meses_inicio: tuple[int, ...] = tuple(range(1, 13))
+    fuente: str = "c3s"  # "c3s" (SEAS5) o "analogos" (años análogos de POWER condicionados por ONI)
 
     def inicios(self) -> list[tuple[int, int]]:
         """(año, mes) de cada inicio de pronóstico, en orden."""
-        return [(a, m) for a in range(self.primer_anio, self.ultimo_anio + 1) for m in range(1, 13)]
+        return [(a, m) for a in range(self.primer_anio, self.ultimo_anio + 1) for m in self.meses_inicio]
 
 
 @dataclass(frozen=True)
@@ -89,6 +91,8 @@ def cargar_pipeline(ruta: Path) -> ConfigPipeline:
             dia_disponible=int(p["dia_disponible"]),
             descargas_paralelas=int(p["descargas_paralelas"]),
             bloque_lead_dias=int(p["bloque_lead_dias"]),
+            meses_inicio=tuple(int(m) for m in p.get("meses_inicio", range(1, 13))),
+            fuente=str(p.get("fuente", "c3s")),
         ),
         desplazamientos=tuple(int(x) for x in e["desplazamientos_siembra"]),
         dias_previos=int(e["dias_previos_balance"]),

@@ -20,7 +20,7 @@ from surco_planificador.construir import descargar, http_de, limpiar
 from surco_planificador.datos import DatosLimpios
 from surco_planificador.etiquetas import Etiquetas, construir_etiquetas, diseno
 from surco_planificador.fuentes.c3s import descargar_inicio, ruta_inicio
-from surco_planificador.pronostico import interpolar_todo
+from surco_planificador.pronostico import analogos_todo, interpolar_todo
 from surco_planificador.puntos import escribir_puntos, leer_puntos, seleccionar_puntos
 from surco_planificador.rutas import Rutas
 
@@ -87,35 +87,33 @@ class Tuberia:
     def etapa_pronosticos(self) -> None:
         """Descarga los inicios de SEAS5 del CDS (horas o días según la cola). Reanudable."""
         pc, carpeta = self.cfg.pronostico, self.rutas.crudo / "c3s"
+        if pc.fuente == "analogos":
+            log.info("SEAS5 no se descarga: fuente = analogos (se arma en la etapa interpolar)")
+            return
         pendientes = [i for i in pc.inicios() if not ruta_inicio(carpeta, *i).exists()]
         log.info("SEAS5: %d de %d inicios por descargar", len(pendientes), len(pc.inicios()))
         if not pendientes:
             return
-        # El primero va solo: si faltan credenciales o la licencia, se sabe en segundos.
-        try:
-            descargar_inicio(pc, carpeta, *pendientes[0])
-        except Exception as e:
-            texto = str(e).lower()
-            if "licence" in texto or "license" in texto:
-                raise SystemExit(
-                    "El CDS rechaza el pedido: falta aceptar la licencia del dataset. Entre a "
-                    "https://cds.climate.copernicus.eu/datasets/seasonal-original-single-levels?tab=download"
-                    " , acepte la licencia al final de la página y vuelva a correr el script.") from e
-            if "401" in texto or "unauthorized" in texto or "key" in texto:
-                raise SystemExit(f"El CDS no acepta la clave de .cdsapirc: {e}") from e
-            raise
-
+        # Todos van a la cola del CDS a la vez: la espera en cola (no la descarga) es lo que tarda,
+        # así que mandarlos juntos la paga una sola vez. Clave o licencia mal: falla cada pedido
+        # en segundos y el mensaje lo dice.
         fallidos: list[str] = []
 
         def uno(inicio: tuple[int, int]) -> None:
             try:
                 descargar_inicio(pc, carpeta, *inicio)
             except Exception as e:  # un inicio fallido no detiene los demás
+                texto = str(e).lower()
+                if "licence" in texto or "license" in texto:
+                    log.error("C3S %d-%02d: falta aceptar la licencia en https://cds.climate.copernicus.eu/"
+                              "datasets/seasonal-original-single-levels?tab=download", *inicio)  # fmt: skip
+                elif "401" in texto or "unauthorized" in texto:
+                    log.error("C3S %d-%02d: el CDS no acepta la clave de .cdsapirc", *inicio)
                 log.error("C3S %d-%02d falló: %s", *inicio, e)
                 fallidos.append(f"{inicio[0]}-{inicio[1]:02d}")
 
         with ThreadPoolExecutor(max_workers=pc.descargas_paralelas) as pool:
-            list(pool.map(uno, pendientes[1:]))
+            list(pool.map(uno, pendientes))
         if fallidos:  # no se entrena con pronósticos incompletos
             raise SystemExit(f"{len(fallidos)} inicios de SEAS5 fallaron ({', '.join(sorted(fallidos)[:6])}...). "
                              "Vuelva a correr el script: solo se piden los que faltan.")
@@ -128,6 +126,9 @@ class Tuberia:
 
     def etapa_interpolar(self) -> None:
         datos = DatosLimpios.cargar(self.rutas.limpio)
+        if self.cfg.pronostico.fuente == "analogos":
+            analogos_todo(self.cfg.pronostico, datos, self.rutas.pronosticos)
+            return
         interpolar_todo(self.cfg.pronostico, self.rutas.crudo / "c3s", self.rutas.pronosticos,
                         [(float(a), float(b)) for a, b in zip(datos.lat, datos.lon, strict=True)])  # fmt: skip
 

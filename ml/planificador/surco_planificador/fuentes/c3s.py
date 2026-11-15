@@ -10,6 +10,7 @@ viento) son las de 00 UTC; su sesgo frente al promedio diario lo absorbe la corr
 """
 
 import logging
+import time
 import zipfile
 from pathlib import Path
 
@@ -61,7 +62,16 @@ def descargar_inicio(cfg: ConfigPronostico, carpeta: Path, anio: int, mes: int) 
         return destino
     carpeta.mkdir(parents=True, exist_ok=True)
     tmp = destino.with_suffix(".part")
-    cdsapi.Client(quiet=True).retrieve(cfg.dataset, pedido(cfg, anio, mes), str(tmp))
+    while True:
+        try:
+            cdsapi.Client(quiet=True).retrieve(cfg.dataset, pedido(cfg, anio, mes), str(tmp))
+            break
+        except Exception as e:  # el CDS rechaza el pedido si la cola por usuario del dataset está llena
+            texto = f"{e} {getattr(getattr(e, 'response', None), 'text', '')}".lower()
+            if "maximum number queued" not in texto:
+                raise
+            log.info("C3S %d-%02d: cola del CDS llena, reintento en 2 min", anio, mes)
+            time.sleep(120)
     tmp.replace(destino)
     log.info("C3S %d-%02d descargado (%.0f MB)", anio, mes, destino.stat().st_size / 1e6)
     return destino

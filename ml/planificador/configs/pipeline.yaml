@@ -23,14 +23,20 @@ pronostico:
   dataset: seasonal-original-single-levels
   centro: ecmwf
   sistema: "51"
-  primer_anio: 1982            # el primer año con 365 días de historia POWER antes de sembrar
+  # 15-nov-2026: la cola del CDS no atendió ni un pedido en 8 h. Mientras tanto el "pronóstico"
+  # es un conjunto de años análogos de POWER condicionado por ONI (ver pronostico.analogos_todo).
+  # Para volver a SEAS5: fuente: c3s, primer_anio 1982 y divisiones 1982–2010 / 2011–2016 / 2017–2025.
+  fuente: analogos
+  primer_anio: 2001
   ultimo_anio: 2025
   miembros: 25
   dias_lead: 215               # 5160 h: el alcance diario de SEAS5
   area: [14, -80, -5, -66]     # N, O, S, E: Colombia con margen de una celda
   # C3S publica ECMWF el día 6 a las 12 UTC: un pronóstico iniciado el día 1 se usa desde el 7.
   dia_disponible: 7
-  descargas_paralelas: 3
+  # meses_inicio: [2, 3, 8, 9]  # opción para recortar pedidos al CDS; por defecto los 12 meses
+  # El CDS admite ~5 pedidos en cola por usuario y dataset; por encima los rechaza.
+  descargas_paralelas: 4
   # Corrección de sesgo contra POWER en el punto, por mes de inicio y bloque de 30 días de lead,
   # ajustada SOLO con años de entrenamiento (sin fuga hacia validación y prueba).
   bloque_lead_dias: 30
@@ -50,7 +56,7 @@ climatologia:
   ventana_suavizado: 31
 
 divisiones:                    # por año de siembra
-  entrenamiento: [1982, 2010]
-  validacion: [2011, 2016]
-  prueba: [2017, 2025]         # solo pronósticos operativos reales: la prueba más honesta
+  entrenamiento: [2001, 2016]
+  validacion: [2017, 2019]
+  prueba: [2020, 2025]         # solo pronósticos operativos reales: la prueba más honesta
   departamentos_reservados: ["41"]   # Huila, para la prueba espacial

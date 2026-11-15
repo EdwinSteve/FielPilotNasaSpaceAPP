@@ -58,5 +58,6 @@ def test_inicios_ordenados() -> None:
 
     cfg = cargar_pipeline(Rutas.por_defecto().configs / "pipeline.yaml")
     inicios = cfg.pronostico.inicios()
-    assert inicios[0] == (cfg.pronostico.primer_anio, 1) and len(inicios) % 12 == 0
-    assert date(*inicios[1], 1) > date(*inicios[0], 1)
+    meses = cfg.pronostico.meses_inicio
+    assert inicios[0] == (cfg.pronostico.primer_anio, meses[0]) and len(inicios) % len(meses) == 0
+    assert all(date(*b, 1) > date(*a, 1) for a, b in zip(inicios, inicios[1:]))

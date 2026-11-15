@@ -92,6 +92,8 @@ class Planificador:
         d = (self._cor["lat"] - lote.lat) ** 2 + ((self._cor["lon"] - lote.lon) * np.cos(np.radians(lote.lat))) ** 2
         p = int(np.argmin(d))
         cor = Correccion(self._cor["normal"][p], self._cor["cuantiles"][p], bloque)
+        if not np.any(cor.normal[inicio.month - 1]):  # meses_inicio de pipeline.yaml no lo incluyó
+            raise ValueError(f"el modelo no se entrenó con pronósticos iniciados en el mes {inicio.month}")
         diario = aplicar_correccion(crudo[None].astype(np.float32), np.array([inicio.month]), cor)
         ajuste = gradiente * (lote.elevacion_m - float(self._cor["elevacion"][p])) / 1000
         diario[..., 0:2] += ajuste  # tmax, tmin al piso térmico del lote

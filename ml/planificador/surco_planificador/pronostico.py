@@ -25,6 +25,7 @@ from surco_planificador.caracteristicas import (
     PENTADAS_GUARDADAS,
 )
 from surco_planificador.config import ConfigPronostico
+from surco_planificador.datos import DatosLimpios
 from surco_planificador.fuentes.c3s import CANALES_CRUDOS, interpolar, leer_inicio, ruta_inicio
 from surco_planificador.limpieza.climatologia import INDICE, indice_doy
 from surco_planificador.limpieza.et0 import penman_monteith, presion_saturacion
@@ -72,6 +73,52 @@ def interpolar_todo(cfg: ConfigPronostico, carpeta_nc: Path, carpeta: Path,
         log.warning("%d inicios sin pronóstico (sus siembras quedan fuera): %s", len(faltan), faltan[:12])
 
 
+def analogos_todo(cfg: ConfigPronostico, datos: DatosLimpios, carpeta: Path) -> None:
+    """Conjunto por años análogos (ESP condicionado por ONI), sin descargas: para cada inicio, los
+    `miembros` años de POWER cuyo ONI conocido al inicio (y su tendencia) más se parece, con su
+    trayectoria observada desde el mismo día del año. Se excluyen el año del inicio y sus vecinos,
+    así ningún miembro contiene el clima que la etiqueta usa como verdad."""
+    from surco_planificador.caracteristicas import oni_conocido
+
+    inicios = cfg.inicios()
+    P, M, T = len(datos.lat), cfg.miembros, cfg.dias_lead
+    canales = [CANALES_HISTORIA.index(c) for c in CANALES_CRUDOS]
+    carpeta.mkdir(parents=True, exist_ok=True)
+    crudo = np.lib.format.open_memmap(ruta_crudo(carpeta), mode="w+", dtype=np.float16,
+                                      shape=(len(inicios), P, M, T, len(CANALES_CRUDOS)))  # fmt: skip
+    hechos = np.zeros(len(inicios), dtype=bool)
+    oni = datos.mapa_oni()
+    primero, ultimo = datos.dia0.year, datos.dia(datos.dias - 1).year
+
+    def clave(fecha: date) -> tuple[float, float] | None:
+        try:
+            return oni_conocido(oni, fecha)
+        except KeyError:
+            return None
+
+    for i, (anio, mes) in enumerate(inicios):
+        ref = clave(date(anio, mes, 1))
+        if ref is None:
+            continue
+        candidatos: list[tuple[float, int]] = []
+        for y in range(primero, ultimo + 1):
+            if abs(y - anio) <= 1:
+                continue
+            s = datos.indice(date(y, mes, 1))
+            k = clave(date(y, mes, 1))
+            if s < 0 or s + T > datos.dias or k is None:
+                continue
+            candidatos.append((abs(k[0] - ref[0]) + 0.5 * abs(k[1] - ref[1]), s))
+        if len(candidatos) < M:
+            continue
+        elegidos = [s for _, s in sorted(candidatos)[:M]]
+        crudo[i] = np.stack([datos.clima[:, s:s + T][:, :, canales] for s in elegidos], axis=1).astype(np.float16)
+        hechos[i] = bool(np.isfinite(crudo[i]).all())
+    crudo.flush()
+    np.save(carpeta / "hechos.npy", hechos)
+    log.info("análogos: %d de %d inicios", int(hechos.sum()), len(inicios))
+
+
 # --- Corrección de sesgo ----------------------------------------------------------------------
 
 @dataclass(frozen=True)
@@ -106,6 +153,8 @@ def ajustar_correccion(fc: F32, obs: F32, meses: npt.NDArray[np.int64], usar: np
     normal = np.zeros((12, n_bloques, fc.shape[-1], 4), np.float32)
     cuant = np.zeros((12, n_bloques, 2, len(CUANTILES)), np.float32)
     for mes in range(12):
+        if not (meses == mes + 1).any():  # mes de inicio fuera de la configuración: sin corrección
+            continue
         sel = usar & (meses == mes + 1)
         if not sel.any():
             raise ValueError(f"no hay inicios de entrenamiento para el mes {mes + 1}")
