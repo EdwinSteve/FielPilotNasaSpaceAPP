@@ -32,7 +32,7 @@ from surco_planificador.fuentes.oni import traer_oni
 from surco_planificador.fuentes.power import traer_power
 from surco_planificador.fuentes.suelo import PROPIEDADES, RasterSoilGrids, agua_disponible_mm, media_entre
 from surco_planificador.inferencia import Lote, Planificador, Recomendacion
-from surco_planificador.limpieza.climatologia import servida
+from surco_planificador.limpieza.climatologia import INDICE, indice_doy, servida
 from surco_planificador.puntos import Punto
 from surco_planificador.rutas import Rutas
 
@@ -123,48 +123,149 @@ def ultimo_bundle(rutas: Rutas) -> Path:
     return bundles[-1]
 
 
+DIAS_PANORAMA = 30
+BLOQUES_PANORAMA = 6  # 180 días: lo que cubre el pronóstico desde cualquier fecha de siembra
+
+
+def _redondear(r: Recomendacion) -> dict[str, object]:
+    return {k: (round(v, 3) if isinstance(v, float) else v) for k, v in asdict(r).items()}
+
+
+def fechas_candidatas(hoy: date, n: int = 6, paso: int = 5) -> list[date]:
+    """Las siembras que se comparan: desde mañana, cada `paso` días, durante el próximo mes."""
+    return [hoy + timedelta(days=1 + paso * k) for k in range(n)]
+
+
+class Motor:
+    """El modelo cargado una vez (bundle ONNX, catálogo, configuración) para servir muchas consultas."""
+
+    def __init__(self, rutas: Rutas | None = None, bundle: Path | None = None) -> None:
+        self.rutas = rutas or Rutas.por_defecto()
+        self.cfg = cargar_pipeline(self.rutas.configs / "pipeline.yaml")
+        fichas, _, _ = cargar_fichas(self.rutas.catalogo_json, self.rutas.configs / "ky_fao33.yaml",
+                                     self.cfg.max_ciclo_dias, self.cfg.excluir)  # fmt: skip
+        self.bundle = bundle or ultimo_bundle(self.rutas)
+        self.plan = Planificador(self.bundle, fichas)
+        self.fichas = {f.id: f for f in self.plan.fichas}
+
+    def _diario(self, clima: F32, dia0: date, oni: dict[tuple[int, int], float], inicio: date, lote: Lote,
+                crudo_seas5: F32 | None) -> F32:
+        if self.cfg.pronostico.fuente == "analogos":
+            crudo = pronostico_analogos(clima, dia0, oni, inicio, self.cfg.pronostico)
+            return self.plan.corregir(crudo, inicio, lote, gradiente=0.0)  # análogos: ya a la elevación del lote
+        if crudo_seas5 is None:
+            raise ValueError("este bundle se entrenó con SEAS5: pase el pronóstico SEAS5 interpolado al lote")
+        return self.plan.corregir(crudo_seas5, inicio, lote, gradiente=self.cfg.gradiente_c_por_km)
+
+    def _apto(self, cultivo: str, elevacion: float) -> str | None:
+        """Razón por la que un cultivo no es apto en el lote; None si lo es."""
+        f = self.fichas[cultivo]
+        bajo, alto = f.altitud
+        if (bajo or alto) and not (bajo <= elevacion <= alto):
+            return f"Se cultiva entre {bajo:.0f} y {alto:.0f} m de altitud; su terreno está a {elevacion:.0f} m."
+        return None
+
+    def _panorama(self, diario: F32, inicio: date, desde: date, lote: Lote) -> list[dict[str, object]]:
+        """Lluvia y temperatura esperadas por bloques de 30 días desde `desde`, frente a lo normal."""
+        canales = {c: i for i, c in enumerate(("t2m", "tmax", "tmin", "lluvia", "et0", "hr"))}
+        o = (desde - inicio).days
+        bloques = []
+        for b in range(BLOQUES_PANORAMA):
+            a, z = o + b * DIAS_PANORAMA, o + (b + 1) * DIAS_PANORAMA
+            if z > diario.shape[1]:
+                break
+            lluvia = diario[:, a:z, canales["lluvia"]].sum(axis=1)  # [M]
+            doy = [indice_doy(inicio + timedelta(days=t)) for t in range(a, z)]
+            normal = float(lote.clim[doy, INDICE["lluvia_media"]].sum())
+            p10, p50, p90 = (float(x) for x in np.percentile(lluvia, [10, 50, 90]))
+            bloques.append({
+                "desde": (inicio + timedelta(days=a)).isoformat(), "hasta": (inicio + timedelta(days=z - 1)).isoformat(),
+                "lluvia_mm_p10": round(p10), "lluvia_mm_p50": round(p50), "lluvia_mm_p90": round(p90),
+                "lluvia_normal_mm": round(normal),
+                "anomalia_lluvia_pct": round(100 * (p50 - normal) / normal) if normal > 1 else 0,
+                "tmax_c": round(float(diario[:, a:z, canales["tmax"]].mean()), 1),
+                "tmin_c": round(float(diario[:, a:z, canales["tmin"]].mean()), 1),
+                "tmax_normal_c": round(float(lote.clim[doy, INDICE["tmax_media"]].mean()), 1),
+            })  # fmt: skip
+        return bloques
+
+    def planificar(self, lat: float, lon: float, riego: bool = False, hoy: date | None = None,
+                   siembras: list[date] | None = None, crudo_seas5: F32 | None = None) -> dict[str, object]:
+        """El mejor ciclo productivo para el terreno: compara cultivos y fechas de siembra del próximo mes."""
+        hoy = hoy or date.today()
+        siembras = siembras or fechas_candidatas(hoy)
+        lote, clima, dia0, oni = preparar_lote(lat, lon, max(siembras), self.cfg, self.plan.fichas,
+                                               self.rutas.crudo / "servicio", riego)  # fmt: skip
+        diarios: dict[date, F32] = {}
+        opciones = []
+        for siembra in siembras:
+            inicio = inicio_para(siembra, self.cfg.pronostico.dia_disponible)
+            if inicio not in diarios:
+                diarios[inicio] = self._diario(clima, dia0, oni, inicio, lote, crudo_seas5)
+            valor, tendencia = oni_al(oni, siembra)
+            recs = self.plan.recomendar(lote, diarios[inicio], inicio, siembra, valor, tendencia)
+            cultivos = []
+            for r in recs:
+                razon = self._apto(r.cultivo, lote.elevacion_m)
+                cultivos.append({**_redondear(r), "nombre": self.fichas[r.cultivo].nombre,
+                                 "ciclo_dias": self.fichas[r.cultivo].ciclo_dias,
+                                 "cosecha": (siembra + timedelta(days=self.fichas[r.cultivo].ciclo_dias)).isoformat(),
+                                 "apto": razon is None, "razon_no_apto": razon})  # fmt: skip
+            cultivos.sort(key=lambda c: not c["apto"])  # estable: los aptos primero, en el orden de la red
+            opciones.append({"siembra": siembra.isoformat(), "inicio_pronostico": inicio.isoformat(),
+                             "cultivos": cultivos})  # fmt: skip
+
+        clave = "rend_con_riego_p50" if riego else "rend_p50"
+        aptos = [(o["siembra"], c) for o in opciones for c in o["cultivos"] if c["apto"]]
+        mejor = max(aptos, key=lambda x: x[1][clave], default=None)
+        primer_inicio = inicio_para(siembras[0], self.cfg.pronostico.dia_disponible)
+        valor, tendencia = oni_al(oni, hoy)
+        return {
+            "lote": {"lat": lat, "lon": lon, "elevacion_m": round(lote.elevacion_m, 1),
+                     "ph_suelo": round(lote.ph_suelo, 2), "riego": riego},
+            "generado": hoy.isoformat(),
+            # oni_tendencia: cambio del ONI en 3 meses (sin dígitos en la clave: el backend mapea snake_case)
+            "pronostico": {"fuente": self.cfg.pronostico.fuente, "oni": round(valor, 2),
+                           "oni_tendencia": round(tendencia, 2), "fase_enso": fase_enso(valor),
+                           "panorama": self._panorama(diarios[primer_inicio], primer_inicio, siembras[0], lote)},
+            "mejor": None if mejor is None else {"siembra": mejor[0], "cultivo": mejor[1]},
+            "opciones": opciones,
+            "modelo": self.bundle.name,
+        }  # fmt: skip
+
+
+def fase_enso(oni: float) -> str:
+    return "nino" if oni >= 0.5 else "nina" if oni <= -0.5 else "neutral"
+
+
 def recomendar_por_coordenadas(lat: float, lon: float, siembra: date, riego: bool = False,
                                bundle: Path | None = None, rutas: Rutas | None = None,
                                crudo_seas5: F32 | None = None) -> dict[str, object]:
-    """Todo el flujo para un terreno. `crudo_seas5` [M, T, 6] solo para un bundle entrenado con SEAS5."""
-    rutas = rutas or Rutas.por_defecto()
-    cfg = cargar_pipeline(rutas.configs / "pipeline.yaml")
-    fichas, _, _ = cargar_fichas(rutas.catalogo_json, rutas.configs / "ky_fao33.yaml", cfg.max_ciclo_dias, cfg.excluir)
-    bundle = bundle or ultimo_bundle(rutas)
-    plan = Planificador(bundle, fichas)
-    lote, clima, dia0, oni = preparar_lote(lat, lon, siembra, cfg, plan.fichas, rutas.crudo / "servicio", riego)
-    inicio = inicio_para(siembra, cfg.pronostico.dia_disponible)
-    if cfg.pronostico.fuente == "analogos":
-        crudo = pronostico_analogos(clima, dia0, oni, inicio, cfg.pronostico)
-        gradiente = 0.0  # los análogos ya vienen del terreno y a su elevación
-    else:
-        if crudo_seas5 is None:
-            raise ValueError("este bundle se entrenó con SEAS5: pase el pronóstico SEAS5 interpolado al lote")
-        crudo, gradiente = crudo_seas5, cfg.gradiente_c_por_km
-    diario = plan.corregir(crudo, inicio, lote, gradiente=gradiente)
-    valor, tendencia = oni_al(oni, siembra)
-    recs: list[Recomendacion] = plan.recomendar(lote, diario, inicio, siembra, valor, tendencia)
-    return {
-        "lote": {"lat": lat, "lon": lon, "elevacion_m": round(lote.elevacion_m, 1), "ph_suelo": round(lote.ph_suelo, 2)},
-        "siembra": siembra.isoformat(), "inicio_pronostico": inicio.isoformat(),
-        "pronostico": cfg.pronostico.fuente, "oni": round(valor, 2), "oni_tendencia_3m": round(tendencia, 2),
-        "bundle": bundle.name, "riego": riego,
-        "recomendaciones": [{k: (round(v, 3) if isinstance(v, float) else v) for k, v in asdict(r).items()}
-                            for r in recs],  # fmt: skip
-    }
+    """Una sola fecha de siembra (compatibilidad con la primera versión del servicio)."""
+    motor = Motor(rutas, bundle)
+    plan = motor.planificar(lat, lon, riego, hoy=siembra - timedelta(days=1), siembras=[siembra],
+                            crudo_seas5=crudo_seas5)  # fmt: skip
+    opcion = plan["opciones"][0]  # type: ignore[index]
+    return {"lote": plan["lote"], "siembra": opcion["siembra"], "inicio_pronostico": opcion["inicio_pronostico"],
+            "pronostico": plan["pronostico"]["fuente"], "oni": plan["pronostico"]["oni"],  # type: ignore[index]
+            "oni_tendencia_3m": plan["pronostico"]["oni_tendencia"], "bundle": plan["modelo"],  # type: ignore[index]
+            "riego": riego, "recomendaciones": opcion["cultivos"]}  # fmt: skip
 
 
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--lat", type=float, required=True)
     ap.add_argument("--lon", type=float, required=True)
-    ap.add_argument("--siembra", type=date.fromisoformat, default=date.today())
+    ap.add_argument("--siembra", type=date.fromisoformat, help="una sola fecha; sin ella compara el próximo mes")
     ap.add_argument("--riego", action="store_true")
     ap.add_argument("--bundle", type=Path)
     args = ap.parse_args()
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
-    print(json.dumps(recomendar_por_coordenadas(args.lat, args.lon, args.siembra, args.riego, args.bundle),
-                     indent=1, ensure_ascii=False))  # fmt: skip
+    if args.siembra:
+        salida = recomendar_por_coordenadas(args.lat, args.lon, args.siembra, args.riego, args.bundle)
+    else:
+        salida = Motor(bundle=args.bundle).planificar(args.lat, args.lon, args.riego)
+    print(json.dumps(salida, indent=1, ensure_ascii=False))
 
 
 if __name__ == "__main__":

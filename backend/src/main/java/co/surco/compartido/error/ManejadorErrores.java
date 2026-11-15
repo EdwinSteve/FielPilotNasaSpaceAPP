@@ -97,6 +97,7 @@ public class ManejadorErrores {
 			case NO_ENCONTRADO -> HttpStatus.NOT_FOUND;
 			case CONFLICTO -> HttpStatus.CONFLICT;
 			case BLOQUEADO -> HttpStatus.LOCKED;
+			case NO_DISPONIBLE -> HttpStatus.SERVICE_UNAVAILABLE;
 		};
 	}
 }

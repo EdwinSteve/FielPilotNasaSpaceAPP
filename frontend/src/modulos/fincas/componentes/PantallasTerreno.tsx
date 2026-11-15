@@ -109,14 +109,22 @@ function ListaTerrenos({ usuario }: { usuario: UsuarioSesion }) {
                     {formatoArea(t.area_ha)} · {t.riego ? "Con riego" : "Sin riego"} · {t.centroide.lat.toFixed(5)}, {t.centroide.lon.toFixed(5)}
                   </p>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => borrar(t)}
-                  disabled={borrando === t.id}
-                  className="min-h-11 shrink-0 rounded-[10px] px-3 text-[14px] font-semibold text-roja-texto hover:bg-roja-fondo disabled:opacity-50"
-                >
-                  {borrando === t.id ? "Borrando…" : "Borrar"}
-                </button>
+                <div className="flex shrink-0 items-center gap-1">
+                  <Link
+                    href={`/lotes/${t.id}`}
+                    className="flex min-h-11 items-center rounded-[10px] bg-verde-700 px-3 text-[14px] font-semibold text-white hover:bg-verde-900"
+                  >
+                    Ver recomendación
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={() => borrar(t)}
+                    disabled={borrando === t.id}
+                    className="min-h-11 rounded-[10px] px-3 text-[14px] font-semibold text-roja-texto hover:bg-roja-fondo disabled:opacity-50"
+                  >
+                    {borrando === t.id ? "Borrando…" : "Borrar"}
+                  </button>
+                </div>
               </article>
             ))}
             <Link href="/lotes/nuevo" className={CLASE_BOTON_PRINCIPAL}>
@@ -139,7 +147,8 @@ function NuevoTerreno({ usuario }: { usuario: UsuarioSesion }) {
       titulo={primero ? `¡Bienvenido, ${usuario.nombre}! Registre su terreno` : "Registrar terreno"}
       subtitulo="Con el contorno sabemos dónde queda su terreno y su tamaño, para recomendarle qué sembrar y cuándo."
     >
-      <FormularioTerreno otros={terrenos ?? []} alGuardar={() => router.push("/lotes?nuevo=1")} />
+      {/* Al guardar, directo a lo que el productor vino a buscar: qué sembrar y cuándo */}
+      <FormularioTerreno otros={terrenos ?? []} alGuardar={(t) => router.push(`/lotes/${t.id}`)} />
     </Marco>
   );
 }

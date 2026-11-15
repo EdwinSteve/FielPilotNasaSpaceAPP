@@ -40,6 +40,10 @@ surco:
     duracion-bloqueo: 15m
   cors:
     origenes: ${CORS_ORIGENES:http://localhost:3000}
+  # Servidor del planificador estacional (ml/planificador: python -m surco_planificador.servidor)
+  planificador:
+    url: ${PLANIFICADOR_URL:http://localhost:8090}
+    tiempo-maximo: 180s
 
 management:
   endpoints:

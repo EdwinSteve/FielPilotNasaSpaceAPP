@@ -16,5 +16,7 @@ public enum TipoError {
 	/** Choca con el estado actual (duplicado, versión vieja): 409. */
 	CONFLICTO,
 	/** Cuenta bloqueada temporalmente: 423. */
-	BLOQUEADO
+	BLOQUEADO,
+	/** Un servicio del que dependemos (el modelo de recomendación) no responde: 503. */
+	NO_DISPONIBLE
 }

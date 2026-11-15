@@ -59,6 +59,8 @@ services:
       # No se define JWT_SECRETO aquí: una variable vacía tendría prioridad sobre el archivo
       # y la API no arrancaría. Para usar un secreto propio, agréguelo en este bloque.
       SURCO_SECRETOS: /run/secrets/surco
+      # El modelo de recomendación (servicio surco-planificador de abajo)
+      PLANIFICADOR_URL: http://surco-planificador:8090
     volumes:
       - surco-secretos:/run/secrets/surco:ro
     ports:
@@ -68,6 +70,20 @@ services:
         condition: service_completed_successfully
       postgres:
         condition: service_healthy
+      surco-planificador:
+        condition: service_started
+    restart: unless-stopped
+
+  # Planificador estacional: el modelo ONNX que recomienda el ciclo de cultivo de cada terreno.
+  # Solo lo llama la API (no publica puerto). La primera consulta de una zona baja NASA POWER y
+  # SoilGrids (puede tardar 1-2 minutos); el volumen guarda esa caché entre reinicios.
+  surco-planificador:
+    build:
+      context: ./ml/planificador
+      additional_contexts:
+        catalogo: ./data/catalogo_cultivos/datos
+    volumes:
+      - surco-planificador-datos:/datos
     restart: unless-stopped
 
   surco-web:
@@ -85,3 +101,4 @@ services:
 volumes:
   surco-datos:
   surco-secretos:
+  surco-planificador-datos:
