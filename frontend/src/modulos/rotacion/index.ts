@@ -2,4 +2,5 @@
 export { obtenerPlanRotacion } from "./api";
 export { PantallaRotacion } from "./componentes/PantallaRotacion";
 export { RotacionConSesion } from "./componentes/RotacionConSesion";
-export type { PlanRotacion } from "./tipos";
+export { SelectorLote } from "./componentes/SelectorLote";
+export type { LoteOpcion, PlanRotacion } from "./tipos";
