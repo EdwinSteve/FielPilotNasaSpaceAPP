@@ -58,9 +58,13 @@ class ClientePlanificador implements MotorPlanificador {
 		if (siembra != null) {
 			cuerpo.put("siembra", siembra.toString());
 		}
+		// El cuerpo va serializado aquí, escrito tal cual (sin convertidores) y con Content-Length: sin eso
+		// RestClient lo manda "chunked" y el planificador (http.server de Python) lee un cuerpo vacío
+		// ("Envíe lat y lon en grados decimales").
+		byte[] json = this.json.writeValueAsBytes(cuerpo);
 		try {
-			PlanCiclo plan = http.post().uri("/planificar").contentType(MediaType.APPLICATION_JSON).body(cuerpo)
-				.retrieve().body(PlanCiclo.class);
+			PlanCiclo plan = http.post().uri("/planificar").contentType(MediaType.APPLICATION_JSON)
+				.contentLength(json.length).body(salida -> salida.write(json)).retrieve().body(PlanCiclo.class);
 			if (plan == null) {
 				throw ErroresRecomendacion.modeloNoDisponible();
 			}

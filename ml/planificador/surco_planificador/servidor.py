@@ -26,7 +26,7 @@ import threading
 from datetime import date, timedelta
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
-from typing import Any
+from typing import Any, BinaryIO
 
 from surco_planificador.errores import ErrorPlanificador, FuenteCaida
 from surco_planificador.servicio import Motor
@@ -102,6 +102,29 @@ def leer_solicitud(cuerpo: bytes) -> Solicitud:
     return lat, lon, bool(datos.get("riego", False)), siembra
 
 
+class CuerpoMuyGrande(Exception):
+    pass
+
+
+def leer_chunked(entrada: BinaryIO) -> bytes:
+    """Cuerpo en Transfer-Encoding: chunked (RFC 9112, 7.1): bloques "<tamaño hex>\\r\\n<datos>\\r\\n" hasta
+    uno de tamaño 0. Más de MAX_CUERPO bytes en total: CuerpoMuyGrande."""
+    partes: list[bytes] = []
+    total = 0
+    while True:
+        linea = entrada.readline(64).strip()
+        tamano = int(linea.split(b";")[0] or b"0", 16)  # ";" separa extensiones del bloque
+        if tamano == 0:
+            while entrada.readline(1024).strip():  # encabezados finales, si los hay
+                pass
+            return b"".join(partes)
+        total += tamano
+        if total > MAX_CUERPO:
+            raise CuerpoMuyGrande
+        partes.append(entrada.read(tamano))
+        entrada.readline(4)  # el \\r\\n que cierra el bloque
+
+
 def crear_manejador(planificacion: Planificacion) -> type[BaseHTTPRequestHandler]:
     class Manejador(BaseHTTPRequestHandler):
         def _responder(self, estado: int, cuerpo: dict[str, Any]) -> None:
@@ -123,12 +146,13 @@ def crear_manejador(planificacion: Planificacion) -> type[BaseHTTPRequestHandler
             if self.path != "/planificar":
                 self._responder(404, {"code": "NO_ENCONTRADO", "message": "Ruta inexistente."})
                 return
-            largo = int(self.headers.get("Content-Length") or 0)
-            if largo > MAX_CUERPO:
+            try:
+                cuerpo = self._leer_cuerpo()
+            except CuerpoMuyGrande:
                 self._responder(413, {"code": "PLANIFICADOR_SOLICITUD_INVALIDA", "message": "Solicitud muy grande."})
                 return
             try:
-                lat, lon, riego, siembra = leer_solicitud(self.rfile.read(largo))
+                lat, lon, riego, siembra = leer_solicitud(cuerpo)
                 self._responder(200, planificacion.planificar(lat, lon, riego, siembra))
             except ErrorSolicitud as e:
                 self._responder(400, {"code": e.codigo, "message": str(e)})
@@ -141,6 +165,16 @@ def crear_manejador(planificacion: Planificacion) -> type[BaseHTTPRequestHandler
             except Exception:
                 log.exception("falló la planificación")
                 self._responder(500, {"code": "PLANIFICADOR_ERROR", "message": "No pudimos calcular la recomendación."})
+
+        def _leer_cuerpo(self) -> bytes:
+            """Con Content-Length o en bloques (Transfer-Encoding: chunked, como lo manda RestClient de Spring
+            cuando no conoce la longitud). Sin esto un cuerpo chunked llega vacío."""
+            if "chunked" in (self.headers.get("Transfer-Encoding") or "").lower():
+                return leer_chunked(self.rfile)
+            largo = int(self.headers.get("Content-Length") or 0)
+            if largo > MAX_CUERPO:
+                raise CuerpoMuyGrande
+            return self.rfile.read(largo)
 
         def log_message(self, formato: str, *args: Any) -> None:
             log.info("%s %s", self.address_string(), formato % args)

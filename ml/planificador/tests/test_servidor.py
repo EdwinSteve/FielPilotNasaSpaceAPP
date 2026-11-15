@@ -110,3 +110,30 @@ def test_la_cache_en_disco_sobrevive_un_reinicio(tmp_path: Path) -> None:
     assert segundo.llamadas == []  # salió del disco
     Planificacion(segundo, tmp_path).planificar(5.07, -75.52, True)  # type: ignore[arg-type]
     assert len(segundo.llamadas) == 1  # con riego es otra consulta
+
+
+def test_acepta_cuerpo_chunked_como_lo_manda_restclient(servidor: Any) -> None:
+    """RestClient de Spring manda el JSON en bloques si no conoce la longitud: antes llegaba vacío."""
+    import http.client
+
+    base, motor = servidor
+    host, puerto = base.removeprefix("http://").split(":")
+    con = http.client.HTTPConnection(host, int(puerto), timeout=10)
+    cuerpo = json.dumps({"lat": 2.9275, "lon": -75.2875, "riego": True}).encode()
+    con.request("POST", "/planificar", body=iter([cuerpo[:10], cuerpo[10:]]),
+                headers={"Content-Type": "application/json"}, encode_chunked=True)
+    r = con.getresponse()
+    assert r.status == 200, r.read()
+    assert motor.llamadas[-1][:3] == (2.9275, -75.2875, True)
+    con.close()
+
+
+def test_un_cuerpo_chunked_enorme_es_413(servidor: Any) -> None:
+    import http.client
+
+    base, _ = servidor
+    host, puerto = base.removeprefix("http://").split(":")
+    con = http.client.HTTPConnection(host, int(puerto), timeout=10)
+    con.request("POST", "/planificar", body=iter([b"x" * 3000, b"y" * 3000]), encode_chunked=True)
+    assert con.getresponse().status == 413
+    con.close()
