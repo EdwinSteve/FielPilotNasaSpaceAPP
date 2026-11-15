@@ -81,9 +81,9 @@ services:
   # Para depurar desde el equipo, agregue:  ports: ["127.0.0.1:8090:8090"]
   surco-planificador:
     build:
-      context: ./ml/planificador
-      additional_contexts:
-        catalogo: ./data/catalogo_cultivos/datos
+      # Desde la raíz: la imagen también copia el catálogo de cultivos (ver /.dockerignore)
+      context: .
+      dockerfile: ml/planificador/Dockerfile
     environment:
       # bf: oráculo sobre el pronóstico (la red no le gana, MODELO.md); red: la red ONNX
       SURCO_MOTOR: bf

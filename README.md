@@ -242,6 +242,10 @@ docker compose up --build        # → http://localhost:3000
 
 Levanta PostgreSQL, la API y el frontend. La primera vez genera un `JWT_SECRETO` aleatorio que nunca queda en el repositorio. `docker compose down` lo detiene; `docker compose down -v` borra también los datos. Detalle en [docs/docker.md](docs/docker.md).
 
+### En internet (Render)
+
+[render.yaml](render.yaml) despliega la base de datos, el planificador, la API y el frontend en Render como un Blueprint (**New > Blueprint**). Paso a paso, variables y límites del plan gratuito en [docs/despliegue-render.md](docs/despliegue-render.md).
+
 ### Para programar (con recarga automática)
 
 Requisitos: **Java 21**, **Node 22** y **Docker** (para PostgreSQL). Maven no hace falta: el backend trae `./mvnw`.

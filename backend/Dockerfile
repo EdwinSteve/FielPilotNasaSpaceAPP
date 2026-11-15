@@ -20,5 +20,8 @@ COPY --from=compilacion /app/app.jar app.jar
 # Numérico: así Kubernetes puede verificar runAsNonRoot
 USER 10001
 EXPOSE 8080
-# Usa hasta el 75 % de la memoria del contenedor para el heap
-ENTRYPOINT ["java", "-XX:MaxRAMPercentage=75", "-jar", "app.jar"]
+# Usa hasta el 75 % de la memoria del contenedor para el heap. Es variable para poder cambiarlo sin
+# reconstruir: en Render (512 MB en el plan gratuito) render.yaml deja menos heap y un GC más liviano.
+ENV JAVA_TOOL_OPTIONS="-XX:MaxRAMPercentage=75"
+# Escucha en $PORT si la plataforma lo define (Render); si no, en 8080 (application.yml)
+ENTRYPOINT ["java", "-jar", "app.jar"]

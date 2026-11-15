@@ -10,7 +10,9 @@ spring:
       # Las variables de entorno reales tienen prioridad sobre ambos.
       - optional:configtree:${SURCO_SECRETOS:/run/secrets/surco}/
   datasource:
-    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/surco}
+    # DATABASE_URL completa (Docker Compose, .env) o, si no está, por partes: Render entrega la base como
+    # host, puerto y nombre por separado (render.yaml), y su URL postgres:// no sirve para JDBC.
+    url: ${DATABASE_URL:jdbc:postgresql://${DATABASE_HOST:localhost}:${DATABASE_PORT:5432}/${DATABASE_NAME:surco}}
     username: ${DATABASE_USER:surco}
     password: ${DATABASE_PASSWORD:surco}
   jpa:

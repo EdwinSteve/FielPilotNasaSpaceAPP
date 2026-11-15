@@ -54,4 +54,13 @@ class ClientePlanificadorTest {
 			() -> cliente.planificar(2.9, -75.3, false, null));
 		assertThat(e.codigo()).isEqualTo("RECOMENDACION_NO_DISPONIBLE");
 	}
+
+	@Test
+	void aceptaLaUrlDelPlanificadorConOSinEsquema() {
+		assertThat(ClientePlanificador.urlBase("https://field-shift-planificador.onrender.com/"))
+			.isEqualTo("https://field-shift-planificador.onrender.com");
+		assertThat(ClientePlanificador.urlBase("field-shift-planificador:10000"))
+			.isEqualTo("http://field-shift-planificador:10000");
+		assertThat(ClientePlanificador.urlBase("http://localhost:8090")).isEqualTo("http://localhost:8090");
+	}
 }

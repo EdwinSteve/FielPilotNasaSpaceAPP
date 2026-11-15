@@ -1,0 +1,17 @@
+# Solo lo usa la imagen que se construye desde la raíz del repositorio: el planificador
+# (ml/planificador/Dockerfile). El backend y el frontend usan su propia carpeta como contexto
+# y su propio .dockerignore.
+#
+# Lista blanca: se excluye todo y se incluye solo lo que la imagen copia.
+*
+!ml/planificador/pyproject.toml
+!ml/planificador/uv.lock
+!ml/planificador/surco_planificador
+!ml/planificador/configs
+!ml/planificador/modelos
+!data/catalogo_cultivos/datos/cultivos.json
+
+**/__pycache__
+**/*.pyc
+**/.pytest_cache
+**/.ruff_cache
