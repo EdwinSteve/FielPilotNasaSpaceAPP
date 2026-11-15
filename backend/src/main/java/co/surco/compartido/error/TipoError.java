@@ -19,7 +19,10 @@ public enum TipoError {
 	NO_PROCESABLE,
 	/** Cuenta bloqueada temporalmente: 423. */
 	BLOQUEADO,
-	/** Una fuente externa de la que dependemos (NASA POWER, SoilGrids) respondió mal o no respondió: 502. */
+	/**
+	 * Una fuente externa de la que dependemos (NASA POWER, SoilGrids, IDEAM) respondió mal, no respondió o envió
+	 * algo que no entendemos (un nivel de alerta nuevo del IDEAM): 502.
+	 */
 	FUENTE_EXTERNA,
 	/** Un servicio del que dependemos (el modelo de recomendación) no responde: 503. */
 	NO_DISPONIBLE

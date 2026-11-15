@@ -12,8 +12,10 @@
  * Solo el pronóstico es obligatorio: si NASA POWER o el IDEAM no responden, esa parte llega vacía.
  *
  * <p>Los clientes de NASA POWER y del IDEAM y el cálculo de sequía vienen de la rama
- * {@code feature/backend}, adaptados a las capas de este monolito. Cuando el módulo {@code alertas}
- * exista (ADR 0006), los avisos del IDEAM pasan allá y este módulo los consulta por su API pública.
+ * {@code feature/backend}, adaptados a las capas de este monolito. El módulo {@code alertas} ya expone
+ * la alerta del IDEAM y el indicador de sequía para la pantalla /alertas (GET /api/v1/alerts/flood y
+ * /alerts/drought) con sus propios clientes. Pendiente: que este módulo los consulte por la API pública
+ * de {@code alertas} en vez de repetir los clientes.
  *
  * <p>No tiene tablas: guarda cada respuesta 10 minutos en memoria.
  */

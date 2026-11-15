@@ -105,7 +105,7 @@ Cada alerta guarda su fuente, su vigencia y el boletín de origen, y no se notif
 | Mis lotes | `/lotes` | Mapa para dibujar el lote, tipo de riego y desde cuándo puede sembrar |
 | Resumen climatológico | `/lotes/[id]/diagnostico` | Lluvia, temperatura, humedad, verdor y suelo, con su fuente |
 | Plan de siembra ✅ | `/lotes/[id]/rotacion` | Las 3 mejores rotaciones de 2–3 temporadas con su grado, frecuencia de éxito, agua ahorrada y nitrógeno; el ranking de cultivos del modelo; la lluvia esperada por mes; y el ciclo que elige el agricultor. Efecto en el suelo y simulador: pendientes |
-| Alertas | `/alertas` | Pronósticos de lluvia y sequía del IDEAM para sus fincas |
+| Alertas ✅ | `/alertas` | Alerta hidrológica vigente del IDEAM (ríos y quebradas) e indicador de sequía con la lluvia de NASA POWER para cada terreno |
 | Perfil | `/perfil` | Datos de la cuenta |
 
 ### 3.6 API planeada (`/api/v1`)
@@ -120,7 +120,8 @@ Cada alerta guarda su fuente, su vigencia y el boletín de origen, y no se notif
 | `recomendacion` ✅ | `POST /lotes/{id}/recomendaciones?siembra=` · `GET .../actual` · `GET .../{recId}` · `GET /recomendacion/terrenos/{id}` | Cultivos del modelo estacional para el lote, con puntaje 0–1, filtros de altitud y pH y lluvia esperada. Errores: 422 sin suelo, 502 fuente caída, 503 modelo no disponible |
 | `rotacion` ✅ | `POST /lotes/{id}/rotaciones` · `GET /lotes/{id}/rotaciones` · `PUT` y `GET /lotes/{id}/seleccion` | Las 3 mejores rotaciones (algoritmo v1, [ADR 0008](docs/decisiones/0008-recomendacion-y-rotacion.md)) y el ciclo elegido |
 | `rotacion` | `POST /lotes/{id}/rotaciones/simular` (pendiente) | Recalcula el plan con un escenario de temperatura y lluvia |
-| `alertas` | `GET /alertas` · `PATCH /alertas/{id}/leida` | Alertas vigentes del productor |
+| `alertas` ✅ | `GET /alerts/flood?lat=&lon=` · `GET /alerts/drought?lat=&lon=` | Alerta hidrológica del IDEAM para la subzona del punto y el indicador propio de sequía (lluvia de 30 días frente a la normal, NASA POWER). Errores: 400 `UBICACION_FUERA_DE_COLOMBIA`, 502 `NIVEL_DESCONOCIDO`, 503 `FUENTE_NO_DISPONIBLE` |
+| `alertas` | `GET /alertas` · `PATCH /alertas/{id}/leida` (pendiente) | Alertas guardadas del productor y su estado de leída |
 | `alertas` | `GET /lotes/{id}/pronostico` | Pronóstico vigente del IDEAM para el lote |
 
 Toda ruta exige `Authorization: Bearer <access_token>` salvo registro, login, política de datos y territorio. Los errores siempre llegan como `{ "code", "message", "details"? }`.

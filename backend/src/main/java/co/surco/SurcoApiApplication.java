@@ -14,6 +14,9 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 public class SurcoApiApplication {
 
 	public static void main(String[] args) {
+		// El servidor del IDEAM (alertas) no envía la cadena completa de su certificado: así Java descarga
+		// el certificado intermedio que le falta en vez de fallar con PKIX path building failed.
+		System.setProperty("com.sun.security.enableAIAcaIssuers", "true");
 		SpringApplication.run(SurcoApiApplication.class, args);
 	}
 }
