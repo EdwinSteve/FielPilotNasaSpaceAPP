@@ -1,23 +1,29 @@
 "use client";
 
-// La pantalla de rotación exige sesión: usa el usuario real (GET /usuarios/me) en la navegación
-// y le da un botón para cerrar sesión. El plan sigue viniendo de obtenerPlanRotacion.
-import { BotonCerrarSesion, SesionRequerida } from "@/modulos/identidad";
-import type { PlanRotacion } from "../tipos";
+// La pantalla de rotación exige sesión: usa el usuario real (GET /usuarios/me) en la navegación y le
+// da un botón para cerrar sesión. El plan, los lotes y la elección vienen del backend (usePlanRotacion).
+import { BotonCerrarSesion, SesionRequerida, type UsuarioSesion } from "@/modulos/identidad";
+import { usePlanRotacion } from "../hooks/usePlanRotacion";
+import { EstadoRotacion } from "./EstadoRotacion";
 import { PantallaRotacion } from "./PantallaRotacion";
 
-export function RotacionConSesion({ plan }: { plan: PlanRotacion }) {
+function PlanDelLote({ loteId, usuario }: { loteId: string; usuario: UsuarioSesion }) {
+  const { estado, reintentar, elegir, eligiendo, errorSeleccion } = usePlanRotacion(loteId);
+  if (estado.fase !== "listo") return <EstadoRotacion estado={estado} alReintentar={reintentar} />;
+
+  const { nombreCompleto, iniciales, rol, municipio } = usuario;
   return (
-    <SesionRequerida>
-      {({ nombreCompleto, iniciales, rol, municipio }) => (
-        <PantallaRotacion
-          plan={{ ...plan, usuario: { nombreCompleto, iniciales, rol, municipio } }}
-          acciones={{
-            lateral: <BotonCerrarSesion variante="lateral" />,
-            movil: <BotonCerrarSesion variante="movil" />,
-          }}
-        />
-      )}
-    </SesionRequerida>
+    <PantallaRotacion
+      plan={{ ...estado.plan, usuario: { nombreCompleto, iniciales, rol, municipio } }}
+      seleccion={{ alElegir: elegir, eligiendo, error: errorSeleccion }}
+      acciones={{
+        lateral: <BotonCerrarSesion variante="lateral" />,
+        movil: <BotonCerrarSesion variante="movil" />,
+      }}
+    />
   );
+}
+
+export function RotacionConSesion({ loteId }: { loteId: string }) {
+  return <SesionRequerida>{(usuario) => <PlanDelLote loteId={loteId} usuario={usuario} />}</SesionRequerida>;
 }
