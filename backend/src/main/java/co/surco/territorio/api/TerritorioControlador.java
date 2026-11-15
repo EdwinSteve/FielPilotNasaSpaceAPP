@@ -1,5 +1,7 @@
 package co.surco.territorio.api;
 
+import co.surco.compartido.error.ErrorDominio;
+import co.surco.compartido.error.TipoError;
 import co.surco.territorio.ConsultaTerritorio;
 import co.surco.territorio.Departamento;
 import co.surco.territorio.Municipio;
@@ -28,5 +30,15 @@ class TerritorioControlador {
 	@GetMapping("/municipios")
 	List<Municipio> municipios(@RequestParam String departamento) {
 		return territorio.municipiosDe(departamento);
+	}
+
+	/** Sugerencia de municipio para un punto del mapa (la cabecera más cercana). 404 fuera de Colombia. */
+	@GetMapping("/municipios/cercano")
+	Municipio cercano(@RequestParam double lat, @RequestParam double lon) {
+		if (lat < -4.3 || lat > 13.6 || lon < -82.0 || lon > -66.8) {
+			throw new ErrorDominio("TERRITORIO_FUERA_DE_COLOMBIA", "Ese punto no queda en Colombia.", TipoError.NO_ENCONTRADO);
+		}
+		return territorio.municipioMasCercano(lat, lon).orElseThrow(
+			() -> new ErrorDominio("TERRITORIO_FUERA_DE_COLOMBIA", "Ese punto no queda en Colombia.", TipoError.NO_ENCONTRADO));
 	}
 }

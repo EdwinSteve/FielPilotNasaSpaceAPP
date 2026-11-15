@@ -1,0 +1,48 @@
+# Entrenamiento de PlanificadorEstacionalNet en una RTX 5060 Ti 16 GB (README.md §8).
+
+modelo:
+  canales_historia: 64
+  dilataciones: [1, 2, 4, 8, 16, 32]
+  canales_pronostico: 48
+  dim_miembro: 96
+  dim_conjunto: 128
+  canales_climatologia: 32
+  oculto_estatico: 128
+  embebido: 256
+  oculto_cabeza: 192
+  dropout: 0.1
+
+optimizacion:
+  tamano_lote: 1024          # fechas-sitio; cada una puntúa todos los cultivos
+  lr: 0.001
+  decaimiento_pesos: 0.01
+  fraccion_calentamiento: 0.1
+  recorte_gradiente: 1.0
+  max_epocas: 40
+  paciencia: 6
+  miembros_min: 10           # cada lote ve entre 10 y 25 miembros: robusto al tamaño del conjunto
+
+pesos_perdida:
+  rendimiento: 1.0
+  rendimiento_riego: 0.5
+  exito: 0.5
+  riego: 0.5
+  estres: 0.2
+
+ejecucion:
+  precision: bf16            # Blackwell hace bf16 nativo
+  compilar: auto             # torch.compile solo donde hay Triton (no en Windows)
+  semilla: 7
+  deterministico_final: true
+  semillas_conjunto: [7, 11, 13, 17, 19]   # conjunto profundo de 5 redes: mejor calibración
+  pronostico_en: auto        # auto: GPU si cabe; si no, RAM fijada (pinned)
+
+ajuste:
+  pruebas: 16
+  epocas: 12
+  espacio:
+    lr: [0.0003, 0.003]      # log-uniforme
+    canales_historia: [48, 64, 96]
+    canales_pronostico: [32, 48, 64]
+    dropout: [0.0, 0.2]
+    tamano_lote: [512, 1024, 2048]

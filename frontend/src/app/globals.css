@@ -35,9 +35,13 @@
   --color-verde-niebla: #a9c2b3;
 
   --color-lluvia: #0369a1;
+  --color-lluvia-fondo: #e0f2fe;
   --color-naranja: #ea580c;
   --color-naranja-texto: #c2410c;
   --color-naranja-fondo: #ffedd5;
+  /* Barras de las escalas de niveles (alertas IDEAM y sequía) */
+  --color-amarilla: #eab308;
+  --color-roja: #dc2626;
   --color-amarilla-texto: #a16207;
   --color-amarilla-fondo: #fef9c3;
   --color-roja-texto: #b91c1c;

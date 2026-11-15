@@ -29,6 +29,8 @@ data/raw/*
 *.tif
 *.tiff
 ml/modelos_exportados/**/*.ubj
+# Planificador estacional: descargas, pronósticos, etiquetas y corridas (decenas de GB)
+data/planificador/
 mlruns/
 
 # Editor / SO

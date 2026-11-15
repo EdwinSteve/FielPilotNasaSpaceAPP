@@ -1,4 +1,5 @@
-// Menú para cambiar de lote: "El Mirador · 4,2 ha". Al elegir otro, abre el plan de ese lote.
+// Menú para cambiar de lote: "El Mirador · 4,2 ha". Al elegir otro, abre `destino(id)`
+// (por defecto, el plan de siembra de ese lote).
 "use client";
 
 import { useRouter } from "next/navigation";
@@ -8,7 +9,16 @@ import type { LoteOpcion } from "../tipos";
 
 const etiqueta = (l: LoteOpcion) => `${l.nombre} · ${l.area}`;
 
-export function SelectorLote({ lotes, actual }: { lotes: LoteOpcion[]; actual: LoteOpcion }) {
+const planDeSiembra = (id: string) => `/lotes/${id}/rotacion`;
+
+interface Props {
+  lotes: LoteOpcion[];
+  actual: LoteOpcion;
+  /** Ruta que se abre al elegir un lote. */
+  destino?: (loteId: string) => string;
+}
+
+export function SelectorLote({ lotes, actual, destino = planDeSiembra }: Props) {
   const router = useRouter();
   const idMenu = useId();
   const [abierto, setAbierto] = useState(false);
@@ -34,7 +44,7 @@ export function SelectorLote({ lotes, actual }: { lotes: LoteOpcion[]; actual: L
 
   const elegir = (lote: LoteOpcion) => {
     cerrar();
-    if (lote.id !== actual.id) router.push(`/lotes/${lote.id}/rotacion`);
+    if (lote.id !== actual.id) router.push(destino(lote.id));
   };
 
   const teclado = (e: React.KeyboardEvent<HTMLLIElement>, i: number) => {

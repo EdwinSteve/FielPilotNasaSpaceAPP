@@ -1,0 +1,234 @@
+{
+ "lote": {
+  "lat": 5.07,
+  "lon": -75.52,
+  "elevacion_m": 2116.0,
+  "ph_suelo": 5.1,
+  "riego": false
+ },
+ "generado": "2026-11-15",
+ "pronostico": {
+  "fuente": "analogos",
+  "oni": 2.16,
+  "oni_tendencia": 1.21,
+  "fase_enso": "nino",
+  "panorama": [
+   {
+    "desde": "2026-11-16",
+    "hasta": "2026-12-15",
+    "lluvia_mm_p10": 82,
+    "lluvia_mm_p50": 193,
+    "lluvia_mm_p90": 274,
+    "lluvia_normal_mm": 227,
+    "anomalia_lluvia_pct": -15,
+    "tmax_c": 21.5,
+    "tmin_c": 12.6,
+    "tmax_normal_c": 20.1
+   },
+   {
+    "desde": "2026-12-16",
+    "hasta": "2027-01-14",
+    "lluvia_mm_p10": 43,
+    "lluvia_mm_p50": 93,
+    "lluvia_mm_p90": 211,
+    "lluvia_normal_mm": 165,
+    "anomalia_lluvia_pct": -44,
+    "tmax_c": 23.1,
+    "tmin_c": 12.7,
+    "tmax_normal_c": 20.5
+   },
+   {
+    "desde": "2027-01-15",
+    "hasta": "2027-02-13",
+    "lluvia_mm_p10": 35,
+    "lluvia_mm_p50": 96,
+    "lluvia_mm_p90": 157,
+    "lluvia_normal_mm": 152,
+    "anomalia_lluvia_pct": -37,
+    "tmax_c": 23.9,
+    "tmin_c": 13.3,
+    "tmax_normal_c": 20.9
+   },
+   {
+    "desde": "2027-02-14",
+    "hasta": "2027-03-15",
+    "lluvia_mm_p10": 44,
+    "lluvia_mm_p50": 117,
+    "lluvia_mm_p90": 188,
+    "lluvia_normal_mm": 181,
+    "anomalia_lluvia_pct": -35,
+    "tmax_c": 24.1,
+    "tmin_c": 14.0,
+    "tmax_normal_c": 21.1
+   },
+   {
+    "desde": "2027-03-16",
+    "hasta": "2027-04-14",
+    "lluvia_mm_p10": 93,
+    "lluvia_mm_p50": 163,
+    "lluvia_mm_p90": 249,
+    "lluvia_normal_mm": 221,
+    "anomalia_lluvia_pct": -26,
+    "tmax_c": 23.6,
+    "tmin_c": 14.0,
+    "tmax_normal_c": 21.0
+   },
+   {
+    "desde": "2027-04-15",
+    "hasta": "2027-05-14",
+    "lluvia_mm_p10": 101,
+    "lluvia_mm_p50": 209,
+    "lluvia_mm_p90": 301,
+    "lluvia_normal_mm": 259,
+    "anomalia_lluvia_pct": -20,
+    "tmax_c": 22.2,
+    "tmin_c": 13.2,
+    "tmax_normal_c": 21.0
+   }
+  ]
+ },
+ "mejor": {
+  "siembra": "2026-12-06",
+  "cultivo": {
+   "cultivo": "maiz",
+   "rend_p10": 0.409,
+   "rend_p50": 0.472,
+   "rend_p90": 0.546,
+   "prob_exito": 0.047,
+   "riego_mm_p50": 6.861,
+   "rend_con_riego_p50": 0.485,
+   "nombre": "Maíz",
+   "ciclo_dias": 140,
+   "cosecha": "2027-04-25",
+   "apto": true,
+   "razon_no_apto": null
+  }
+ },
+ "opciones": [
+  {
+   "siembra": "2026-11-16",
+   "inicio_pronostico": "2026-11-01",
+   "cultivos": [
+    {
+     "cultivo": "maiz",
+     "rend_p10": 0.388,
+     "rend_p50": 0.451,
+     "rend_p90": 0.525,
+     "prob_exito": 0.016,
+     "riego_mm_p50": 29.34,
+     "rend_con_riego_p50": 0.479,
+     "nombre": "Maíz",
+     "ciclo_dias": 140,
+     "cosecha": "2027-04-05",
+     "apto": true,
+     "razon_no_apto": null
+    },
+    {
+     "cultivo": "papa",
+     "rend_p10": 0.02,
+     "rend_p50": 0.173,
+     "rend_p90": 0.431,
+     "prob_exito": 0.002,
+     "riego_mm_p50": 79.625,
+     "rend_con_riego_p50": 0.223,
+     "nombre": "Papa",
+     "ciclo_dias": 150,
+     "cosecha": "2027-04-15",
+     "apto": true,
+     "razon_no_apto": null
+    },
+    {
+     "cultivo": "arracacha",
+     "rend_p10": 0.047,
+     "rend_p50": 0.078,
+     "rend_p90": 0.123,
+     "prob_exito": 0.0,
+     "riego_mm_p50": 49.228,
+     "rend_con_riego_p50": 0.084,
+     "nombre": "Arracacha",
+     "ciclo_dias": 360,
+     "cosecha": "2027-11-11",
+     "apto": true,
+     "razon_no_apto": null
+    },
+    {
+     "cultivo": "arroz_secano",
+     "rend_p10": 0.325,
+     "rend_p50": 0.397,
+     "rend_p90": 0.464,
+     "prob_exito": 0.004,
+     "riego_mm_p50": 137.989,
+     "rend_con_riego_p50": 0.549,
+     "nombre": "Arroz (secano mecanizado)",
+     "ciclo_dias": 125,
+     "cosecha": "2027-03-21",
+     "apto": false,
+     "razon_no_apto": "Se cultiva entre 0 y 800 m de altitud; su terreno está a 2116 m."
+    }
+   ]
+  },
+  {
+   "siembra": "2026-11-21",
+   "inicio_pronostico": "2026-11-01",
+   "cultivos": [
+    {
+     "cultivo": "maiz",
+     "rend_p10": 0.392,
+     "rend_p50": 0.455,
+     "rend_p90": 0.531,
+     "prob_exito": 0.021,
+     "riego_mm_p50": 21.047,
+     "rend_con_riego_p50": 0.48,
+     "nombre": "Maíz",
+     "ciclo_dias": 140,
+     "cosecha": "2027-04-10",
+     "apto": true,
+     "razon_no_apto": null
+    },
+    {
+     "cultivo": "papa",
+     "rend_p10": 0.016,
+     "rend_p50": 0.164,
+     "rend_p90": 0.428,
+     "prob_exito": 0.003,
+     "riego_mm_p50": 74.692,
+     "rend_con_riego_p50": 0.204,
+     "nombre": "Papa",
+     "ciclo_dias": 150,
+     "cosecha": "2027-04-20",
+     "apto": true,
+     "razon_no_apto": null
+    },
+    {
+     "cultivo": "arracacha",
+     "rend_p10": 0.048,
+     "rend_p50": 0.079,
+     "rend_p90": 0.124,
+     "prob_exito": 0.0,
+     "riego_mm_p50": 49.312,
+     "rend_con_riego_p50": 0.085,
+     "nombre": "Arracacha",
+     "ciclo_dias": 360,
+     "cosecha": "2027-11-16",
+     "apto": true,
+     "razon_no_apto": null
+    },
+    {
+     "cultivo": "arroz_secano",
+     "rend_p10": 0.326,
+     "rend_p50": 0.401,
+     "rend_p90": 0.467,
+     "prob_exito": 0.005,
+     "riego_mm_p50": 135.307,
+     "rend_con_riego_p50": 0.554,
+     "nombre": "Arroz (secano mecanizado)",
+     "ciclo_dias": 125,
+     "cosecha": "2027-03-26",
+     "apto": false,
+     "razon_no_apto": "Se cultiva entre 0 y 800 m de altitud; su terreno está a 2116 m."
+    }
+   ]
+  }
+ ],
+ "modelo": "planificador-2026-11-15"
+}

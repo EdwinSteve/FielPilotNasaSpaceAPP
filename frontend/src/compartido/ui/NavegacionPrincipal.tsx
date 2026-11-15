@@ -18,12 +18,12 @@ interface Props {
 }
 
 export function NavegacionPrincipal({ activa, usuario, loteId, alertasPendientes, accionUsuario }: Props) {
-  // `activo`/`tabActivo`: variante resaltada del icono; Terreno y Alertas aún no la tienen en el diseño.
+  // `activo`/`tabActivo`: variante resaltada del icono; Terreno aún no la tiene en el diseño.
   const secciones = [
     { id: "inicio", nombre: "Inicio", corto: "Inicio", href: "/inicio", icono: "home-nav", activo: "home-blanco", iconoTab: "home-tab-inactivo", tabActivo: "home-tab" },
     { id: "terreno", nombre: "Mi terreno", corto: "Terreno", href: "/lotes", icono: "pin-nav", activo: "pin-nav", iconoTab: "pin-tab", tabActivo: "pin-tab" },
     { id: "rotacion", nombre: "Cultivos y rotación", corto: "Cultivos", href: `/lotes/${loteId}/rotacion`, icono: "rotate-nav", activo: "rotate-blanco", iconoTab: "rotate-tab", tabActivo: "rotate-tab-activo" },
-    { id: "alertas", nombre: "Alertas IDEAM", corto: "Alertas", href: "/alertas", icono: "alert-nav", activo: "alert-nav", iconoTab: "alert-tab", tabActivo: "alert-tab" },
+    { id: "alertas", nombre: "Alertas IDEAM", corto: "Alertas", href: "/alertas", icono: "alert-nav", activo: "alert-blanco", iconoTab: "alert-tab", tabActivo: "alert-tab-activo" },
   ] as const;
 
   return (

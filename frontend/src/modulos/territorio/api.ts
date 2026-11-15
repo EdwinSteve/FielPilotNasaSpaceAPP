@@ -11,3 +11,8 @@ export async function listarDepartamentos(): Promise<Departamento[]> {
 export async function listarMunicipios(departamento: string): Promise<Municipio[]> {
   return peticion<Municipio[]>("GET", `/territorio/municipios?departamento=${encodeURIComponent(departamento)}`);
 }
+
+/** GET /territorio/municipios/cercano?lat=&lon=: el municipio de la cabecera más cercana (una sugerencia). */
+export async function municipioCercano(lat: number, lon: number): Promise<Municipio> {
+  return peticion<Municipio>("GET", `/territorio/municipios/cercano?lat=${lat.toFixed(6)}&lon=${lon.toFixed(6)}`);
+}
