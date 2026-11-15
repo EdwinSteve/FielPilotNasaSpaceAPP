@@ -1,0 +1,28 @@
+# Factor de respuesta del rendimiento al agua (Ky estacional), FAO-33 vía FAO-56 Tabla 24.
+# El catálogo surco_agro no trae Ky; aquí se agrega con su fuente. Un cultivo que no aparece usa
+# la convención por tolerancia a la sequía de su ficha (al final), y el bundle lo deja registrado.
+
+cultivos:
+  maiz:          {ky: 1.25, metodo: fao33}
+  sorgo:         {ky: 0.90, metodo: fao33}
+  frijol:        {ky: 1.15, metodo: fao33}
+  soya:          {ky: 0.85, metodo: fao33}
+  arveja:        {ky: 1.15, metodo: fao33}
+  mani:          {ky: 0.70, metodo: fao33}
+  papa:          {ky: 1.10, metodo: fao33}
+  papa_criolla:  {ky: 1.10, metodo: analogo, analogo: papa}
+  tomate:        {ky: 1.05, metodo: fao33}
+  pimenton:      {ky: 1.10, metodo: fao33}
+  cebolla_bulbo: {ky: 1.10, metodo: fao33}
+  cebolla_larga: {ky: 1.10, metodo: analogo, analogo: cebolla_bulbo}
+  repollo:       {ky: 0.95, metodo: fao33}
+  algodon:       {ky: 0.85, metodo: fao33}
+  banano:        {ky: 1.28, metodo: fao33, nota: "FAO-33 da 1,2–1,35; se usa el punto medio"}
+  ahuyama:       {ky: 1.10, metodo: analogo, analogo: "sandía (Cucurbitaceae)"}
+  crotalaria:    {ky: 0.85, metodo: analogo, analogo: soya}
+
+# Convención del proyecto cuando FAO-33 no tiene el cultivo ni un análogo de la misma familia.
+por_tolerancia_sequia:
+  alta: 0.85
+  media: 1.05
+  baja: 1.20

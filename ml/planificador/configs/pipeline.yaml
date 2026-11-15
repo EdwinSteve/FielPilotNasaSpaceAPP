@@ -1,0 +1,56 @@
+# Datos, etiquetas y divisiones del planificador estacional (ver README.md §4–§6).
+
+puntos:
+  # Un punto por celda de NASA POWER (0,5° × 0,625°), tomado de los centroides DIVIPOLA.
+  # Con los 1.122 municipios salen ~202 celdas; el tope solo actúa si se agregan más fuentes.
+  max_puntos: 260
+  semilla: 7
+
+clima:
+  primer_dia: 1981-01-01
+  ultimo_dia: 2025-12-31       # solo años cerrados: los días recientes de POWER son provisionales
+  gradiente_c_por_km: -6.5
+  max_hueco_dias: 3
+  max_fraccion_enmascarada: 0.02
+
+suelo:
+  radio_busqueda_km: 10
+
+pronostico:
+  # ECMWF SEAS5 (system 51) vía Copernicus C3S, dataset seasonal-original-single-levels.
+  # Retropronósticos 1981–2016 (25 miembros) y pronósticos operativos desde 2017 (51; se usan 25
+  # para que entrenamiento y prueba vean el mismo tamaño de conjunto).
+  dataset: seasonal-original-single-levels
+  centro: ecmwf
+  sistema: "51"
+  primer_anio: 1982            # el primer año con 365 días de historia POWER antes de sembrar
+  ultimo_anio: 2025
+  miembros: 25
+  dias_lead: 215               # 5160 h: el alcance diario de SEAS5
+  area: [14, -80, -5, -66]     # N, O, S, E: Colombia con margen de una celda
+  # C3S publica ECMWF el día 6 a las 12 UTC: un pronóstico iniciado el día 1 se usa desde el 7.
+  dia_disponible: 7
+  descargas_paralelas: 3
+  # Corrección de sesgo contra POWER en el punto, por mes de inicio y bloque de 30 días de lead,
+  # ajustada SOLO con años de entrenamiento (sin fuga hacia validación y prueba).
+  bloque_lead_dias: 30
+
+etiquetas:
+  # Siembras por inicio de pronóstico, en días desde el día 1 del mes de inicio. 6, 11, ... 31
+  # quedan alineadas con péntadas del pronóstico y antes de que salga el siguiente (día 7).
+  desplazamientos_siembra: [6, 11, 16, 21, 26, 31]
+  dias_previos_balance: 30     # el balance hídrico arranca 30 días antes de sembrar
+  umbral_exito: 0.6            # P(rendimiento relativo >= 0,6), convención del proyecto
+  max_ciclo_dias: 365
+  excluir: [arroz_riego]       # arroz inundado: el balance de zona radicular no lo representa
+  procesos: 4                  # procesos del oráculo en CPU (cada uno usa ~1,5 GB de RAM)
+
+climatologia:
+  anios_base: [1991, 2020]
+  ventana_suavizado: 31
+
+divisiones:                    # por año de siembra
+  entrenamiento: [1982, 2010]
+  validacion: [2011, 2016]
+  prueba: [2017, 2025]         # solo pronósticos operativos reales: la prueba más honesta
+  departamentos_reservados: ["41"]   # Huila, para la prueba espacial
