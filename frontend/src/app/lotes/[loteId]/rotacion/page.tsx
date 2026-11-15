@@ -1,11 +1,9 @@
 // Ruta /lotes/[loteId]/rotacion: página delgada que compone componentes de src/modulos.
-// Exige sesión (RotacionConSesion manda a /ingresar si no la hay).
-import { notFound } from "next/navigation";
-import { obtenerPlanRotacion, RotacionConSesion } from "@/modulos/rotacion";
+// Exige sesión. El plan sale del backend con el token del navegador, así que se pide en el cliente
+// (RotacionConSesion): mientras tanto muestra en qué va, y "no encontrado" si el lote no es suyo.
+import { RotacionConSesion } from "@/modulos/rotacion";
 
 export default async function Page({ params }: { params: Promise<{ loteId: string }> }) {
   const { loteId } = await params;
-  const plan = await obtenerPlanRotacion(loteId);
-  if (!plan) notFound();
-  return <RotacionConSesion plan={plan} />;
+  return <RotacionConSesion loteId={loteId} />;
 }

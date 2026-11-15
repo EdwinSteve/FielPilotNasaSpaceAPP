@@ -1,5 +1,6 @@
 // Datos de ejemplo del plan de siembra (los mismos del diseño en Figma: Rotación de cultivos).
-// Salen del mock del repo anterior (valle de Neiva); el lote cambia según el selector.
+// Ninguna ruta los usa: la pantalla de rotación pide el plan real al backend (rotacion/api.ts).
+// Quedan para pruebas y para los datos de ejemplo de alertas (lotesMock).
 import type { LoteOpcion, PlanRotacion } from "@/modulos/rotacion/tipos";
 
 export const lotesMock: LoteOpcion[] = [
@@ -10,6 +11,8 @@ export const lotesMock: LoteOpcion[] = [
 
 export function planRotacionMock(lote: LoteOpcion): PlanRotacion {
   return {
+    planId: "plan-de-ejemplo",
+    seleccion: null,
     usuario: { nombreCompleto: "Carlos Perdomo", iniciales: "CP", rol: "Agricultor", municipio: "Neiva" },
     alertasPendientes: 3,
     finca: { nombre: "Finca La Esperanza", municipio: "Neiva" },
@@ -23,6 +26,7 @@ export function planRotacionMock(lote: LoteOpcion): PlanRotacion {
         frecuenciaExito: 8,
         aguaAhorrada: "2.100 m³",
         aporteNitrogeno: "La soya le deja al sorgo unos 60 kg de nitrógeno por hectárea",
+        temporadas: [],
       },
       {
         id: "arroz-soya-maiz",
@@ -31,6 +35,7 @@ export function planRotacionMock(lote: LoteOpcion): PlanRotacion {
         frecuenciaExito: 7,
         aguaAhorrada: "900 m³",
         aporteNitrogeno: "La soya le deja al maíz unos 60 kg de nitrógeno por hectárea",
+        temporadas: [],
       },
       {
         id: "sorgo-mani-maiz",
@@ -39,6 +44,7 @@ export function planRotacionMock(lote: LoteOpcion): PlanRotacion {
         frecuenciaExito: 7,
         aguaAhorrada: "1.500 m³",
         aporteNitrogeno: "El maní le deja al maíz unos 40 kg de nitrógeno por hectárea",
+        temporadas: [],
       },
     ],
     ranking: [

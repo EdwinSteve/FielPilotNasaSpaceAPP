@@ -1,4 +1,5 @@
-// Las 3 mejores rotaciones del lote. Cada tarjeta se abre y se cierra; la primera llega abierta.
+// Las 3 mejores rotaciones del lote. Cada tarjeta se abre y se cierra; la primera llega abierta (o la
+// elegida, si ya hay una). "Elegir este ciclo" la guarda como plan activo del lote.
 "use client";
 
 import { Fragment, useId, useState } from "react";
@@ -6,6 +7,19 @@ import { Icono } from "@/compartido/ui/Icono";
 import type { Rotacion } from "../tipos";
 
 const textoFrecuencia = (n: number) => `${n} de cada 10 años le va bien`;
+
+const fecha = new Intl.DateTimeFormat("es-CO", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
+/** "2026-11-16" → "16 nov 2026" */
+const formatearFecha = (iso: string) => fecha.format(new Date(`${iso}T00:00:00Z`)).replace(/\./g, "");
+
+/** Elegir un ciclo: la pantalla con datos reales lo pasa; sin esto no se muestra el botón. */
+export interface AccionesSeleccion {
+  alElegir: (rotacionId: string) => void;
+  /** La rotación que se está guardando ahora. */
+  eligiendo: string | null;
+  /** Por qué no se pudo guardar la última elección. */
+  error: string | null;
+}
 
 function Etiqueta({ children, destacada = false }: { children: React.ReactNode; destacada?: boolean }) {
   return (
@@ -24,9 +38,11 @@ interface TarjetaProps {
   posicion: number;
   abierta: boolean;
   onAlternar: () => void;
+  elegida: boolean;
+  acciones?: AccionesSeleccion;
 }
 
-function TarjetaRotacion({ rotacion, posicion, abierta, onAlternar }: TarjetaProps) {
+function TarjetaRotacion({ rotacion, posicion, abierta, onAlternar, elegida, acciones }: TarjetaProps) {
   const idPanel = useId();
   const mejor = posicion === 1;
   const secuencia = rotacion.secuencia.join(" → ");
@@ -63,6 +79,12 @@ function TarjetaRotacion({ rotacion, posicion, abierta, onAlternar }: TarjetaPro
                 </Etiqueta>
               )}
               <Etiqueta>Grado {rotacion.grado}</Etiqueta>
+              {elegida && (
+                <Etiqueta destacada>
+                  <Icono nombre="check" tam={14} />
+                  Su ciclo elegido
+                </Etiqueta>
+              )}
             </span>
             {abierta ? (
               <span className="sr-only">{secuencia}</span>
@@ -117,28 +139,72 @@ function TarjetaRotacion({ rotacion, posicion, abierta, onAlternar }: TarjetaPro
           )}
         </dl>
 
-        {/* Pendiente: la pantalla de detalle de la rotación (ventana de siembra y razones) aún no existe. */}
-        <button
-          type="button"
-          className="flex items-center justify-center gap-2 rounded-[10px] bg-verde-700 px-4 py-3 text-[14px] font-semibold text-white"
-        >
-          Ver detalle
-          <Icono nombre="flecha-blanca" tam={16} />
-        </button>
+        {rotacion.temporadas.length > 0 && (
+          <ol aria-label="Cuándo sembrar y cosechar" className="flex flex-col gap-1 text-[13px] text-tinta-suave">
+            {rotacion.temporadas.map((t) => (
+              <li key={`${t.cultivo}-${t.siembra}`}>
+                <span className="font-semibold text-tinta">{t.nombre}</span>: siembra {formatearFecha(t.siembra)},
+                cosecha {formatearFecha(t.cosecha)}
+                {t.fuente === "pronostico" ? " · con el pronóstico de los próximos meses" : " · según años anteriores"}
+              </li>
+            ))}
+          </ol>
+        )}
+
+        {acciones &&
+          (elegida ? (
+            <p
+              role="status"
+              className="flex items-center justify-center gap-2 rounded-[10px] bg-verde-100 px-4 py-3 text-[14px] font-semibold text-verde-700"
+            >
+              <Icono nombre="check" tam={16} />
+              {acciones.eligiendo === rotacion.id ? "Guardando su elección…" : "Este es su ciclo elegido"}
+            </p>
+          ) : (
+            <button
+              type="button"
+              onClick={() => acciones.alElegir(rotacion.id)}
+              disabled={acciones.eligiendo !== null}
+              className="flex items-center justify-center gap-2 rounded-[10px] bg-verde-700 px-4 py-3 text-[14px] font-semibold text-white transition-colors hover:bg-verde-900 disabled:opacity-60"
+            >
+              Elegir este ciclo
+              <Icono nombre="flecha-blanca" tam={16} />
+            </button>
+          ))}
       </div>
     </li>
   );
 }
 
-export function MejoresRotaciones({ rotaciones }: { rotaciones: Rotacion[] }) {
+interface Props {
+  rotaciones: Rotacion[];
+  /** La rotación que el agricultor eligió; null si todavía no elige. */
+  elegida?: string | null;
+  acciones?: AccionesSeleccion;
+}
+
+export function MejoresRotaciones({ rotaciones, elegida = null, acciones }: Props) {
   const mejores = rotaciones.slice(0, 3);
-  const [abierta, setAbierta] = useState<string | null>(mejores[0]?.id ?? null);
+  const [abierta, setAbierta] = useState<string | null>(
+    mejores.some((r) => r.id === elegida) ? elegida : (mejores[0]?.id ?? null),
+  );
 
   return (
     <section aria-labelledby="titulo-rotaciones" className="flex flex-col gap-3 2xl:col-start-1 2xl:row-start-1">
       <h2 id="titulo-rotaciones" className="text-[16px] font-semibold md:text-[18px]">
         Las {mejores.length} mejores rotaciones para su lote
       </h2>
+      {acciones?.error && (
+        <p role="alert" className="rounded-xl bg-roja-fondo p-3 text-[14px] font-semibold text-roja-texto">
+          {acciones.error}
+        </p>
+      )}
+      {mejores.length === 0 && (
+        <p className="rounded-2xl border border-borde bg-white p-4 text-[15px] text-tinta-suave">
+          Con el clima que se espera no encontramos una rotación que le convenga a este lote. Revise el ranking de
+          cultivos.
+        </p>
+      )}
       <ol className="flex flex-col gap-3">
         {mejores.map((r, i) => (
           <TarjetaRotacion
@@ -147,6 +213,8 @@ export function MejoresRotaciones({ rotaciones }: { rotaciones: Rotacion[] }) {
             posicion={i + 1}
             abierta={abierta === r.id}
             onAlternar={() => setAbierta((actual) => (actual === r.id ? null : r.id))}
+            elegida={elegida === r.id}
+            acciones={acciones}
           />
         ))}
       </ol>

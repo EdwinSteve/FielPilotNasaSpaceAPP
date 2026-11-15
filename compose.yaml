@@ -71,17 +71,22 @@ services:
       postgres:
         condition: service_healthy
       surco-planificador:
-        condition: service_started
+        condition: service_healthy
     restart: unless-stopped
 
-  # Planificador estacional: el modelo ONNX que recomienda el ciclo de cultivo de cada terreno.
-  # Solo lo llama la API (no publica puerto). La primera consulta de una zona baja NASA POWER y
-  # SoilGrids (puede tardar 1-2 minutos); el volumen guarda esa caché entre reinicios.
+  # Planificador estacional: puntúa los cultivos de cada terreno con el pronóstico de los próximos
+  # meses (motor Bf; ver ml/planificador/README.md, "Servir"). Solo lo llama la API: no publica
+  # puerto. La primera consulta de una zona baja NASA POWER y SoilGrids (1-3 minutos); el volumen
+  # guarda esa caché y las respuestas del día entre reinicios. Healthcheck: GET /salud (Dockerfile).
+  # Para depurar desde el equipo, agregue:  ports: ["127.0.0.1:8090:8090"]
   surco-planificador:
     build:
       context: ./ml/planificador
       additional_contexts:
         catalogo: ./data/catalogo_cultivos/datos
+    environment:
+      # bf: oráculo sobre el pronóstico (la red no le gana, MODELO.md); red: la red ONNX
+      SURCO_MOTOR: bf
     volumes:
       - surco-planificador-datos:/datos
     restart: unless-stopped

@@ -64,13 +64,15 @@ Sin token, o con uno inválido, la petición no llega al controlador: Spring Sec
 | `identidad` | ¿existe el municipio? | `territorio` | `ConsultaTerritorio` (implementado) |
 | `fincas` | validar el municipio de la finca | `territorio` | `ConsultaTerritorio` |
 | `diagnostico` | punto medio del lote | `fincas` | API pública de `fincas` |
-| `recomendacion` | trapecios y filtros por cultivo | `catalogo` | API pública de `catalogo` |
-| `rotacion` | lote, pronóstico, diagnóstico, cultivos aptos, catálogo | `fincas`, `alertas`, `diagnostico`, `recomendacion`, `catalogo` | un puerto por cada uno |
+| `recomendacion` | centroide y riego del lote | `fincas` | `ConsultaTerrenos` (implementado) |
+| `recomendacion` | puntajes, filtros duros y familias por cultivo | planificador (`ml/planificador`) | HTTP, `ClientePlanificador` (implementado); el catálogo lo lee el planificador |
+| `rotacion` | ranking, frecuencia histórica y lluvia del lote | `recomendacion` | `ConsultaRecomendaciones` (implementado) |
+| `rotacion` | pronóstico IDEAM, diagnóstico | `alertas`, `diagnostico` | un puerto por cada uno (pendiente) |
 | `alertas` | ubicación de los lotes y su productor | `fincas` | API pública de `fincas` |
 
 Cada módulo define un **puerto** en su dominio y lo implementa en su infraestructura con la API pública del otro módulo, como hace `ValidadorMunicipiosTerritorio`. Así se prueba con dobles en memoria, y si algún día un módulo sale a un servicio aparte, solo cambia el adaptador.
 
-El modelo predictivo y el servicio de datos de la NASA siguen en Python (`ml/`). Los módulos `diagnostico` y `recomendacion` los consumirán desde un adaptador de su infraestructura.
+El modelo predictivo y el servicio de datos de la NASA siguen en Python (`ml/`). `recomendacion` llama al planificador estacional (servicio `surco-planificador` de `compose.yaml`) desde `infraestructura/planificador`; el resto del backend no sabe que existe. Qué motor sirve y cómo se arman las rotaciones: [ADR 0008](decisiones/0008-recomendacion-y-rotacion.md).
 
 ## 5. Frontend
 

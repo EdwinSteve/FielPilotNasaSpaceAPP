@@ -15,8 +15,12 @@ public enum TipoError {
 	NO_ENCONTRADO,
 	/** Choca con el estado actual (duplicado, versión vieja): 409. */
 	CONFLICTO,
+	/** Bien formada, pero no se puede atender con los datos que hay (terreno sin suelo en SoilGrids): 422. */
+	NO_PROCESABLE,
 	/** Cuenta bloqueada temporalmente: 423. */
 	BLOQUEADO,
+	/** Una fuente externa de la que dependemos (NASA POWER, SoilGrids) respondió mal o no respondió: 502. */
+	FUENTE_EXTERNA,
 	/** Un servicio del que dependemos (el modelo de recomendación) no responde: 503. */
 	NO_DISPONIBLE
 }

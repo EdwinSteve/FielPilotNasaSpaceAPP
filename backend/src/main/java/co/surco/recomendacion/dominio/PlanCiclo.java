@@ -2,6 +2,7 @@ package co.surco.recomendacion.dominio;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Lo que responde el planificador estacional (ml/planificador, servidor.py) para un terreno: el clima
@@ -9,7 +10,7 @@ import java.util.List;
  * Los rendimientos son relativos al potencial del cultivo (1 = el máximo en buenas condiciones).
  */
 public record PlanCiclo(Lote lote, LocalDate generado, Pronostico pronostico, Mejor mejor, List<Opcion> opciones,
-	String modelo) {
+	Historico historico, String modelo, Motor motor) {
 
 	/** Lo que el modelo leyó del terreno (elevación de Open-Meteo, pH de SoilGrids). */
 	public record Lote(double lat, double lon, double elevacionM, double phSuelo, boolean riego) {
@@ -40,10 +41,36 @@ public record PlanCiclo(Lote lote, LocalDate generado, Pronostico pronostico, Me
 	 *
 	 * @param probExito       probabilidad de lograr al menos el 60 % del rendimiento potencial
 	 * @param riegoMmP50      riego que haría falta en el escenario típico
-	 * @param razonNoApto     por qué no se recomienda (por ejemplo, la altitud); null si es apto
+	 * @param razonNoApto     por qué no se recomienda (altitud o pH del suelo); null si es apto
+	 * @param familia         familia botánica (catálogo), para no repetirla en la rotación
+	 * @param grupo           grupo del catálogo: cereal, leguminosa, raiz, hortaliza, abono_verde...
+	 * @param fijacionNitrogenoKgHa   kg de N por hectárea que fija si es leguminosa; null si no fija
 	 */
 	public record Cultivo(String cultivo, String nombre, int cicloDias, LocalDate cosecha, double rendP10,
 		double rendP50, double rendP90, double probExito, double riegoMmP50, double rendConRiegoP50, boolean apto,
-		String razonNoApto) {
+		String razonNoApto, String familia, String grupo, Boolean fijaNitrogeno, Integer fijacionNitrogenoKgHa) {
+
+		/** Un planificador anterior no manda {@code fija_nitrogeno}: se toma como que no fija. */
+		public boolean fija() {
+			return Boolean.TRUE.equals(fijaNitrogeno);
+		}
+	}
+
+	/**
+	 * Para las temporadas siguientes de una rotación (fuera de los 175 días del pronóstico): con qué
+	 * frecuencia cada cultivo habría salido bien en los años pasados del terreno, sembrando en cada fecha.
+	 *
+	 * @param fechas    siembras cada 15 días, de 30 a 540 días después de generar el plan
+	 * @param cultivos  por id de cultivo, series alineadas con {@code fechas} (null: sin años con datos)
+	 */
+	public record Historico(String fuente, List<LocalDate> fechas, Map<String, Serie> cultivos) {
+	}
+
+	public record Serie(List<Double> probExito, List<Double> rendP50, List<Double> riegoMmP50,
+		List<Double> rendConRiegoP50) {
+	}
+
+	/** Con qué se puntuó: "bf" (oráculo sobre el pronóstico, el que se sirve) o "red". */
+	public record Motor(String id, String descripcion) {
 	}
 }

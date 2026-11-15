@@ -104,7 +104,7 @@ Cada alerta guarda su fuente, su vigencia y el boletín de origen, y no se notif
 | Inicio | `/inicio` | El estado de su lote hoy y las alertas pendientes |
 | Mis lotes | `/lotes` | Mapa para dibujar el lote, tipo de riego y desde cuándo puede sembrar |
 | Resumen climatológico | `/lotes/[id]/diagnostico` | Lluvia, temperatura, humedad, verdor y suelo, con su fuente |
-| Recomendación | `/lotes/[id]/rotacion` | Clima esperado, ciclos productivos recomendados, rotación de 2–3 temporadas, efecto en el suelo y simulador |
+| Plan de siembra ✅ | `/lotes/[id]/rotacion` | Las 3 mejores rotaciones de 2–3 temporadas con su grado, frecuencia de éxito, agua ahorrada y nitrógeno; el ranking de cultivos del modelo; la lluvia esperada por mes; y el ciclo que elige el agricultor. Efecto en el suelo y simulador: pendientes |
 | Alertas | `/alertas` | Pronósticos de lluvia y sequía del IDEAM para sus fincas |
 | Perfil | `/perfil` | Datos de la cuenta |
 
@@ -117,9 +117,9 @@ Cada alerta guarda su fuente, su vigencia y el boletín de origen, y no se notif
 | `fincas` | `POST /fincas` · `POST /fincas/{id}/lotes` · `GET /lotes/{id}` | Finca y lote con su polígono |
 | `diagnostico` | `POST /lotes/{id}/diagnostico` · `GET /lotes/{id}/diagnostico/{tarea}` | Resumen climatológico del lote (en segundo plano) |
 | `catalogo` | `GET /cultivos` · `GET /cultivos/{id}` | Ficha agronómica de cada cultivo |
-| `recomendacion` | `POST /lotes/{id}/recomendaciones` · `GET .../{id}` | Cultivos aptos para el lote y la fecha |
-| `rotacion` | `POST /lotes/{id}/rotaciones` · `GET .../{id}` | Condiciones esperadas, ciclos recomendados y rotaciones con su puntaje, explicación y efecto en el suelo |
-| `rotacion` | `POST /lotes/{id}/rotaciones/simular` | Recalcula el plan con un escenario de temperatura y lluvia |
+| `recomendacion` ✅ | `POST /lotes/{id}/recomendaciones?siembra=` · `GET .../actual` · `GET .../{recId}` · `GET /recomendacion/terrenos/{id}` | Cultivos del modelo estacional para el lote, con puntaje 0–1, filtros de altitud y pH y lluvia esperada. Errores: 422 sin suelo, 502 fuente caída, 503 modelo no disponible |
+| `rotacion` ✅ | `POST /lotes/{id}/rotaciones` · `GET /lotes/{id}/rotaciones` · `PUT` y `GET /lotes/{id}/seleccion` | Las 3 mejores rotaciones (algoritmo v1, [ADR 0008](docs/decisiones/0008-recomendacion-y-rotacion.md)) y el ciclo elegido |
+| `rotacion` | `POST /lotes/{id}/rotaciones/simular` (pendiente) | Recalcula el plan con un escenario de temperatura y lluvia |
 | `alertas` | `GET /alertas` · `PATCH /alertas/{id}/leida` | Alertas vigentes del productor |
 | `alertas` | `GET /lotes/{id}/pronostico` | Pronóstico vigente del IDEAM para el lote |
 
@@ -175,8 +175,8 @@ flowchart LR
 | `fincas` | Fincas, lotes (polígono, área, centroide) y tipo de riego. |
 | `diagnostico` | Resumen de la información climatológica disponible para el lote, y su suelo. |
 | `catalogo` | Requerimientos de 44 cultivos por fase (temperatura, lluvia, Kc, raíz, familia botánica). Solo lectura. |
-| `recomendacion` | Cultivos aptos para el lote y la fecha según el modelo predictivo. |
-| `rotacion` | Condiciones esperadas del lote, ciclos productivos con mejor resultado, rotación de 2–3 temporadas, efecto en el suelo y simulador. **El núcleo del reto.** |
+| `recomendacion` ✅ | Cultivos para el lote según el planificador estacional (`ml/planificador`, motor Bf): puntaje 0–1, filtros duros y lluvia esperada. Guarda cada cálculo. |
+| `rotacion` ✅ | Rotaciones de 2–3 temporadas sobre la recomendación (sin repetir familia, con leguminosas), grado, agua ahorrada y el ciclo que elige el agricultor. Efecto en el suelo y simulador: pendientes. **El núcleo del reto.** |
 | `alertas` | Pronósticos del IDEAM de lluvia y sequía cruzados con cada finca, notificaciones al agricultor y el pronóstico del lote para `rotacion`. |
 
 Reglas, anatomía de un módulo y cómo se comunican: [docs/arquitectura.md](docs/arquitectura.md).

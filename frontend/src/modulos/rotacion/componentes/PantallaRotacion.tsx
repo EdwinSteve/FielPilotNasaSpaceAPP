@@ -10,6 +10,7 @@ import type { PlanRotacion } from "../tipos";
 import { LluviasEsperadas } from "./LluviasEsperadas";
 import { MejoresRotaciones } from "./MejoresRotaciones";
 import { RankingCultivos } from "./RankingCultivos";
+import type { AccionesSeleccion } from "./MejoresRotaciones";
 import { SelectorLote } from "./SelectorLote";
 
 const INTRO = "Analizamos 40 años de clima de su zona y el pronóstico de El Niño y La Niña.";
@@ -20,7 +21,14 @@ export interface AccionesUsuario {
   movil?: ReactNode;
 }
 
-export function PantallaRotacion({ plan, acciones }: { plan: PlanRotacion; acciones?: AccionesUsuario }) {
+interface Props {
+  plan: PlanRotacion;
+  acciones?: AccionesUsuario;
+  /** Elegir un ciclo (sin esto las tarjetas no muestran el botón, como en los datos de ejemplo). */
+  seleccion?: AccionesSeleccion;
+}
+
+export function PantallaRotacion({ plan, acciones, seleccion }: Props) {
   return (
     <div className="min-h-screen md:flex">
       <NavegacionPrincipal
@@ -56,8 +64,8 @@ export function PantallaRotacion({ plan, acciones }: { plan: PlanRotacion; accio
         </header>
         <p className="hidden text-[13px] text-tinta-suave md:block 2xl:hidden">{INTRO}</p>
 
-        <div className="grid gap-[14px] md:gap-[18px] 2xl:grid-cols-[minmax(0,1fr)_620px] 2xl:items-start 2xl:gap-6">
-          <MejoresRotaciones rotaciones={plan.rotaciones} />
+        <div className="grid gap-[14px] md:gap-[18px] 2xl:grid-cols-[minmax(0,1fr)_620px] 2xl:grid-rows-[auto_1fr] 2xl:items-start 2xl:gap-6">
+          <MejoresRotaciones rotaciones={plan.rotaciones} elegida={plan.seleccion?.rotacionId ?? null} acciones={seleccion} />
           <RankingCultivos ranking={plan.ranking} />
           <LluviasEsperadas lluvias={plan.lluvias} />
         </div>

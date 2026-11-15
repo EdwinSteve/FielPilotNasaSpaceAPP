@@ -18,7 +18,7 @@ export function LluviasEsperadas({ lluvias }: { lluvias: PlanRotacion["lluvias"]
           </h2>
           <p className="text-[13px] text-tinta-suave">Para planear la siembra, el abono y la cosecha.</p>
         </div>
-        <span className="shrink-0 rounded-md bg-fondo px-2 py-[3px] text-[10px] font-semibold text-tinta-suave">
+        <span className="max-w-[45%] min-w-0 rounded-md bg-fondo px-2 py-[3px] text-right text-[10px] font-semibold text-tinta-suave">
           {lluvias.fuente}
         </span>
       </div>
@@ -27,7 +27,7 @@ export function LluviasEsperadas({ lluvias }: { lluvias: PlanRotacion["lluvias"]
         {lluvias.meses.map((m, i) => {
           const { texto, gotas, fondo } = lluviaEnPalabras(m);
           return (
-            <li key={m.mes} className={`flex items-center gap-3 rounded-xl p-3 ${fondo}`}>
+            <li key={`${m.mes}-${i}`} className={`flex items-center gap-3 rounded-xl p-3 ${fondo}`}>
               <div className="flex w-[92px] shrink-0 flex-col gap-[2px] md:w-[110px]">
                 <span className="text-[15px] font-bold">{m.mes}</span>
                 <span className="flex flex-col text-[12px] font-medium text-tinta-suave">

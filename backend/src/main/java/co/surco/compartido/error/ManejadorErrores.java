@@ -96,7 +96,9 @@ public class ManejadorErrores {
 			case PROHIBIDO -> HttpStatus.FORBIDDEN;
 			case NO_ENCONTRADO -> HttpStatus.NOT_FOUND;
 			case CONFLICTO -> HttpStatus.CONFLICT;
+			case NO_PROCESABLE -> HttpStatus.UNPROCESSABLE_CONTENT;
 			case BLOQUEADO -> HttpStatus.LOCKED;
+			case FUENTE_EXTERNA -> HttpStatus.BAD_GATEWAY;
 			case NO_DISPONIBLE -> HttpStatus.SERVICE_UNAVAILABLE;
 		};
 	}
