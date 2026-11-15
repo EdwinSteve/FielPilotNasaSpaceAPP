@@ -1,30 +1,33 @@
 import Link from "next/link";
 import { Icono } from "@/compartido/ui/Icono";
-import type { AlertaDestacada, ClimaActual, LoteInicio } from "../tipos";
-import { NIVELES } from "./niveles";
+import type { AlertaResumen, ClimaActual, UbicacionInicio } from "../tipos";
+import { NIVELES, etiquetaDe } from "./niveles";
 
 interface Props {
-  lote: LoteInicio;
+  ubicacion: UbicacionInicio;
   clima: ClimaActual;
-  alerta: AlertaDestacada;
+  /** null: no hay alertas ni avisos; se muestra `sinAlertas`. */
+  alerta: AlertaResumen | null;
+  sinAlertas: string;
 }
 
 const CHIP = "rounded-full bg-white/16 px-[10px] py-[5px] text-[12px] font-medium text-white 2xl:px-3 2xl:py-[6px] 2xl:text-[13px]";
+const TARJETA = "flex flex-col gap-[10px] rounded-2xl bg-white p-4 md:p-5 2xl:w-[540px] 2xl:justify-between 2xl:gap-6 2xl:p-6";
+const TITULO = "text-[17px] leading-[1.45] font-semibold md:text-[20px] 2xl:text-[22px]";
+const TEXTO = "text-[13px] leading-[1.45] text-tinta-suave md:text-[14px] 2xl:text-[15px]";
 
-export function BannerClima({ lote, clima, alerta }: Props) {
-  const nivel = NIVELES[alerta.nivel];
-
+export function BannerClima({ ubicacion, clima, alerta, sinAlertas }: Props) {
   return (
     <section className="flex flex-col gap-4 rounded-3xl bg-linear-to-r from-[#14532d] to-[#0e7490] p-5 md:gap-5 md:p-7 2xl:flex-row 2xl:gap-8 2xl:p-8">
       {/* En escritorio es la columna izquierda; en tablet y móvil sus hijos se apilan con la alerta */}
       <div className="contents 2xl:flex 2xl:min-w-0 2xl:flex-1 2xl:flex-col 2xl:justify-between 2xl:gap-6">
         <div className="flex flex-wrap gap-[6px] 2xl:gap-2">
           <span className={CHIP}>
-            <span className="hidden md:inline">Lote </span>
-            {lote.nombre} · {lote.area}
+            {ubicacion.nombre}
+            {ubicacion.departamento && `, ${ubicacion.departamento}`}
           </span>
-          <span className={`${CHIP} hidden md:inline`}>{lote.coordenadas}</span>
-          <span className={CHIP}>{lote.altitud}</span>
+          <span className={`${CHIP} hidden md:inline`}>{ubicacion.coordenadas}</span>
+          {ubicacion.altitud && <span className={CHIP}>{ubicacion.altitud}</span>}
         </div>
 
         <div className="flex flex-wrap items-center gap-4 md:flex-nowrap md:gap-5">
@@ -48,31 +51,37 @@ export function BannerClima({ lote, clima, alerta }: Props) {
         <p className="order-last text-[13px] text-[#bfdccd] 2xl:order-none">{clima.fuentes}</p>
       </div>
 
-      <article className="flex flex-col gap-[10px] rounded-2xl bg-white p-4 md:p-5 2xl:w-[540px] 2xl:justify-between 2xl:gap-6 2xl:p-6">
-        <div className="flex flex-col gap-[10px] 2xl:gap-3">
-          <span
-            className={`flex items-center gap-2 self-start rounded-full px-3 py-[6px] text-[12px] font-bold ${nivel.fondo} ${nivel.texto}`}
-          >
-            <Icono nombre={nivel.iconoPequeno} tam={16} className="size-4" />
-            {nivel.etiqueta} · IDEAM
-          </span>
-          <h2 className="text-[17px] leading-[1.45] font-semibold md:text-[20px] 2xl:text-[22px]">
-            {alerta.titulo}
-          </h2>
-          <p className="text-[13px] leading-[1.45] text-tinta-suave md:text-[14px] 2xl:text-[15px]">
-            {alerta.descripcion}
-          </p>
-        </div>
-        <div className="flex flex-col gap-[10px] md:flex-row md:items-center md:justify-between">
-          <p className="text-[13px] font-medium text-tinta-suave">{alerta.vigencia}</p>
+      {alerta ? (
+        <article className={TARJETA}>
+          <div className="flex flex-col gap-[10px] 2xl:gap-3">
+            <span
+              className={`flex items-center gap-2 self-start rounded-full px-3 py-[6px] text-[12px] font-bold ${NIVELES[alerta.nivel].fondo} ${NIVELES[alerta.nivel].texto}`}
+            >
+              <Icono nombre={NIVELES[alerta.nivel].iconoPequeno} tam={16} className="size-4" />
+              {etiquetaDe(alerta)}
+            </span>
+            <h2 className={TITULO}>{alerta.titulo}</h2>
+            <p className={TEXTO}>{alerta.detalle}</p>
+          </div>
           <Link
             href="/alertas"
-            className="rounded-[10px] bg-verde-700 px-4 py-3 text-center text-[14px] font-semibold text-white md:py-[10px] 2xl:px-[18px]"
+            className="rounded-[10px] bg-verde-700 px-4 py-3 text-center text-[14px] font-semibold text-white md:self-end md:py-[10px] 2xl:px-[18px]"
           >
             Ver qué hacer
           </Link>
-        </div>
-      </article>
+        </article>
+      ) : (
+        <article className={`${TARJETA} 2xl:justify-center`}>
+          <div className="flex flex-col gap-[10px] 2xl:gap-3">
+            <span className="flex items-center gap-2 self-start rounded-full bg-verde-100 px-3 py-[6px] text-[12px] font-bold text-verde-700">
+              <Icono nombre="check-circulo" tam={16} className="size-4" />
+              SIN ALERTAS
+            </span>
+            <h2 className={TITULO}>Todo tranquilo en su zona</h2>
+            <p className={TEXTO}>{sinAlertas}</p>
+          </div>
+        </article>
+      )}
     </section>
   );
 }

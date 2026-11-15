@@ -3,7 +3,8 @@ import { Icono } from "@/compartido/ui/Icono";
 import type { RecomendacionLote as Recomendacion } from "../tipos";
 
 interface Props {
-  recomendacion: Recomendacion;
+  /** null: todavía no hay recomendación para el terreno del usuario. */
+  recomendacion: Recomendacion | null;
   rutaRotacion: string;
 }
 
@@ -16,15 +17,18 @@ export function RecomendacionLote({ recomendacion, rutaRotacion }: Props) {
           RECOMENDACIÓN PARA TU LOTE
         </p>
         <h2 className="text-[19px] leading-[1.45] font-semibold text-white 2xl:text-[22px]">
-          {recomendacion.titulo}
+          {recomendacion?.titulo ?? "Qué sembrar y cuándo"}
         </h2>
         <p className="text-[13px] leading-[1.45] text-[#c7dace] 2xl:text-[14px]">
-          {recomendacion.descripcion}
+          {recomendacion?.descripcion ??
+            "Revise el plan de rotación: los cultivos y el orden que mejor le pueden resultar con el clima esperado."}
         </p>
-        <div className="flex flex-col gap-[5px] rounded-xl bg-white/8 p-3 2xl:gap-[6px] 2xl:p-[14px]">
-          <p className="text-[11px] font-medium text-verde-niebla 2xl:text-[12px]">Rotación sugerida</p>
-          <p className="text-[15px] font-semibold text-white 2xl:text-[16px]">{recomendacion.rotacion}</p>
-        </div>
+        {recomendacion && (
+          <div className="flex flex-col gap-[5px] rounded-xl bg-white/8 p-3 2xl:gap-[6px] 2xl:p-[14px]">
+            <p className="text-[11px] font-medium text-verde-niebla 2xl:text-[12px]">Rotación sugerida</p>
+            <p className="text-[15px] font-semibold text-white 2xl:text-[16px]">{recomendacion.rotacion}</p>
+          </div>
+        )}
       </div>
       <Link
         href={rutaRotacion}
