@@ -6,7 +6,8 @@ import static org.hamcrest.Matchers.not;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyDouble;
-import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willReturn;
+import static org.mockito.BDDMockito.willThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -52,8 +53,7 @@ class RecomendacionesIT {
 	@BeforeEach
 	void baseLimpia() throws Exception {
 		bd.execute("truncate identidad.usuarios cascade"); // borra también terrenos y recomendaciones
-		given(motor.planificar(anyDouble(), anyDouble(), anyBoolean(), any()))
-			.willReturn(PlanesDePrueba.neiva());
+		willReturn(PlanesDePrueba.neiva()).given(motor).planificar(anyDouble(), anyDouble(), anyBoolean(), any());
 	}
 
 	String tokenDe(String celular) throws Exception {
@@ -116,14 +116,15 @@ class RecomendacionesIT {
 	void losErroresDelModeloLleganConSuEstado() throws Exception {
 		String carlos = tokenDe("3001234567");
 		String base = "/api/v1/lotes/" + terrenoDe(carlos) + "/recomendaciones";
-		given(motor.planificar(anyDouble(), anyDouble(), anyBoolean(), any()))
-			.willThrow(ErroresRecomendacion.fuenteCaida("NASA POWER"));
+		// willThrow(...).given(mock): given(mock.planificar(...)) llamaría al mock ya configurado y lanzaría
+		willThrow(ErroresRecomendacion.fuenteCaida("NASA POWER")).given(motor)
+			.planificar(anyDouble(), anyDouble(), anyBoolean(), any());
 		http.perform(conToken(post(base), carlos)).andExpect(status().isBadGateway())
 			.andExpect(jsonPath("$.code").value("RECOMENDACION_FUENTE_CAIDA"))
 			.andExpect(jsonPath("$.details[0].field").value("fuente"))
 			.andExpect(jsonPath("$.details[0].message").value("NASA POWER"));
-		given(motor.planificar(anyDouble(), anyDouble(), anyBoolean(), any()))
-			.willThrow(ErroresRecomendacion.terrenoSinSuelo());
+		willThrow(ErroresRecomendacion.terrenoSinSuelo()).given(motor)
+			.planificar(anyDouble(), anyDouble(), anyBoolean(), any());
 		http.perform(conToken(post(base), carlos)).andExpect(status().isUnprocessableContent())
 			.andExpect(jsonPath("$.code").value("RECOMENDACION_TERRENO_SIN_SUELO"));
 		http.perform(conToken(post(base).param("siembra", "2020-01-01"), carlos)).andExpect(status().isBadRequest())

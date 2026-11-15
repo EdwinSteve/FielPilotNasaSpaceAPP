@@ -4,7 +4,8 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyDouble;
-import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willReturn;
+import static org.mockito.BDDMockito.willThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -51,7 +52,7 @@ class RotacionesIT {
 	@BeforeEach
 	void baseLimpia() {
 		bd.execute("truncate identidad.usuarios cascade");
-		given(motor.planificar(anyDouble(), anyDouble(), anyBoolean(), any())).willReturn(PlanesDePrueba.neiva());
+		willReturn(PlanesDePrueba.neiva()).given(motor).planificar(anyDouble(), anyDouble(), anyBoolean(), any());
 	}
 
 	String tokenDe(String celular) throws Exception {
