@@ -205,6 +205,7 @@ class Motor:
         self.fichas = {f.id: f for f in self.plan.fichas}
         docs, _ = cargar_documentos(self.rutas.catalogo_json)
         self.fijacion = kg_fijacion(docs)
+        self.grupos = {str(d["_id"]): str(d.get("grupo", "")) for d in docs}  # cereal, leguminosa, abono_verde...
 
     def _diario(self, clima: F32, dia0: date, oni: dict[tuple[int, int], float], inicio: date, lote: Lote,
                 crudo_seas5: F32 | None) -> F32:
@@ -226,9 +227,10 @@ class Motor:
         return None
 
     def _ficha(self, cultivo: str) -> dict[str, object]:
-        """Lo que la rotación necesita del catálogo: familia botánica y nitrógeno que deja."""
+        """Lo que la rotación necesita del catálogo: familia botánica, grupo (un abono verde no se vende) y
+        nitrógeno que deja."""
         f = self.fichas[cultivo]
-        return {"familia": f.familia, "fija_nitrogeno": f.fija_nitrogeno,
+        return {"familia": f.familia, "grupo": self.grupos.get(cultivo, ""), "fija_nitrogeno": f.fija_nitrogeno,
                 "fijacion_nitrogeno_kg_ha": self.fijacion.get(cultivo) if f.fija_nitrogeno else None}  # fmt: skip
 
     def _panorama(self, diario: F32, inicio: date, desde: date, lote: Lote) -> list[dict[str, object]]:

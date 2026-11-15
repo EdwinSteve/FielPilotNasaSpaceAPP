@@ -154,7 +154,7 @@ oráculo de las etiquetas corrido sobre el pronóstico) y la red ya lo recibe co
 evaluar con cada bundle nuevo: si uno pasa la regla, basta con `SURCO_MOTOR=red`.
 
 **Respuesta.** Cada cultivo trae, además del pronóstico, `apto`/`razon_no_apto` (filtros duros de la
-ficha: altitud y pH del suelo), `familia`, `fija_nitrogeno` y `fijacion_nitrogeno_kg_ha` (punto medio del
+ficha: altitud y pH del suelo), `familia`, `grupo` (del catálogo: cereal, leguminosa, abono_verde...), `fija_nitrogeno` y `fijacion_nitrogeno_kg_ha` (punto medio del
 rango del catálogo), que usa la rotación. `historico` da, para siembras cada 15 días entre 30 y 540
 días desde hoy, la frecuencia de éxito de cada cultivo en los años pasados del propio terreno (el
 oráculo sobre el clima que ocurrió): es lo que se sabe de las temporadas 2 y 3 de una rotación, que
