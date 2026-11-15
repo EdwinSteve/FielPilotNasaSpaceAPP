@@ -1,6 +1,6 @@
 // Datos de ejemplo del plan de siembra (los mismos del diseño en Figma: Rotación de cultivos).
 // Ninguna ruta los usa: la pantalla de rotación pide el plan real al backend (rotacion/api.ts).
-// Quedan para pruebas y para los datos de ejemplo de alertas (lotesMock).
+// Quedan para pruebas.
 import type { LoteOpcion, PlanRotacion } from "@/modulos/rotacion/tipos";
 
 export const lotesMock: LoteOpcion[] = [

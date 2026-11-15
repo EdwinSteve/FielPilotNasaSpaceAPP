@@ -52,6 +52,8 @@ Las duraciones (`surco.jwt.duracion-acceso: 15m`, `duracion-refresco: 30d`) y el
 | POST | `/auth/logout-todo` | **Bearer** | 204. Cierra todas las sesiones del usuario |
 | GET | `/usuarios/me` | **Bearer** | Perfil del usuario de la sesión |
 | GET | `/clima/resumen?municipio=41001` | **Bearer** | Tiempo actual, pronóstico de 7 días, datos de NASA POWER y avisos. Con `&lat=..&lon=..` usa el punto del terreno · 503 `CLIMA_NO_DISPONIBLE` |
+| GET | `/alerts/flood?lat=2.93&lon=-75.28` | **Bearer** | Alerta hidrológica vigente del IDEAM: `nivel` (`SIN_ALERTA`, `NORMAL`, `AMARILLA`, `NARANJA`, `ROJA`), `subzona`, `tipo`, `mensaje`, `consultado_en` · 400 `UBICACION_FUERA_DE_COLOMBIA` · 502 `NIVEL_DESCONOCIDO` · 503 `FUENTE_NO_DISPONIBLE` |
+| GET | `/alerts/drought?lat=2.93&lon=-75.28` | **Bearer** | Indicador de sequía (no oficial): lluvia de 30 días frente a la normal, NASA POWER. `nivel` (`NORMAL`, `AMARILLA`, `NARANJA`, `ROJA`) y `mensaje` · mismos errores |
 
 ```jsonc
 // POST /auth/registro
