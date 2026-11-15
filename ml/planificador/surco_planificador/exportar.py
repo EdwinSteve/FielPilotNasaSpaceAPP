@@ -23,8 +23,10 @@ from surco_planificador.caracteristicas import (
     CANALES_ANOMALIA,
     CANALES_CLIM,
     CANALES_HISTORIA,
+    ENTRADAS,
     ESTATICO,
     PRIOR,
+    SALIDA,
     SALIDAS_RED,
     Normalizacion,
 )
@@ -33,8 +35,6 @@ from surco_planificador.catalogo import CARACTERISTICAS_CULTIVO, FichaCultivo, v
 log = logging.getLogger(__name__)
 OPSET = 18
 TOLERANCIA = 1e-4
-ENTRADAS = ("historia", "pronostico", "clim", "estatico", "cultivos", "prior")
-SALIDA = "salidas"
 
 
 def exportar_onnx(modelo: torch.nn.Module, muestra: tuple[torch.Tensor, ...], ruta: Path) -> None:

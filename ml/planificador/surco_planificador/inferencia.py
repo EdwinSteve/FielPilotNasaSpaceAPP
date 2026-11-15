@@ -23,6 +23,7 @@ from surco_planificador.caracteristicas import (
     CANALES_PRONOSTICO_DIARIO,
     CLIM_DE_ANOMALIA,
     DIAS_ADELANTE,
+    ENTRADAS,
     PENTADA,
     PENTADAS_PRONOSTICO,
     Normalizacion,
@@ -34,7 +35,6 @@ from surco_planificador.caracteristicas import (
 )
 from surco_planificador.catalogo import FichaCultivo, vector_ficha
 from surco_planificador.etiquetas import estadisticas_bf
-from surco_planificador.exportar import ENTRADAS
 from surco_planificador.limpieza.climatologia import INDICE, indice_doy
 from surco_planificador.oraculo import CicloClima, Oraculo
 from surco_planificador.pronostico import Correccion, aplicar_correccion, derivar_diario

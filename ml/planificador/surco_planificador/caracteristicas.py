@@ -48,6 +48,9 @@ PRIOR = PRIOR_B0 + PRIOR_BF  # 14
 SALIDAS_RED = ("rend_p10", "rend_p50", "rend_p90", "exito_logit", "riego_p10", "riego_p50",
                "riego_p90", "fraccion_calor", "fraccion_frio", "rend_riego_p10",
                "rend_riego_p50", "rend_riego_p90")  # fmt: skip
+# Nombres de entradas/salida del grafo ONNX (aquí y no en exportar.py: la inferencia no usa torch).
+ENTRADAS = ("historia", "pronostico", "clim", "estatico", "cultivos", "prior")
+SALIDA = "salidas"
 
 _LOG_HISTORIA = tuple(i for i, c in enumerate(CANALES_HISTORIA) if c == "lluvia")
 _LOG_CLIM = tuple(i for i, c in enumerate(CANALES_CLIM) if c.startswith("lluvia"))
