@@ -3,13 +3,13 @@
 #   docker run -p 3000:3000 surco-web
 
 # --- Dependencias: npm ci con el package-lock exacto ---
-FROM node:22-alpine AS dependencias
+FROM node:26-alpine AS dependencias
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci --ignore-scripts
 
 # --- Compilación ---
-FROM node:22-alpine AS compilacion
+FROM node:26-alpine AS compilacion
 WORKDIR /app
 # Next.js fija el destino del proxy /api/v1 al compilar
 ARG BACKEND_URL=http://surco-api:8080
@@ -19,7 +19,7 @@ COPY . .
 RUN npm run build
 
 # --- Ejecución: solo el servidor standalone y los archivos estáticos, sin privilegios ---
-FROM node:22-alpine
+FROM node:26-alpine
 WORKDIR /app
 ENV NODE_ENV=production NEXT_TELEMETRY_DISABLED=1 PORT=3000 HOSTNAME=0.0.0.0
 COPY --from=compilacion --chown=node:node /app/.next/standalone ./
