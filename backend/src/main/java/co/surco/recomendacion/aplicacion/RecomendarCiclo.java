@@ -29,6 +29,6 @@ public class RecomendarCiclo {
 
 	public Recomendacion para(UUID usuarioId, UUID terrenoId) {
 		TerrenoUbicado t = terrenos.de(usuarioId, terrenoId).orElseThrow(ErroresRecomendacion::terrenoNoEncontrado);
-		return new Recomendacion(t, motor.planificar(t.lat(), t.lon(), t.riego()));
+		return new Recomendacion(t, motor.planificar(t.lat(), t.lon(), t.riego(), null));
 	}
 }

@@ -56,7 +56,7 @@ class RecomendacionTest {
 		List<double[]> llamadas = new ArrayList<>();
 		PlanCiclo plan = planDeMuestra();
 		var caso = new RecomendarCiclo((u, id) -> u.equals(ana) && id.equals(terreno.id()) ? Optional.of(terreno)
-			: Optional.empty(), (lat, lon, riego) -> {
+			: Optional.empty(), (lat, lon, riego, siembra) -> {
 				llamadas.add(new double[] {lat, lon, riego ? 1 : 0});
 				return plan;
 			});
