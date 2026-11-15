@@ -1,17 +1,31 @@
 /**
- * Módulo rotacion (por construir). El núcleo del reto: recomienda los ciclos productivos (cultivo + fecha de siembra, en secuencias de 2-3 temporadas) con el mejor resultado esperado bajo las condiciones meteorológicas que se van a presentar en el lote.
+ * Módulo rotacion: los ciclos productivos de un lote en secuencias de 2-3 temporadas y el que elige el
+ * agricultor (docs/decisiones/0008-recomendacion-y-rotacion.md).
  *
- * <p>Condiciones esperadas = pronóstico IDEAM + predicción estacional + climatología. Filtros duros (familia botánica, altitud, pH, agua en secano, calor) y puntaje MCDA 0-100 con pesos fijos (ADR 0001).
- * <p>Incluye el efecto de cada temporada en la salud del suelo y el simulador de escenarios (+0 a +4 °C, -40 % a +20 % de lluvia).
+ * <p>Rutas (protegidas, no están en RutasPublicas):
+ * <ul>
+ *   <li>{@code POST /api/v1/lotes/{id}/rotaciones}: pide la recomendación del lote al módulo recomendacion
+ *   (por su API pública), arma las 3 mejores rotaciones y guarda el plan (esquema "rotacion", V6).</li>
+ *   <li>{@code GET /api/v1/lotes/{id}/rotaciones}: el último plan, con el ranking, la lluvia esperada y la
+ *   selección del agricultor.</li>
+ *   <li>{@code PUT /api/v1/lotes/{id}/seleccion {plan_id, rotacion_id}} y {@code GET}: el ciclo elegido,
+ *   plan activo del lote (uno por lote; elegir otro lo reemplaza).</li>
+ * </ul>
+ *
+ * <p>El algoritmo v1 está en {@code dominio.GeneradorRotaciones}: primera temporada con el pronóstico,
+ * siguientes con la frecuencia de éxito en años pasados, sin repetir familia botánica seguida, bono por
+ * leguminosa, grado por umbrales y agua ahorrada frente al monocultivo comercial de referencia.
+ *
+ * <p>Fuera de alcance por ahora: el pronóstico IDEAM de días, la salud del suelo por temporada y el
+ * simulador de escenarios (+°C, lluvia).
  *
  * <p>Estructura, igual que el módulo identidad:
  * <ul>
- *   <li>{@code co.surco.rotacion}: API pública (interfaces y records que otros módulos pueden usar).</li>
- *   <li>{@code dominio}: entidades, reglas y puertos. Java puro, sin Spring ni JPA.</li>
- *   <li>{@code aplicacion}: casos de uso ({@code @Service}, {@code @Transactional}).</li>
- *   <li>{@code infraestructura}: adaptadores (JPA en el esquema "rotacion", clientes HTTP...).</li>
- *   <li>{@code api}: controladores REST bajo /api/v1, protegidos por defecto con JWT.</li>
+ *   <li>{@code dominio}: Candidatos, GeneradorRotaciones, Rotacion, PlanRotaciones, Seleccion, puertos y
+ *   errores. Java puro.</li>
+ *   <li>{@code aplicacion}: PlanesDeRotacion.</li>
+ *   <li>{@code infraestructura}: RecomendacionesDelModelo (API pública de recomendacion) y persistencia (JPA).</li>
+ *   <li>{@code api}: RotacionesControlador.</li>
  * </ul>
- * Ver backend/README.md, sección "Cómo proteger las rutas de un módulo nuevo".
  */
 package co.surco.rotacion;

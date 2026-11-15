@@ -103,6 +103,7 @@
    "apto": true,
    "razon_no_apto": null,
    "familia": "Fabaceae",
+   "grupo": "abono_verde",
    "fija_nitrogeno": true,
    "fijacion_nitrogeno_kg_ha": 115
   }
@@ -126,6 +127,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Fabaceae",
+     "grupo": "abono_verde",
      "fija_nitrogeno": true,
      "fijacion_nitrogeno_kg_ha": 115
     },
@@ -143,6 +145,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Euphorbiaceae",
+     "grupo": "raiz",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -160,6 +163,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Poaceae",
+     "grupo": "cereal",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -177,6 +181,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Fabaceae",
+     "grupo": "leguminosa",
      "fija_nitrogeno": true,
      "fijacion_nitrogeno_kg_ha": 90
     },
@@ -194,6 +199,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Dioscoreaceae",
+     "grupo": "raiz",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -211,6 +217,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Musaceae",
+     "grupo": "fruta",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -228,6 +235,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Fabaceae",
+     "grupo": "leguminosa",
      "fija_nitrogeno": true,
      "fijacion_nitrogeno_kg_ha": 150
     },
@@ -245,6 +253,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Poaceae",
+     "grupo": "cereal",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -262,6 +271,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Poaceae",
+     "grupo": "cereal",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -279,6 +289,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Malvaceae",
+     "grupo": "industrial",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -296,6 +307,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Cucurbitaceae",
+     "grupo": "hortaliza",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -313,6 +325,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Solanaceae",
+     "grupo": "hortaliza",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -330,6 +343,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Solanaceae",
+     "grupo": "hortaliza",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -347,6 +361,7 @@
      "apto": false,
      "razon_no_apto": "Se cultiva entre 800 y 2800 m de altitud; su terreno está a 446 m.",
      "familia": "Amaryllidaceae",
+     "grupo": "hortaliza",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -364,6 +379,7 @@
      "apto": false,
      "razon_no_apto": "Se cultiva entre 1800 y 3000 m de altitud; su terreno está a 446 m.",
      "familia": "Apiaceae",
+     "grupo": "hortaliza",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -381,6 +397,7 @@
      "apto": false,
      "razon_no_apto": "Se cultiva entre 1500 y 3000 m de altitud; su terreno está a 446 m.",
      "familia": "Brassicaceae",
+     "grupo": "hortaliza",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -398,6 +415,7 @@
      "apto": false,
      "razon_no_apto": "Se cultiva entre 1500 y 2800 m de altitud; su terreno está a 446 m.",
      "familia": "Asteraceae",
+     "grupo": "hortaliza",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -415,6 +433,7 @@
      "apto": false,
      "razon_no_apto": "Se cultiva entre 1800 y 3200 m de altitud; su terreno está a 446 m.",
      "familia": "Amaryllidaceae",
+     "grupo": "hortaliza",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -432,6 +451,7 @@
      "apto": false,
      "razon_no_apto": "Se cultiva entre 1800 y 2600 m de altitud; su terreno está a 446 m.",
      "familia": "Apiaceae",
+     "grupo": "raiz",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -449,6 +469,7 @@
      "apto": false,
      "razon_no_apto": "Se cultiva entre 1800 y 3000 m de altitud; su terreno está a 446 m.",
      "familia": "Fabaceae",
+     "grupo": "leguminosa",
      "fija_nitrogeno": true,
      "fijacion_nitrogeno_kg_ha": 75
     },
@@ -466,6 +487,7 @@
      "apto": false,
      "razon_no_apto": "Se cultiva entre 500 y 2800 m de altitud; su terreno está a 446 m.",
      "familia": "Fabaceae",
+     "grupo": "leguminosa",
      "fija_nitrogeno": true,
      "fijacion_nitrogeno_kg_ha": 60
     },
@@ -483,6 +505,7 @@
      "apto": false,
      "razon_no_apto": "Se cultiva entre 2000 y 3500 m de altitud; su terreno está a 446 m.",
      "familia": "Solanaceae",
+     "grupo": "tuberculo",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -500,6 +523,7 @@
      "apto": false,
      "razon_no_apto": "Se cultiva entre 2200 y 3200 m de altitud; su terreno está a 446 m.",
      "familia": "Solanaceae",
+     "grupo": "tuberculo",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     }
@@ -523,6 +547,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Fabaceae",
+     "grupo": "abono_verde",
      "fija_nitrogeno": true,
      "fijacion_nitrogeno_kg_ha": 115
     },
@@ -540,6 +565,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Euphorbiaceae",
+     "grupo": "raiz",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -557,6 +583,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Poaceae",
+     "grupo": "cereal",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -574,6 +601,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Dioscoreaceae",
+     "grupo": "raiz",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -591,6 +619,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Fabaceae",
+     "grupo": "leguminosa",
      "fija_nitrogeno": true,
      "fijacion_nitrogeno_kg_ha": 90
     },
@@ -608,6 +637,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Musaceae",
+     "grupo": "fruta",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -625,6 +655,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Fabaceae",
+     "grupo": "leguminosa",
      "fija_nitrogeno": true,
      "fijacion_nitrogeno_kg_ha": 150
     },
@@ -642,6 +673,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Poaceae",
+     "grupo": "cereal",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -659,6 +691,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Poaceae",
+     "grupo": "cereal",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -676,6 +709,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Malvaceae",
+     "grupo": "industrial",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -693,6 +727,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Cucurbitaceae",
+     "grupo": "hortaliza",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -710,6 +745,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Solanaceae",
+     "grupo": "hortaliza",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -727,6 +763,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Solanaceae",
+     "grupo": "hortaliza",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -744,6 +781,7 @@
      "apto": false,
      "razon_no_apto": "Se cultiva entre 800 y 2800 m de altitud; su terreno está a 446 m.",
      "familia": "Amaryllidaceae",
+     "grupo": "hortaliza",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -761,6 +799,7 @@
      "apto": false,
      "razon_no_apto": "Se cultiva entre 1800 y 3000 m de altitud; su terreno está a 446 m.",
      "familia": "Apiaceae",
+     "grupo": "hortaliza",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -778,6 +817,7 @@
      "apto": false,
      "razon_no_apto": "Se cultiva entre 1500 y 3000 m de altitud; su terreno está a 446 m.",
      "familia": "Brassicaceae",
+     "grupo": "hortaliza",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -795,6 +835,7 @@
      "apto": false,
      "razon_no_apto": "Se cultiva entre 1500 y 2800 m de altitud; su terreno está a 446 m.",
      "familia": "Asteraceae",
+     "grupo": "hortaliza",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -812,6 +853,7 @@
      "apto": false,
      "razon_no_apto": "Se cultiva entre 1800 y 3200 m de altitud; su terreno está a 446 m.",
      "familia": "Amaryllidaceae",
+     "grupo": "hortaliza",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -829,6 +871,7 @@
      "apto": false,
      "razon_no_apto": "Se cultiva entre 1800 y 2600 m de altitud; su terreno está a 446 m.",
      "familia": "Apiaceae",
+     "grupo": "raiz",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -846,6 +889,7 @@
      "apto": false,
      "razon_no_apto": "Se cultiva entre 1800 y 3000 m de altitud; su terreno está a 446 m.",
      "familia": "Fabaceae",
+     "grupo": "leguminosa",
      "fija_nitrogeno": true,
      "fijacion_nitrogeno_kg_ha": 75
     },
@@ -863,6 +907,7 @@
      "apto": false,
      "razon_no_apto": "Se cultiva entre 500 y 2800 m de altitud; su terreno está a 446 m.",
      "familia": "Fabaceae",
+     "grupo": "leguminosa",
      "fija_nitrogeno": true,
      "fijacion_nitrogeno_kg_ha": 60
     },
@@ -880,6 +925,7 @@
      "apto": false,
      "razon_no_apto": "Se cultiva entre 2000 y 3500 m de altitud; su terreno está a 446 m.",
      "familia": "Solanaceae",
+     "grupo": "tuberculo",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -897,6 +943,7 @@
      "apto": false,
      "razon_no_apto": "Se cultiva entre 2200 y 3200 m de altitud; su terreno está a 446 m.",
      "familia": "Solanaceae",
+     "grupo": "tuberculo",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     }
@@ -920,6 +967,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Fabaceae",
+     "grupo": "abono_verde",
      "fija_nitrogeno": true,
      "fijacion_nitrogeno_kg_ha": 115
     },
@@ -937,6 +985,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Euphorbiaceae",
+     "grupo": "raiz",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -954,6 +1003,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Poaceae",
+     "grupo": "cereal",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -971,6 +1021,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Musaceae",
+     "grupo": "fruta",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -988,6 +1039,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Dioscoreaceae",
+     "grupo": "raiz",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -1005,6 +1057,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Fabaceae",
+     "grupo": "leguminosa",
      "fija_nitrogeno": true,
      "fijacion_nitrogeno_kg_ha": 90
     },
@@ -1022,6 +1075,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Fabaceae",
+     "grupo": "leguminosa",
      "fija_nitrogeno": true,
      "fijacion_nitrogeno_kg_ha": 150
     },
@@ -1039,6 +1093,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Poaceae",
+     "grupo": "cereal",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -1056,6 +1111,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Poaceae",
+     "grupo": "cereal",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -1073,6 +1129,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Malvaceae",
+     "grupo": "industrial",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -1090,6 +1147,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Cucurbitaceae",
+     "grupo": "hortaliza",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -1107,6 +1165,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Solanaceae",
+     "grupo": "hortaliza",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -1124,6 +1183,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Solanaceae",
+     "grupo": "hortaliza",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -1141,6 +1201,7 @@
      "apto": false,
      "razon_no_apto": "Se cultiva entre 800 y 2800 m de altitud; su terreno está a 446 m.",
      "familia": "Amaryllidaceae",
+     "grupo": "hortaliza",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -1158,6 +1219,7 @@
      "apto": false,
      "razon_no_apto": "Se cultiva entre 1800 y 3000 m de altitud; su terreno está a 446 m.",
      "familia": "Apiaceae",
+     "grupo": "hortaliza",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -1175,6 +1237,7 @@
      "apto": false,
      "razon_no_apto": "Se cultiva entre 1500 y 3000 m de altitud; su terreno está a 446 m.",
      "familia": "Brassicaceae",
+     "grupo": "hortaliza",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -1192,6 +1255,7 @@
      "apto": false,
      "razon_no_apto": "Se cultiva entre 1500 y 2800 m de altitud; su terreno está a 446 m.",
      "familia": "Asteraceae",
+     "grupo": "hortaliza",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -1209,6 +1273,7 @@
      "apto": false,
      "razon_no_apto": "Se cultiva entre 1800 y 3200 m de altitud; su terreno está a 446 m.",
      "familia": "Amaryllidaceae",
+     "grupo": "hortaliza",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -1226,6 +1291,7 @@
      "apto": false,
      "razon_no_apto": "Se cultiva entre 1800 y 2600 m de altitud; su terreno está a 446 m.",
      "familia": "Apiaceae",
+     "grupo": "raiz",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -1243,6 +1309,7 @@
      "apto": false,
      "razon_no_apto": "Se cultiva entre 1800 y 3000 m de altitud; su terreno está a 446 m.",
      "familia": "Fabaceae",
+     "grupo": "leguminosa",
      "fija_nitrogeno": true,
      "fijacion_nitrogeno_kg_ha": 75
     },
@@ -1260,6 +1327,7 @@
      "apto": false,
      "razon_no_apto": "Se cultiva entre 500 y 2800 m de altitud; su terreno está a 446 m.",
      "familia": "Fabaceae",
+     "grupo": "leguminosa",
      "fija_nitrogeno": true,
      "fijacion_nitrogeno_kg_ha": 60
     },
@@ -1277,6 +1345,7 @@
      "apto": false,
      "razon_no_apto": "Se cultiva entre 2000 y 3500 m de altitud; su terreno está a 446 m.",
      "familia": "Solanaceae",
+     "grupo": "tuberculo",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -1294,6 +1363,7 @@
      "apto": false,
      "razon_no_apto": "Se cultiva entre 2200 y 3200 m de altitud; su terreno está a 446 m.",
      "familia": "Solanaceae",
+     "grupo": "tuberculo",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     }
@@ -1317,6 +1387,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Euphorbiaceae",
+     "grupo": "raiz",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -1334,6 +1405,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Fabaceae",
+     "grupo": "abono_verde",
      "fija_nitrogeno": true,
      "fijacion_nitrogeno_kg_ha": 115
     },
@@ -1351,6 +1423,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Poaceae",
+     "grupo": "cereal",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -1368,6 +1441,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Musaceae",
+     "grupo": "fruta",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -1385,6 +1459,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Fabaceae",
+     "grupo": "leguminosa",
      "fija_nitrogeno": true,
      "fijacion_nitrogeno_kg_ha": 90
     },
@@ -1402,6 +1477,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Dioscoreaceae",
+     "grupo": "raiz",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -1419,6 +1495,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Fabaceae",
+     "grupo": "leguminosa",
      "fija_nitrogeno": true,
      "fijacion_nitrogeno_kg_ha": 150
     },
@@ -1436,6 +1513,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Poaceae",
+     "grupo": "cereal",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -1453,6 +1531,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Poaceae",
+     "grupo": "cereal",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -1470,6 +1549,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Malvaceae",
+     "grupo": "industrial",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -1487,6 +1567,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Cucurbitaceae",
+     "grupo": "hortaliza",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -1504,6 +1585,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Solanaceae",
+     "grupo": "hortaliza",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -1521,6 +1603,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Solanaceae",
+     "grupo": "hortaliza",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -1538,6 +1621,7 @@
      "apto": false,
      "razon_no_apto": "Se cultiva entre 800 y 2800 m de altitud; su terreno está a 446 m.",
      "familia": "Amaryllidaceae",
+     "grupo": "hortaliza",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -1555,6 +1639,7 @@
      "apto": false,
      "razon_no_apto": "Se cultiva entre 1800 y 3000 m de altitud; su terreno está a 446 m.",
      "familia": "Apiaceae",
+     "grupo": "hortaliza",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -1572,6 +1657,7 @@
      "apto": false,
      "razon_no_apto": "Se cultiva entre 1500 y 3000 m de altitud; su terreno está a 446 m.",
      "familia": "Brassicaceae",
+     "grupo": "hortaliza",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -1589,6 +1675,7 @@
      "apto": false,
      "razon_no_apto": "Se cultiva entre 1500 y 2800 m de altitud; su terreno está a 446 m.",
      "familia": "Asteraceae",
+     "grupo": "hortaliza",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -1606,6 +1693,7 @@
      "apto": false,
      "razon_no_apto": "Se cultiva entre 1800 y 3200 m de altitud; su terreno está a 446 m.",
      "familia": "Amaryllidaceae",
+     "grupo": "hortaliza",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -1623,6 +1711,7 @@
      "apto": false,
      "razon_no_apto": "Se cultiva entre 1800 y 2600 m de altitud; su terreno está a 446 m.",
      "familia": "Apiaceae",
+     "grupo": "raiz",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -1640,6 +1729,7 @@
      "apto": false,
      "razon_no_apto": "Se cultiva entre 1800 y 3000 m de altitud; su terreno está a 446 m.",
      "familia": "Fabaceae",
+     "grupo": "leguminosa",
      "fija_nitrogeno": true,
      "fijacion_nitrogeno_kg_ha": 75
     },
@@ -1657,6 +1747,7 @@
      "apto": false,
      "razon_no_apto": "Se cultiva entre 500 y 2800 m de altitud; su terreno está a 446 m.",
      "familia": "Fabaceae",
+     "grupo": "leguminosa",
      "fija_nitrogeno": true,
      "fijacion_nitrogeno_kg_ha": 60
     },
@@ -1674,6 +1765,7 @@
      "apto": false,
      "razon_no_apto": "Se cultiva entre 2000 y 3500 m de altitud; su terreno está a 446 m.",
      "familia": "Solanaceae",
+     "grupo": "tuberculo",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -1691,6 +1783,7 @@
      "apto": false,
      "razon_no_apto": "Se cultiva entre 2200 y 3200 m de altitud; su terreno está a 446 m.",
      "familia": "Solanaceae",
+     "grupo": "tuberculo",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     }
@@ -1714,6 +1807,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Euphorbiaceae",
+     "grupo": "raiz",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -1731,6 +1825,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Fabaceae",
+     "grupo": "abono_verde",
      "fija_nitrogeno": true,
      "fijacion_nitrogeno_kg_ha": 115
     },
@@ -1748,6 +1843,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Poaceae",
+     "grupo": "cereal",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -1765,6 +1861,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Musaceae",
+     "grupo": "fruta",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -1782,6 +1879,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Fabaceae",
+     "grupo": "leguminosa",
      "fija_nitrogeno": true,
      "fijacion_nitrogeno_kg_ha": 90
     },
@@ -1799,6 +1897,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Dioscoreaceae",
+     "grupo": "raiz",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -1816,6 +1915,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Fabaceae",
+     "grupo": "leguminosa",
      "fija_nitrogeno": true,
      "fijacion_nitrogeno_kg_ha": 150
     },
@@ -1833,6 +1933,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Poaceae",
+     "grupo": "cereal",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -1850,6 +1951,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Poaceae",
+     "grupo": "cereal",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -1867,6 +1969,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Malvaceae",
+     "grupo": "industrial",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -1884,6 +1987,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Cucurbitaceae",
+     "grupo": "hortaliza",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -1901,6 +2005,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Solanaceae",
+     "grupo": "hortaliza",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -1918,6 +2023,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Solanaceae",
+     "grupo": "hortaliza",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -1935,6 +2041,7 @@
      "apto": false,
      "razon_no_apto": "Se cultiva entre 800 y 2800 m de altitud; su terreno está a 446 m.",
      "familia": "Amaryllidaceae",
+     "grupo": "hortaliza",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -1952,6 +2059,7 @@
      "apto": false,
      "razon_no_apto": "Se cultiva entre 1800 y 3000 m de altitud; su terreno está a 446 m.",
      "familia": "Apiaceae",
+     "grupo": "hortaliza",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -1969,6 +2077,7 @@
      "apto": false,
      "razon_no_apto": "Se cultiva entre 1500 y 3000 m de altitud; su terreno está a 446 m.",
      "familia": "Brassicaceae",
+     "grupo": "hortaliza",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -1986,6 +2095,7 @@
      "apto": false,
      "razon_no_apto": "Se cultiva entre 1800 y 3200 m de altitud; su terreno está a 446 m.",
      "familia": "Amaryllidaceae",
+     "grupo": "hortaliza",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -2003,6 +2113,7 @@
      "apto": false,
      "razon_no_apto": "Se cultiva entre 1500 y 2800 m de altitud; su terreno está a 446 m.",
      "familia": "Asteraceae",
+     "grupo": "hortaliza",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -2020,6 +2131,7 @@
      "apto": false,
      "razon_no_apto": "Se cultiva entre 1800 y 2600 m de altitud; su terreno está a 446 m.",
      "familia": "Apiaceae",
+     "grupo": "raiz",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -2037,6 +2149,7 @@
      "apto": false,
      "razon_no_apto": "Se cultiva entre 1800 y 3000 m de altitud; su terreno está a 446 m.",
      "familia": "Fabaceae",
+     "grupo": "leguminosa",
      "fija_nitrogeno": true,
      "fijacion_nitrogeno_kg_ha": 75
     },
@@ -2054,6 +2167,7 @@
      "apto": false,
      "razon_no_apto": "Se cultiva entre 500 y 2800 m de altitud; su terreno está a 446 m.",
      "familia": "Fabaceae",
+     "grupo": "leguminosa",
      "fija_nitrogeno": true,
      "fijacion_nitrogeno_kg_ha": 60
     },
@@ -2071,6 +2185,7 @@
      "apto": false,
      "razon_no_apto": "Se cultiva entre 2000 y 3500 m de altitud; su terreno está a 446 m.",
      "familia": "Solanaceae",
+     "grupo": "tuberculo",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -2088,6 +2203,7 @@
      "apto": false,
      "razon_no_apto": "Se cultiva entre 2200 y 3200 m de altitud; su terreno está a 446 m.",
      "familia": "Solanaceae",
+     "grupo": "tuberculo",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     }
@@ -2111,6 +2227,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Fabaceae",
+     "grupo": "abono_verde",
      "fija_nitrogeno": true,
      "fijacion_nitrogeno_kg_ha": 115
     },
@@ -2128,6 +2245,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Euphorbiaceae",
+     "grupo": "raiz",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -2145,6 +2263,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Poaceae",
+     "grupo": "cereal",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -2162,6 +2281,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Musaceae",
+     "grupo": "fruta",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -2179,6 +2299,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Fabaceae",
+     "grupo": "leguminosa",
      "fija_nitrogeno": true,
      "fijacion_nitrogeno_kg_ha": 90
     },
@@ -2196,6 +2317,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Dioscoreaceae",
+     "grupo": "raiz",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -2213,6 +2335,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Poaceae",
+     "grupo": "cereal",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -2230,6 +2353,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Fabaceae",
+     "grupo": "leguminosa",
      "fija_nitrogeno": true,
      "fijacion_nitrogeno_kg_ha": 150
     },
@@ -2247,6 +2371,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Poaceae",
+     "grupo": "cereal",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -2264,6 +2389,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Malvaceae",
+     "grupo": "industrial",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -2281,6 +2407,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Cucurbitaceae",
+     "grupo": "hortaliza",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -2298,6 +2425,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Solanaceae",
+     "grupo": "hortaliza",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -2315,6 +2443,7 @@
      "apto": true,
      "razon_no_apto": null,
      "familia": "Solanaceae",
+     "grupo": "hortaliza",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -2332,6 +2461,7 @@
      "apto": false,
      "razon_no_apto": "Se cultiva entre 800 y 2800 m de altitud; su terreno está a 446 m.",
      "familia": "Amaryllidaceae",
+     "grupo": "hortaliza",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -2349,6 +2479,7 @@
      "apto": false,
      "razon_no_apto": "Se cultiva entre 1800 y 3000 m de altitud; su terreno está a 446 m.",
      "familia": "Apiaceae",
+     "grupo": "hortaliza",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -2366,6 +2497,7 @@
      "apto": false,
      "razon_no_apto": "Se cultiva entre 1500 y 3000 m de altitud; su terreno está a 446 m.",
      "familia": "Brassicaceae",
+     "grupo": "hortaliza",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -2383,6 +2515,7 @@
      "apto": false,
      "razon_no_apto": "Se cultiva entre 1800 y 3200 m de altitud; su terreno está a 446 m.",
      "familia": "Amaryllidaceae",
+     "grupo": "hortaliza",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -2400,6 +2533,7 @@
      "apto": false,
      "razon_no_apto": "Se cultiva entre 1500 y 2800 m de altitud; su terreno está a 446 m.",
      "familia": "Asteraceae",
+     "grupo": "hortaliza",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -2417,6 +2551,7 @@
      "apto": false,
      "razon_no_apto": "Se cultiva entre 1800 y 2600 m de altitud; su terreno está a 446 m.",
      "familia": "Apiaceae",
+     "grupo": "raiz",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -2434,6 +2569,7 @@
      "apto": false,
      "razon_no_apto": "Se cultiva entre 1800 y 3000 m de altitud; su terreno está a 446 m.",
      "familia": "Fabaceae",
+     "grupo": "leguminosa",
      "fija_nitrogeno": true,
      "fijacion_nitrogeno_kg_ha": 75
     },
@@ -2451,6 +2587,7 @@
      "apto": false,
      "razon_no_apto": "Se cultiva entre 500 y 2800 m de altitud; su terreno está a 446 m.",
      "familia": "Fabaceae",
+     "grupo": "leguminosa",
      "fija_nitrogeno": true,
      "fijacion_nitrogeno_kg_ha": 60
     },
@@ -2468,6 +2605,7 @@
      "apto": false,
      "razon_no_apto": "Se cultiva entre 2000 y 3500 m de altitud; su terreno está a 446 m.",
      "familia": "Solanaceae",
+     "grupo": "tuberculo",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     },
@@ -2485,6 +2623,7 @@
      "apto": false,
      "razon_no_apto": "Se cultiva entre 2200 y 3200 m de altitud; su terreno está a 446 m.",
      "familia": "Solanaceae",
+     "grupo": "tuberculo",
      "fija_nitrogeno": false,
      "fijacion_nitrogeno_kg_ha": null
     }

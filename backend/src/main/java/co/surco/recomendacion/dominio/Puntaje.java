@@ -41,7 +41,7 @@ public final class Puntaje {
 		PlanCiclo.Opcion opcion = plan.opciones().stream().filter(o -> o.siembra().equals(siembra)).findFirst()
 			.orElse(plan.opciones().getFirst());
 		return opcion.cultivos().stream()
-			.map(c -> new CultivoEvaluado(c.cultivo(), c.nombre(), c.familia(), c.fija(), c.fijacionNitrogenoKgHa(),
+			.map(c -> new CultivoEvaluado(c.cultivo(), c.nombre(), c.familia(), c.grupo(), c.fija(), c.fijacionNitrogenoKgHa(),
 				c.cicloDias(), opcion.siembra(), c.cosecha(), de(c, riego), c.probExito(), c.riegoMmP50(), c.apto(),
 				c.razonNoApto()))
 			.sorted(Comparator.comparing(CultivoEvaluado::apto).reversed()

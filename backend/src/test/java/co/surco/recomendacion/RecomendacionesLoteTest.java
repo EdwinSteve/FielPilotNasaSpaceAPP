@@ -35,7 +35,7 @@ class RecomendacionesLoteTest {
 
 	static PlanCiclo.Cultivo cultivo(String id, double probExito, double rendP50, double rendConRiego, boolean apto) {
 		return new PlanCiclo.Cultivo(id, id, 120, LocalDate.of(2027, 3, 1), 0, rendP50, 1, probExito, 50,
-			rendConRiego, apto, apto ? null : "altitud", "Poaceae", false, null);
+			rendConRiego, apto, apto ? null : "altitud", "Poaceae", "cereal", false, null);
 	}
 
 	/** Contrato con ml/planificador: una respuesta real (motor Bf) trae lo que usan recomendación y rotación. */

@@ -35,10 +35,11 @@ public interface ConsultaRecomendaciones {
 	 * Un cultivo evaluado para la primera siembra con el pronóstico de los próximos meses.
 	 *
 	 * @param puntaje       0-1, ver {@code co.surco.recomendacion.dominio.Puntaje}
+	 * @param grupo         grupo del catálogo; "abono_verde" no se vende (mejora el suelo)
 	 * @param probExito     probabilidad de lograr al menos el 60 % del rendimiento potencial (en secano)
 	 * @param fijacionNitrogenoKgHa nitrógeno que fija por hectárea si es leguminosa (catálogo); null si no fija
 	 */
-	record CultivoEvaluado(String id, String nombre, String familia, boolean fijaNitrogeno, Integer fijacionNitrogenoKgHa,
+	record CultivoEvaluado(String id, String nombre, String familia, String grupo, boolean fijaNitrogeno, Integer fijacionNitrogenoKgHa,
 		int cicloDias, LocalDate siembra, LocalDate cosecha, double puntaje, double probExito, double riegoMmP50,
 		boolean apto, String razonNoApto) {
 	}

@@ -43,11 +43,12 @@ public record PlanCiclo(Lote lote, LocalDate generado, Pronostico pronostico, Me
 	 * @param riegoMmP50      riego que haría falta en el escenario típico
 	 * @param razonNoApto     por qué no se recomienda (altitud o pH del suelo); null si es apto
 	 * @param familia         familia botánica (catálogo), para no repetirla en la rotación
+	 * @param grupo           grupo del catálogo: cereal, leguminosa, raiz, hortaliza, abono_verde...
 	 * @param fijacionNitrogenoKgHa   kg de N por hectárea que fija si es leguminosa; null si no fija
 	 */
 	public record Cultivo(String cultivo, String nombre, int cicloDias, LocalDate cosecha, double rendP10,
 		double rendP50, double rendP90, double probExito, double riegoMmP50, double rendConRiegoP50, boolean apto,
-		String razonNoApto, String familia, Boolean fijaNitrogeno, Integer fijacionNitrogenoKgHa) {
+		String razonNoApto, String familia, String grupo, Boolean fijaNitrogeno, Integer fijacionNitrogenoKgHa) {
 
 		/** Un planificador anterior no manda {@code fija_nitrogeno}: se toma como que no fija. */
 		public boolean fija() {
