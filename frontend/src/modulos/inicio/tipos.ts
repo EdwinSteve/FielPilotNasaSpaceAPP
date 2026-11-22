@@ -127,8 +127,6 @@ export interface ResumenInicio {
   /** La misma fecha en tres largos: escritorio, tablet y móvil. */
   fecha: { larga: string; media: string; corta: string };
   ubicacion: UbicacionInicio;
-  /** Lote sobre el que abre "Cultivos y rotación". */
-  loteId: string;
   clima: ClimaActual;
   /** La alerta o aviso más grave; null si no hay ninguno. */
   alertaDestacada: AlertaResumen | null;

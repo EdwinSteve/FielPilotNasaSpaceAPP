@@ -3,8 +3,6 @@
 import type { AlertaResumen, AvisoApi, DatosInicio, Metrica, NivelAlerta, ResumenClimaApi } from "./tipos";
 
 const ZONA = "America/Bogota";
-/** Hasta que el módulo fincas entregue los terrenos del usuario, "Cultivos y rotación" abre el lote de ejemplo. */
-const LOTE_DEMO = "el-mirador";
 const SIN_DATO = "—";
 
 const entero = new Intl.NumberFormat("es-CO", { maximumFractionDigits: 0 });
@@ -164,7 +162,6 @@ export function aDatosInicio(api: ResumenClimaApi, ahora: Date = new Date()): Da
       coordenadas: coordenadas(ubicacion.lat, ubicacion.lon),
       altitud: ubicacion.altitud_m != null ? `${entero.format(ubicacion.altitud_m)} m s. n. m.` : "",
     },
-    loteId: LOTE_DEMO,
     clima: {
       temperatura: `${entero.format(actual.temperatura)}°`,
       condicion: actual.descripcion,

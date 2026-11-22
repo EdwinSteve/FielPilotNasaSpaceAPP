@@ -1,5 +1,6 @@
 // Pantalla de inicio del agricultor: clima del lote, métricas, pronóstico, alertas y recomendación.
 import type { ReactNode } from "react";
+import { rutaCultivos } from "@/compartido/lib/rutas";
 import { NavegacionPrincipal } from "@/compartido/ui/NavegacionPrincipal";
 import type { ResumenInicio } from "../tipos";
 import { AlertasTempranas } from "./AlertasTempranas";
@@ -16,14 +17,14 @@ export interface AccionesUsuario {
 }
 
 export function PantallaInicio({ resumen, acciones }: { resumen: ResumenInicio; acciones?: AccionesUsuario }) {
-  const rutaRotacion = `/lotes/${resumen.loteId}/rotacion`;
+  // Inicio aún no sabe de qué lote es el resumen: /cultivos abre el primer terreno del productor.
+  const rutaRotacion = rutaCultivos();
 
   return (
     <div className="min-h-screen md:flex">
       <NavegacionPrincipal
         activa="inicio"
         usuario={resumen.usuario}
-        loteId={resumen.loteId}
         alertasPendientes={resumen.alertasPendientes}
         accionUsuario={acciones?.lateral}
       />

@@ -3,5 +3,6 @@ export { obtenerPlanRotacion, elegirRotacion, aPlanRotacion, aLoteOpcion } from 
 export { usePlanRotacion } from "./hooks/usePlanRotacion";
 export { PantallaRotacion } from "./componentes/PantallaRotacion";
 export { RotacionConSesion } from "./componentes/RotacionConSesion";
+export { IrACultivos } from "./componentes/IrACultivos";
 export { SelectorLote } from "./componentes/SelectorLote";
 export type { LoteOpcion, PlanRotacion, SeleccionCiclo, RespuestaPlanRotacion } from "./tipos";
