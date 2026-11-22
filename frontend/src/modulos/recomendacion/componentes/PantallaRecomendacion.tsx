@@ -15,15 +15,13 @@ import { obtenerRecomendacion } from "../api";
 import { deCadaDiez, fechaCorta, fechaLarga, fraseEnso, porcentaje } from "../formato";
 import type { BloqueClima, CultivoRecomendado, PlanCiclo, RespuestaRecomendacion } from "../tipos";
 
-const LOTE_ROTACION = "el-mirador";
-
-function Marco({ usuario, children }: { usuario: UsuarioSesion; children: ReactNode }) {
+function Marco({ usuario, terrenoId, children }: { usuario: UsuarioSesion; terrenoId: string; children: ReactNode }) {
   return (
     <div className="min-h-screen md:flex">
       <NavegacionPrincipal
         activa="terreno"
         usuario={usuario}
-        loteId={LOTE_ROTACION}
+        loteId={terrenoId}
         alertasPendientes={0}
         accionUsuario={<BotonCerrarSesion variante="lateral" />}
       />
@@ -286,7 +284,7 @@ function Recomendacion({ usuario, terrenoId }: { usuario: UsuarioSesion; terreno
 
   const t = datos?.terreno;
   return (
-    <Marco usuario={usuario}>
+    <Marco usuario={usuario} terrenoId={terrenoId}>
       <header className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
         <div className="flex flex-col gap-[3px]">
           <h1 className="text-[22px] font-bold md:text-[24px] 2xl:text-[30px]">{t ? `Recomendación para ${t.nombre}` : "Recomendación de cultivo"}</h1>

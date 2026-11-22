@@ -2,6 +2,7 @@
 // y barra de pestañas inferior en móvil.
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { rutaCultivos } from "../lib/rutas";
 import { Icono } from "./Icono";
 import { NOMBRE_APP } from "./Marca";
 
@@ -10,8 +11,11 @@ export type SeccionNav = "inicio" | "terreno" | "rotacion" | "alertas";
 interface Props {
   activa: SeccionNav;
   usuario: { nombreCompleto: string; iniciales: string; rol: string; municipio: string };
-  /** Lote sobre el que abre "Cultivos y rotación". */
-  loteId: string;
+  /**
+   * Lote sobre el que abre "Cultivos y rotación". Sin él, la pestaña va a /cultivos, que abre el
+   * primer terreno del productor (o lo manda a registrar uno si aún no tiene).
+   */
+  loteId?: string;
   alertasPendientes: number;
   /** Acción del usuario bajo su avatar (por ejemplo, cerrar sesión). Compartido no depende de identidad. */
   accionUsuario?: ReactNode;
@@ -22,7 +26,7 @@ export function NavegacionPrincipal({ activa, usuario, loteId, alertasPendientes
   const secciones = [
     { id: "inicio", nombre: "Inicio", corto: "Inicio", href: "/inicio", icono: "home-nav", activo: "home-blanco", iconoTab: "home-tab-inactivo", tabActivo: "home-tab" },
     { id: "terreno", nombre: "Mi terreno", corto: "Terreno", href: "/lotes", icono: "pin-nav", activo: "pin-nav", iconoTab: "pin-tab", tabActivo: "pin-tab" },
-    { id: "rotacion", nombre: "Cultivos y rotación", corto: "Cultivos", href: `/lotes/${loteId}/rotacion`, icono: "rotate-nav", activo: "rotate-blanco", iconoTab: "rotate-tab", tabActivo: "rotate-tab-activo" },
+    { id: "rotacion", nombre: "Cultivos y rotación", corto: "Cultivos", href: rutaCultivos(loteId), icono: "rotate-nav", activo: "rotate-blanco", iconoTab: "rotate-tab", tabActivo: "rotate-tab-activo" },
     { id: "alertas", nombre: "Alertas IDEAM", corto: "Alertas", href: "/alertas", icono: "alert-nav", activo: "alert-blanco", iconoTab: "alert-tab", tabActivo: "alert-tab-activo" },
   ] as const;
 

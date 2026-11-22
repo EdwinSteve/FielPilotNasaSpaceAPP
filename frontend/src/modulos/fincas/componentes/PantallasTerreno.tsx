@@ -18,16 +18,12 @@ import { FormularioTerreno } from "./FormularioTerreno";
 
 const MapaTerreno = dynamic(() => import("./MapaTerreno").then((m) => m.MapaTerreno), { ssr: false });
 
-/** Lote de "Cultivos y rotación" mientras esa pantalla siga con datos de ejemplo. */
-const LOTE_ROTACION = "el-mirador";
-
 function Marco({ usuario, titulo, subtitulo, children }: { usuario: UsuarioSesion; titulo: string; subtitulo: string; children: ReactNode }) {
   return (
     <div className="min-h-screen md:flex">
       <NavegacionPrincipal
         activa="terreno"
         usuario={usuario}
-        loteId={LOTE_ROTACION}
         alertasPendientes={0}
         accionUsuario={<BotonCerrarSesion variante="lateral" />}
       />
